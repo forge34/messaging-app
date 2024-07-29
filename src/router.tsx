@@ -6,6 +6,13 @@ const routes: RouteObject[] = [
     path: "/",
     element: <App></App>,
   },
+  {
+    path: "/signup",
+    element: "",
+  },
+  {
+    path: "/signin",
+  },
 ];
 
 const router = createBrowserRouter(routes);
