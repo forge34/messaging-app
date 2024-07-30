@@ -1,0 +1,26 @@
+.form {
+  background-color: #313338;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  padding: 1em 1.75em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  border-radius: 6px;
+  color: white;
+  font-size: 1.2em;
+}
+.form h1 {
+  font-size: 1.8em;
+}
+.form > :nth-last-child(1):is(p) {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+}
+.form > :nth-last-child(1):is(p) a {
+  color: #7289da;
+  text-decoration: none;
+}
+
+/*# sourceMappingURL=form.css.map */

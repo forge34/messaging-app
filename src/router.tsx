@@ -1,5 +1,6 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import App from ".";
+import Signup from "./pages/signup";
 
 const routes: RouteObject[] = [
   {
@@ -8,10 +9,15 @@ const routes: RouteObject[] = [
   },
   {
     path: "/signup",
-    element: "",
+    element: <Signup></Signup>,
   },
   {
     path: "/signin",
+    element: <h3>Sign in</h3>,
+  },
+  {
+    path: "/forgot-password",
+    element: <Navigate to={"/signin"}></Navigate>,
   },
 ];
 

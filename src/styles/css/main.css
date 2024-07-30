@@ -1,10 +1,12 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   min-height: 100dvh;
+  background-color: #181a1d;
 }
 
 img,
@@ -22,6 +24,16 @@ label {
 
 form {
   all: unset;
+}
+
+.btn-submit {
+  align-self: center;
+  margin: 1em 0;
+  background-color: #7289da;
+  font-size: inherit;
+  border-style: none;
+  border-radius: 7px;
+  padding: 0.5em 1em;
 }
 
 /*# sourceMappingURL=main.css.map */

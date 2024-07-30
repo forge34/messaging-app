@@ -1,10 +1,14 @@
+@use "variables";
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   min-height: 100dvh;
+  background-color: variables.$bg-color;
 }
 
 img,
@@ -22,4 +26,14 @@ label {
 
 form {
   all: unset;
+}
+
+.btn-submit {
+  align-self: center;
+  margin: variables.$base * 2 0;
+  background-color: variables.$primary;
+  font-size: inherit;
+  border-style: none;
+  border-radius: 7px;
+  padding: variables.$base variables.$base * 2;
 }

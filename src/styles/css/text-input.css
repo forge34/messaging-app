@@ -1,0 +1,36 @@
+.text-input {
+  display: flex;
+  flex-direction: column;
+}
+.text-input :first-child {
+  margin: 0.5em 0;
+  display: flex;
+  align-items: center;
+}
+.text-input :first-child a {
+  font-size: 0.9em;
+  margin: 0;
+  margin-left: auto;
+  color: #7289da;
+}
+.text-input input {
+  border-radius: 4px;
+  width: 35ch;
+  padding: 0.1em 0.1em;
+  border-style: none;
+  background-color: #171a1c;
+  color: white;
+  outline-style: solid;
+  outline-width: 2px;
+}
+.text-input input:is(:-webkit-autofill, :autofill) {
+  background-color: wheat !important;
+}
+.text-input input:valid {
+  outline-color: green;
+}
+.text-input input:invalid {
+  outline-color: red;
+}
+
+/*# sourceMappingURL=text-input.css.map */
