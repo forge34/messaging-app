@@ -23,7 +23,7 @@ export default function TextInput(props: TextInputProps) {
   return (
     <div className={"text-input"}>
       <div>
-        <label>{props.label}</label>
+        <label>{props.label.toUpperCase()} </label>
         {props.password?.type === "password" && (
           <Link to="/forgot-password">Forgot your password?</Link>
         )}

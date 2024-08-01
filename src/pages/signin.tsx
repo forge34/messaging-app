@@ -43,7 +43,10 @@ function Signin() {
         Sign in
       </button>
       <p>
-        Don't have an account? <Link to="/signup">Create one</Link>
+        Don't have an account?{" "}
+        <Link style={{ fontWeight: 600 }} to="/signup">
+          Create one
+        </Link>
       </p>
     </form>
   );

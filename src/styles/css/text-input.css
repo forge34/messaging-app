@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .text-input {
   display: flex;
   flex-direction: column;
@@ -7,6 +8,13 @@
   display: flex;
   align-items: center;
 }
+.text-input :first-child label {
+  font-size: 0.8em;
+}
+.text-input :first-child label::after {
+  content: " *";
+  color: red;
+}
 .text-input :first-child a {
   font-size: 0.9em;
   margin: 0;
@@ -14,8 +22,10 @@
   color: #526fd2;
 }
 .text-input input {
+  font-size: 1.1em;
   border-radius: 4px;
-  width: 35ch;
+  width: 40ch;
+  height: 4ch;
   padding: 0.2em 0.3em;
   border-style: none;
   background-color: #171a1c;

@@ -9,6 +9,15 @@
     display: flex;
     align-items: center;
 
+    label {
+      font-size: 0.8em;
+
+      &::after {
+        content: "\00a0*";
+        color: red;
+      }
+    }
+
     a {
       font-size: 0.9em;
       margin: 0;
@@ -17,8 +26,10 @@
     }
   }
   input {
+    font-size: 1.1em;
     border-radius: 4px;
-    width: 35ch;
+    width: 40ch;
+    height: 4ch;
     padding: variables.$base * 0.4 0.3em;
     border-style: none;
 

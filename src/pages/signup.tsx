@@ -61,7 +61,10 @@ function Signup() {
         Create account
       </button>
       <p>
-        Already have an account? <Link to={"/signin"}>Sign-in</Link>
+        Already have an account?{" "}
+        <Link style={{ fontWeight: 600 }} to={"/signin"}>
+          Sign-in
+        </Link>
       </p>
     </form>
   );

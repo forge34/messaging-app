@@ -20,7 +20,6 @@
 }
 .form > :nth-last-child(1):is(p) a {
   color: #526fd2;
-  text-decoration: none;
 }
 
 /*# sourceMappingURL=form.css.map */
