@@ -1,4 +1,5 @@
 @use "variables";
+@use "sass:color";
 
 * {
   margin: 0;
@@ -31,9 +32,22 @@ form {
 .btn-submit {
   align-self: center;
   margin: variables.$base * 2 0;
-  background-color: variables.$primary;
+  background-color: color.scale(variables.$primary, $lightness: -40%);
+  color: white;
   font-size: inherit;
   border-style: none;
   border-radius: 7px;
   padding: variables.$base variables.$base * 2;
+
+  transition: background-color 0.3s ease-out 50ms;
+  &:hover {
+    background-color: variables.$primary;
+  }
+}
+
+.error {
+  margin-top: 0.1em;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #d22b2b;
 }

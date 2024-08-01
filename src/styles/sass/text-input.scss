@@ -5,7 +5,7 @@
   flex-direction: column;
 
   :first-child {
-    margin: variables.$base 0;
+    margin: variables.$base * 2 0 variables.$base * 0.5 0;
     display: flex;
     align-items: center;
 
@@ -19,22 +19,24 @@
   input {
     border-radius: 4px;
     width: 35ch;
-    padding: variables.$base * 0.2 0.1em;
+    padding: variables.$base * 0.4 0.3em;
     border-style: none;
 
     background-color: variables.$darker-bg;
     color: white;
+    outline-color: transparent;
     outline-style: solid;
-    outline-width: 2px;
+    outline-width: 1px;
 
     &:is(:-webkit-autofill, :autofill) {
       background-color: wheat !important;
     }
 
-    &:valid {
+    &.valid {
       outline-color: green;
     }
-    &:invalid {
+
+    &.invalid {
       outline-color: red;
     }
   }

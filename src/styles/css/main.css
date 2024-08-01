@@ -29,11 +29,23 @@ form {
 .btn-submit {
   align-self: center;
   margin: 1em 0;
-  background-color: #7289da;
+  background-color: #243b8b;
+  color: white;
   font-size: inherit;
   border-style: none;
   border-radius: 7px;
   padding: 0.5em 1em;
+  transition: background-color 0.3s ease-out 50ms;
+}
+.btn-submit:hover {
+  background-color: #526fd2;
+}
+
+.error {
+  margin-top: 0.1em;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #d22b2b;
 }
 
 /*# sourceMappingURL=main.css.map */

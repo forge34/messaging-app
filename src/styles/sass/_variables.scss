@@ -2,7 +2,7 @@
 
 $base: 0.5em;
 
-$primary: #7289da;
+$primary: color.scale(#7289da, $lightness: -12%);
 $bg-color: color.scale(#1e2124, $lightness: -20%);
 $darker-bg: color.scale(#1e2124, $lightness: -22%);
 $card-color: color.scale(#36393e, $lightness: -10%);
