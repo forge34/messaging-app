@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import App from ".";
 import Signup from "./pages/signup";
+import Signin from "./pages/signin";
 
 const routes: RouteObject[] = [
   {
@@ -13,7 +14,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "/signin",
-    element: <h3>Sign in</h3>,
+    element: <Signin></Signin>,
   },
   {
     path: "/forgot-password",
