@@ -7,7 +7,9 @@
   box-sizing: border-box;
 }
 
-body {
+body,
+body > #root {
+  height: 100%;
   min-height: 100dvh;
   background-color: variables.$bg-color;
 }
@@ -32,7 +34,7 @@ form {
 .btn-submit {
   // align-self: center;
   margin: variables.$base * 2 0;
-  background-color: color.scale(variables.$primary, $lightness: -40%);
+  background-color: color.scale(variables.$primary-500, $lightness: -40%);
   color: white;
   font-size: inherit;
   border-style: none;
@@ -41,7 +43,7 @@ form {
 
   transition: background-color 0.3s ease-out 50ms;
   &:hover {
-    background-color: variables.$primary;
+    background-color: variables.$primary-500;
   }
 }
 
@@ -51,3 +53,11 @@ form {
   font-weight: bold;
   color: #d22b2b;
 }
+
+#root {
+  display: grid;
+  grid-template-columns: 6% 94%;
+  grid-template-rows: 100%;
+}
+
+

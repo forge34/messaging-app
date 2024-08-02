@@ -22,7 +22,7 @@
       font-size: 0.9em;
       margin: 0;
       margin-left: auto;
-      color: variables.$primary;
+      color: variables.$primary-500;
     }
   }
   input {
@@ -33,7 +33,7 @@
     padding: variables.$base * 0.4 0.3em;
     border-style: none;
 
-    background-color: variables.$darker-bg;
+    background-color: variables.$bg-color-500;
     color: white;
     outline-color: transparent;
     outline-style: solid;
