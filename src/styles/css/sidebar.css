@@ -6,6 +6,9 @@
   grid-row: 1/-1;
   grid-column: 1/2;
 }
+.sidebar h1 {
+  margin-top: 0.7em;
+}
 .sidebar .sidebar-item {
   display: flex;
   flex-direction: column;

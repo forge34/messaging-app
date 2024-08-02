@@ -1,0 +1,37 @@
+.chat-area {
+  grid-row: 1/-1;
+  grid-column: 2/-1;
+  background-color: #23262a;
+  color: white;
+  padding: 1em 1em;
+  border-radius: 23px;
+}
+.chat-area h1 {
+  font-size: 2.5em;
+}
+.chat-area .search-input {
+  margin-top: 0.5em;
+  display: flex;
+  width: max-content;
+  padding: 0.5em 0.5em;
+  padding-right: 0.25em;
+  border-radius: 9px;
+}
+.chat-area .search-input img {
+  filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg) brightness(99%) contrast(94%);
+  margin: auto 0;
+  margin-right: 0.5em;
+}
+.chat-area .search-input *:not(img), .chat-area .search-input {
+  background-color: #171a1c;
+}
+.chat-area .search-input input {
+  font-size: 1.2em;
+  color: #f0f0f0;
+  max-width: fit-content;
+  border-style: none;
+  padding: 0.5em;
+  height: 4ch;
+}
+
+/*# sourceMappingURL=chat-area.css.map */

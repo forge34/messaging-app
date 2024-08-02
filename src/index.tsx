@@ -5,13 +5,13 @@ import messageIcon from "./assets/message.svg";
 import starIcon from "./assets/star.svg";
 import settingsIcon from "./assets/settings.svg";
 import profileIcon from "./assets/user.svg";
+import Chatarea from "./pages/chat-area";
 // import {   useState } from "react";
 
 function App() {
   // const [selected, setSetlected] = useState(0);
 
-  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
-  }
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {}
   return (
     <>
       <Sidebar handleClick={handleClick}>
@@ -21,8 +21,7 @@ function App() {
         <SidebarItem imgSrc={profileIcon} itemtext="Profle"></SidebarItem>
         <SidebarItem imgSrc={settingsIcon} itemtext="Settings"></SidebarItem>
       </Sidebar>
-
-      <div className="chat-area"></div>
+      <Chatarea></Chatarea>
     </>
   );
 }
