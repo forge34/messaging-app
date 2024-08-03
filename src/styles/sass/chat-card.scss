@@ -1,0 +1,27 @@
+@use "variables" as vars;
+@use "mixins";
+
+.chat-card {
+  display: flex;
+  margin-top: vars.$base;
+  padding: vars.$base;
+  border-radius: 15px;
+  @include mixins.bg-transition($color: vars.$bg-color-300);
+
+  img {
+    margin-right: vars.$base;
+  }
+  h5 {
+    font-weight: 700;
+    margin-left: auto;
+  }
+
+  .card-info {
+    display: flex;
+    flex-direction: column;
+
+    p {
+      margin-top: auto;
+    }
+  }
+}

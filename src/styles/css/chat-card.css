@@ -1,0 +1,26 @@
+.chat-card {
+  display: flex;
+  margin-top: 0.5em;
+  padding: 0.5em;
+  border-radius: 15px;
+  transition: background-color 0.3s ease-in 0s;
+}
+.chat-card:hover {
+  background-color: #515961;
+}
+.chat-card img {
+  margin-right: 0.5em;
+}
+.chat-card h5 {
+  font-weight: 700;
+  margin-left: auto;
+}
+.chat-card .card-info {
+  display: flex;
+  flex-direction: column;
+}
+.chat-card .card-info p {
+  margin-top: auto;
+}
+
+/*# sourceMappingURL=chat-card.css.map */

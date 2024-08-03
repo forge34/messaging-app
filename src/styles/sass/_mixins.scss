@@ -1,0 +1,7 @@
+@mixin bg-transition($color, $delay: 0s) {
+  transition: background-color 0.3s ease-in $delay;
+
+  &:hover {
+    background-color: $color;
+  }
+}

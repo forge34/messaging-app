@@ -14,7 +14,7 @@
   flex-direction: column;
   width: 100%;
   padding: 1em 0.65em;
-  margin-top: 2.5em;
+  margin-top: 1em;
   border-radius: 9px;
   transition: background-color 0.2s ease-in 0s;
 }
