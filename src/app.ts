@@ -4,6 +4,8 @@ import { configDotenv } from "dotenv";
 import express, { Express } from "express";
 import morgan from "morgan";
 import router from "./routes/index";
+import { PassportConfig } from "./config/passport";
+import passport from "passport";
 
 configDotenv();
 const app: Express = express();
@@ -20,6 +22,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+PassportConfig.configLocal();
+app.use(passport.initialize());
 
 app.use("/", router);
 

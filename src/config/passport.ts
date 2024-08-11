@@ -27,6 +27,11 @@ const localVerify: passportLocal.VerifyFunction = async (
   }
 };
 
-const localStrategy = new passportLocal.Strategy(localVerify);
+class PassportConfig {
+  static configLocal() {
+    const localStrategy = new passportLocal.Strategy(localVerify);
+    passport.use(localStrategy);
+  }
+}
 
-passport.use(localStrategy);
+export { PassportConfig };
