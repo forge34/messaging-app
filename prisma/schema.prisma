@@ -14,8 +14,9 @@ datasource db {
 }
 
 model User {
-  id             Int           @id @default(autoincrement())
-  name           String @unique
+  pk             Int           @id @default(autoincrement())
+  id             String        @default(uuid()) @db.Uuid
+  name           String        @unique
   password       String
   Messages       Message[]
   Participants   Participants? @relation(fields: [participantsId], references: [id])
@@ -27,7 +28,7 @@ model Message {
   body      String
   createdAt DateTime @default(now())
   authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [pk])
 }
 
 model Conversation {
