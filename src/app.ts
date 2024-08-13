@@ -56,3 +56,5 @@ app.use(passport.session())
 app.use("/", router);
 
 app.listen(port, () => {});
+
+export default app
