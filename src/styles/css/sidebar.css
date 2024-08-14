@@ -32,8 +32,7 @@
 .sidebar .sidebar-item:last-child {
   margin-top: auto;
 }
-.sidebar .sidebar-item:hover,
-.sidebar .sidebar-item .selected {
+.sidebar .sidebar-item.selected, .sidebar .sidebar-item:hover {
   background-color: #4967d0;
 }
 

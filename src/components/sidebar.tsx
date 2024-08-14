@@ -6,7 +6,7 @@ function Sidebar({
   handleClick,
 }: {
   children: ReactNode | Array<ReactNode>;
-  handleClick: React.MouseEventHandler<HTMLDivElement>;
+  handleClick?: React.MouseEventHandler<HTMLDivElement>;
 }) {
   return (
     <div onClick={handleClick} className="sidebar">

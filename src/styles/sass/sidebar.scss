@@ -39,8 +39,8 @@
       margin-top: auto;
     }
 
-    &:hover,
-    .selected {
+    &.selected ,
+    &:hover {
       background-color: vars.$primary-500;
     }
   }
