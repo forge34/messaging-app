@@ -1,4 +1,4 @@
-@use "variables";
+@use "variables" as vars;
 @use "sass:color";
 
 * {
@@ -11,7 +11,7 @@ body,
 body > #root {
   height: 100%;
   min-height: 100dvh;
-  background-color: variables.$bg-color;
+  background-color: vars.$bg-color;
 }
 
 img,
@@ -33,17 +33,17 @@ form {
 
 .btn-submit {
   // align-self: center;
-  margin: variables.$base * 2 0;
-  background-color: color.scale(variables.$primary-500, $lightness: -40%);
+  margin: vars.$base * 2 0;
+  background-color: color.scale(vars.$primary-500, $lightness: -40%);
   color: white;
   font-size: inherit;
   border-style: none;
   border-radius: 7px;
-  padding: variables.$base variables.$base * 2;
+  padding: vars.$base vars.$base * 2;
 
   transition: background-color 0.3s ease-out 50ms;
   &:hover {
-    background-color: variables.$primary-500;
+    background-color: vars.$primary-500;
   }
 }
 
@@ -60,4 +60,30 @@ form {
   grid-template-rows: 100%;
 }
 
+.search-input {
+  margin-top: vars.$base;
+  display: flex;
+  width: max-content;
+  padding: vars.$base vars.$base;
+  padding-right: vars.$base * 0.5;
+  border-radius: 9px;
 
+  img {
+    filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg)
+      brightness(99%) contrast(94%);
+    margin: auto 0;
+    margin-right: vars.$base;
+  }
+  *:not(img),
+  & {
+    background-color: vars.$bg-color-500;
+  }
+  input {
+    font-size: 1.2em;
+    color: vars.$text-color;
+    max-width: fit-content;
+    border-style: none;
+    padding: vars.$base;
+    height: 4ch;
+  }
+}
