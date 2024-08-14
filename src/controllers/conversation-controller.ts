@@ -17,7 +17,7 @@ class ConversationController {
         },
       });
       const currentUser = req.user as User;
-console.log(currentUser)
+      console.log(currentUser);
       if (errors.isEmpty()) {
         await prisma.conversation.create({
           data: {
@@ -37,6 +37,18 @@ console.log(currentUser)
       }
     }),
   ];
+
+  static delete = expressAsyncHandler(async (req: Request, res: Response) => {
+    const conversationId = req.params.conversationid;
+
+    await prisma.conversation.delete({
+      where: {
+        id: conversationId,
+      },
+    });
+
+    res.status(200).json("conversation deleted");
+  });
 }
 
 export default ConversationController;

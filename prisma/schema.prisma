@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   pk             Int           @id @default(autoincrement())
-  id             String        @unique @default(uuid()) @db.Uuid
+  id             String        @unique @default(cuid())
   name           String        @unique
   password       String
   messages       Message[]
@@ -24,27 +24,27 @@ model User {
 }
 
 model Message {
-  id             Int           @id @default(autoincrement())
+  id             String        @id @default(cuid())
   body           String
   createdAt      DateTime      @default(now())
-  authorId       String        @db.Uuid
+  authorId       String
   conversationId String?
-  author         User          @relation(fields: [authorId], references: [id])
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  author         User          @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Conversation {
-  id             String       @id @default(cuid())
-  title          String?
-  participants   Participants @relation(fields: [participantsId], references: [id])
-  messages       Message[]
-  participantsId Int          @unique
+  id           String        @id @default(cuid())
+  title        String?
+  messages     Message[]
+  participants Participants?
 }
 
 model Participants {
-  id           Int           @id @default(autoincrement())
-  users        User[]
-  Conversation Conversation?
+  id             Int          @id @default(autoincrement())
+  users          User[]
+  conversationId String       @unique
+  Conversation   Conversation @relation(references: [id], fields: [conversationId], onDelete: Cascade)
 }
 
 model Session {
