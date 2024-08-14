@@ -24,13 +24,13 @@ model User {
 }
 
 model Message {
-  id             Int          @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   body           String
-  createdAt      DateTime     @default(now())
-  authorId       String       @db.Uuid
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-  author         User         @relation(fields: [authorId], references: [id])
+  createdAt      DateTime      @default(now())
+  authorId       String        @db.Uuid
+  conversationId String?
+  author         User          @relation(fields: [authorId], references: [id])
+  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
 }
 
 model Conversation {
