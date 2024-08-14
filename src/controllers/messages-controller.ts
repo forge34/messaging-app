@@ -21,7 +21,7 @@ class MessagesController {
     ),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const messageBody: string = req.body.content;
-      const conversationId: string = req.params.conversationId;
+      const conversationId: string = req.params.conversationid;
       const currentUser = req.user as User;
 
       await prisma.message.create({
@@ -38,7 +38,7 @@ class MessagesController {
 
   static deleteMessage = expressAsyncHandler(
     async (req: Request, res: Response) => {
-      const messageId = req.params.messageId;
+      const messageId = req.params.messageid;
 
       await prisma.message.delete({
         where: {
