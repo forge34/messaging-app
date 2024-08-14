@@ -35,6 +35,20 @@ class MessagesController {
       res.status(200).json("message created");
     }),
   ];
+
+  static deleteMessage = expressAsyncHandler(
+    async (req: Request, res: Response) => {
+      const messageId = req.params.messageId;
+
+      await prisma.message.delete({
+        where: {
+          id: messageId,
+        },
+      });
+
+      res.status(200).json("message deleted");
+    },
+  );
 }
 
 export default MessagesController;

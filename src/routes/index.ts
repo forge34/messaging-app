@@ -15,4 +15,6 @@ router.post("/login", Auth.login);
 router.post("/conversation", ConversationController.create);
 router.post("/conversation/:conversationId", MessagesController.createMessage);
 
+router.delete("/messages/:messageId" , MessagesController.deleteMessage)
+
 export default router;
