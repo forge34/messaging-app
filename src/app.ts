@@ -16,7 +16,7 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 const corsOptions: CorsOptions = {
-  origin: [" http://localhost:5173"],
+  origin: ["http://localhost:5173"],
   credentials: true,
   allowedHeaders: ["Content-type"],
 };
@@ -29,15 +29,15 @@ app.use(cookieParser());
 
 const session: SessionOptions = {
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   secret: process.env.SECRET,
   cookie: {
     maxAge: 604800000,
+    httpOnly: false,
   },
   store: new PrismaSessionStore(new PrismaClient(), {
     checkPeriod: 2 * 60 * 1000, //ms
     dbRecordIdIsSessionId: true,
-    dbRecordIdFunction: undefined,
   }),
 };
 
@@ -51,10 +51,10 @@ app.use(expressSession(session));
 
 PassportConfig.configLocal();
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
 app.use("/", router);
 
 app.listen(port, () => {});
 
-export default app
+export default app;

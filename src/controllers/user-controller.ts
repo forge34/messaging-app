@@ -1,13 +1,17 @@
 import { PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
 
+interface IUser extends Omit<User, "password"> {
+  relatedToCurrent: boolean;
+}
+
 const prisma = new PrismaClient();
 
 class UserController {
   static getMany = async (req: Request, res: Response) => {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({});
     const currentUser = req.user as User;
-    const news: any = [];
+    const filteredUsers: IUser[] = [];
 
     for (let user of users) {
       if (user.id === currentUser.id) continue;
@@ -33,13 +37,14 @@ class UserController {
         },
       });
 
+      const { password, ...rest } = user;
       if (participants) {
-        news.push({ ...user, relatedToCurrent: true });
+        filteredUsers.push({ ...rest, relatedToCurrent: true });
       } else {
-        news.push({ ...user, relatedToCurrent: false });
+        filteredUsers.push({ ...rest, relatedToCurrent: false });
       }
     }
-    res.status(200).json(news);
+    res.status(200).json(filteredUsers);
   };
 }
 
