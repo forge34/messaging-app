@@ -2,7 +2,7 @@ import TextInput from "../components/text-input";
 import "../styles/css/form.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const FormSchema = z.object({
   username: z.string().min(1, { message: "Username can not be empty" }),
@@ -12,9 +12,23 @@ const FormSchema = z.object({
 });
 
 function Signin() {
+  const navigate = useNavigate();
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
-    onValidSubmit(e) {
+    async onValidSubmit(e) {
       e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(e.target).entries());
+
+      await fetch(`${import.meta.env.VITE_API}/login`, {
+        
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(data),
+        credentials: "include",
+        headers: { "content-Type": "Application/json" },
+      });
+
+      navigate("/");
     },
   });
 
