@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import Auth from "../controllers/auth-controller";
 import MessagesController from "../controllers/messages-controller";
 import ConversationController from "../controllers/conversation-controller";
+import UserController from "../controllers/user-controller";
 
 const router = express.Router();
 
@@ -17,5 +18,7 @@ router.post("/conversation/:conversationid", MessagesController.createMessage);
 router.delete("/conversation/:conversationid", ConversationController.delete);
 
 router.delete("/messages/:messageid", MessagesController.deleteMessage);
+
+router.get("/users", UserController.getMany);
 
 export default router;
