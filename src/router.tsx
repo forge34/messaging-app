@@ -3,6 +3,11 @@ import App from ".";
 import Signup from "./pages/signup";
 import Signin from "./pages/signin";
 import Chatarea from "./pages/chat-area";
+import People from "./pages/people";
+import { QueryClient } from "@tanstack/react-query";
+import { userLoader } from "./utils/users";
+
+const queryClient = new QueryClient();
 
 const routes: RouteObject[] = [
   {
@@ -28,7 +33,8 @@ const routes: RouteObject[] = [
       },
       {
         path: "people",
-        element: <h1>Soon</h1>,
+        element: <People></People>,
+        loader: userLoader(queryClient),
       },
       {
         path: "settings",
@@ -51,4 +57,4 @@ const routes: RouteObject[] = [
 ];
 
 const router = createBrowserRouter(routes);
-export { router };
+export { router, queryClient };
