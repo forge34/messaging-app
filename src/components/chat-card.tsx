@@ -4,7 +4,7 @@ interface ChatCardProps {
   userImg: string;
   userName: string;
   userLastMsg: string;
-  userLastSent: string;
+  userLastSent?: string;
 }
 
 export default function ChatCard({
