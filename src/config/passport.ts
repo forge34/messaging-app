@@ -2,6 +2,8 @@ import { PrismaClient, User } from "@prisma/client";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcryptjs";
+import { Request } from "express";
+import passportJwt from "passport-jwt";
 
 const prisma = new PrismaClient();
 
@@ -27,6 +29,21 @@ const localVerify: passportLocal.VerifyFunction = async (
   }
 };
 
+const cookieExtractor = (req: Request) => {
+  let jwt = null;
+
+  if (req && req.cookies) {
+    jwt = req.cookies["jwt"];
+  }
+
+  return jwt;
+};
+
+const jwtOptions: passportJwt.StrategyOptionsWithSecret = {
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.SECRET,
+};
+
 class PassportConfig {
   static configLocal() {
     const localStrategy = new passportLocal.Strategy(localVerify);
@@ -45,6 +62,24 @@ class PassportConfig {
       done(null, user);
     });
     passport.use(localStrategy);
+  }
+
+  static configJwt() {
+    const jwtStrategy = new passportJwt.Strategy(
+      jwtOptions,
+      async (payload, done) => {
+        const user = await prisma.user.findFirst({
+          where: {
+            id: payload.id,
+          },
+        });
+        if (user) {
+          return done(null, user);
+        } else return done(true, null);
+      },
+    );
+
+    passport.use(jwtStrategy)
   }
 }
 

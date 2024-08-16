@@ -50,6 +50,7 @@ if (app.get("env") === "production") {
 app.use(expressSession(session));
 
 PassportConfig.configLocal();
+PassportConfig.configJwt();
 app.use(passport.initialize());
 app.use(passport.session());
 
