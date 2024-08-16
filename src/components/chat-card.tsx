@@ -2,25 +2,26 @@ import "../styles/css/chat-card.css";
 
 interface ChatCardProps {
   userImg: string;
-  userName: string;
-  userLastMsg: string;
-  userLastSent?: string;
+  conversationTitle: string;
+  conversationLastMsg: string;
+  conversationLastSent?: string;
+  conversationId: string;
 }
 
 export default function ChatCard({
-  userLastMsg,
+  conversationLastMsg,
   userImg,
-  userLastSent = "Seconds ago...",
-  userName,
+  conversationLastSent = "Seconds ago...",
+  conversationTitle,
 }: ChatCardProps) {
   return (
     <div className="chat-card">
       <img width={48} height={48} src={userImg} />
       <div className="card-info">
-        <h3>{userName}</h3>
-        <p>{userLastMsg}</p>
+        <h3>{conversationTitle}</h3>
+        <p>{conversationLastMsg}</p>
       </div>
-      <h5>{userLastSent}</h5>
+      <h5>{conversationLastSent}</h5>
     </div>
   );
 }
