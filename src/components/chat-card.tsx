@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "../styles/css/chat-card.css";
 
 interface ChatCardProps {
@@ -13,9 +14,17 @@ export default function ChatCard({
   userImg,
   conversationLastSent = "Seconds ago...",
   conversationTitle,
+  conversationId,
 }: ChatCardProps) {
+  const navigate = useNavigate();
+
   return (
-    <div className="chat-card">
+    <div
+      className="chat-card"
+      onClick={() => {
+        navigate(`${conversationId}`);
+      }}
+    >
       <img width={48} height={48} src={userImg} />
       <div className="card-info">
         <h3>{conversationTitle}</h3>
