@@ -1,9 +1,17 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 
+export interface User {
+  name: string;
+  id: string;
+  pk: number;
+  participantsId: number;
+  relatedToCurrent: boolean;
+}
+
 const getUsers = () =>
   queryOptions({
     queryKey: ["users"],
-    queryFn: async () => {
+    queryFn: async (): Promise<Array<User>> => {
       const res = await fetch(`${import.meta.env.VITE_API}/users`, {
         method: "get",
         mode: "cors",
@@ -19,10 +27,9 @@ const getUsers = () =>
     staleTime: 1000 * 60 * 2,
   });
 
-const userLoader= (queryClient: QueryClient) => async () => {
+const userLoader = (queryClient: QueryClient) => async () => {
   const query = getUsers();
 
   return queryClient.ensureQueryData(query);
 };
-
 export { userLoader, getUsers };
