@@ -2,6 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import { PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
+import { profile } from "console";
 
 const prisma = new PrismaClient();
 
@@ -44,6 +45,42 @@ class ConversationController {
     });
 
     res.status(200).json("conversation deleted");
+  });
+
+  static getCurrentUserConversations = expressAsyncHandler(
+    async (req: Request, res: Response) => {
+      const { id: userid } = req.user as User;
+
+      const conversations = await prisma.conversation.findMany({
+        where: {
+          users: {
+            some: {
+              id: userid,
+            },
+          },
+        },
+        include: {
+          messages: true,
+        },
+      });
+
+      res.status(200).json(conversations);
+    },
+  );
+
+  static getById = expressAsyncHandler(async (req: Request, res: Response) => {
+    const conversationid = req.params.conversationid;
+
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationid,
+      },
+      include: {
+        messages: true,
+      },
+    });
+
+    res.status(200).json(conversation);
   });
 }
 

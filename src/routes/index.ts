@@ -16,6 +16,11 @@ router.post("/login", Auth.login);
 router.post("/conversation", ConversationController.create);
 router.post("/conversation/:conversationid", MessagesController.createMessage);
 router.delete("/conversation/:conversationid", ConversationController.delete);
+router.get(
+  "/conversation/currentUser",
+  ConversationController.getCurrentUserConversations,
+);
+router.get("/conversation/:conversationid", ConversationController.getById);
 
 router.delete("/messages/:messageid", MessagesController.deleteMessage);
 
