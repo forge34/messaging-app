@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["../sass/chat-card.scss","../sass/_variables.scss","../sass/_mixins.scss"],"names":[],"mappings":"AAGA;EACE;EACA,YCHK;EDIL,SCJK;EDKL;EENA;;AAEA;EACE,kBDGW;;ADGb;EACE,cCTG;;ADWL;EACE;EACA;;AAGF;EACE;EACA;;AAEA;EACE","file":"chat-card.css"}
+{"version":3,"sourceRoot":"","sources":["../sass/chat-card.scss","../sass/_variables.scss","../sass/_mixins.scss"],"names":[],"mappings":"AAGA;EACE;EACA,YCHK;EDIL,SCJK;EDKL;EENA;;AAEA;EACE,kBDGW;;ADGb;EACE,cCTG;;ADWL;EACE;EACA;;;AAIJ;EACE;EACA;;AAEA;EACE","file":"chat-card.css"}

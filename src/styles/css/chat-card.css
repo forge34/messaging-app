@@ -15,11 +15,12 @@
   font-weight: 700;
   margin-left: auto;
 }
-.chat-card .card-info {
+
+.card-info {
   display: flex;
   flex-direction: column;
 }
-.chat-card .card-info p {
+.card-info p {
   margin-top: auto;
 }
 
