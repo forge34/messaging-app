@@ -1,0 +1,21 @@
+.user-card {
+  display: flex;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  background-color: #181a1d;
+  border-radius: 12px;
+}
+
+.user-card-btn {
+  margin-left: auto;
+  font-size: 1em;
+  background-color: #4967d0;
+  padding: 0.5em 1.5em;
+  border-radius: 8px;
+  color: white;
+  border-style: none;
+  align-self: self-start;
+  align-self: center;
+}
+
+/*# sourceMappingURL=user-card.css.map */

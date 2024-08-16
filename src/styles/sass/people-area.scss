@@ -1,0 +1,23 @@
+@use "variables" as vars;
+
+.people-section {
+  grid-row: 1/ -1;
+  grid-column: 2/ -1;
+  color: white;
+  background-color: vars.$bg-color-400;
+  border-radius: 23px;
+  padding: vars.$base * 2;
+
+  h1 {
+    margin-bottom: vars.$base;
+    font-size: 1.5em;
+  }
+}
+
+.user-card-container {
+  display: grid;
+  margin-top: vars.$base * 4;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 400px;
+}

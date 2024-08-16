@@ -32,7 +32,6 @@ form {
 }
 
 .btn-submit {
-  // align-self: center;
   margin: vars.$base * 2 0;
   background-color: color.scale(vars.$primary-500, $lightness: -40%);
   color: white;

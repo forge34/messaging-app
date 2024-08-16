@@ -1,0 +1,22 @@
+.people-section {
+  grid-row: 1/-1;
+  grid-column: 2/-1;
+  color: white;
+  background-color: #23262a;
+  border-radius: 23px;
+  padding: 1em;
+}
+.people-section h1 {
+  margin-bottom: 0.5em;
+  font-size: 1.5em;
+}
+
+.user-card-container {
+  display: grid;
+  margin-top: 2em;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 400px;
+}
+
+/*# sourceMappingURL=people-area.css.map */

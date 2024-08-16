@@ -1,0 +1,17 @@
+@use "variables" as vars;
+@use "mixins" as mixins;
+
+.user-card {
+  display: flex;
+  padding: vars.$base;
+  margin-bottom: 1em;
+  background-color: vars.$bg-color;
+  border-radius: 12px;
+}
+
+.user-card-btn {
+  margin-left: auto;
+  font-size: 1em;
+  @include mixins.btn(vars.$primary-500, 1.5em);
+  align-self: center;
+}

@@ -5,3 +5,12 @@
     background-color: $color;
   }
 }
+
+@mixin btn($color: white, $width: 1em, $height:0.5em) {
+  background-color: $color;
+  padding: $height $width;
+  border-radius: 8px;
+  color: white;
+  border-style: none;
+  align-self: self-start;
+}
