@@ -22,12 +22,8 @@ class ConversationController {
         await prisma.conversation.create({
           data: {
             title: req.body.title || otherUser.name,
-            participants: {
-              create: {
-                users: {
-                  connect: [{ id: currentUser.id }, { id: otherUser.id }],
-                },
-              },
+            users: {
+              connect: [{ id: currentUser.id }, { id: otherUser.id }],
             },
           },
         });

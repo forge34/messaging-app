@@ -16,7 +16,7 @@ class UserController {
     for (let user of users) {
       if (user.id === currentUser.id) continue;
 
-      const participants = await prisma.participants.findFirst({
+      const privateConversation = await prisma.conversation.findFirst({
         where: {
           AND: [
             {
@@ -38,7 +38,7 @@ class UserController {
       });
 
       const { password, ...rest } = user;
-      if (participants) {
+      if (privateConversation) {
         filteredUsers.push({ ...rest, relatedToCurrent: true });
       } else {
         filteredUsers.push({ ...rest, relatedToCurrent: false });

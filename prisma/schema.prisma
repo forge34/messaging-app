@@ -14,13 +14,12 @@ datasource db {
 }
 
 model User {
-  pk             Int           @id @default(autoincrement())
-  id             String        @unique @default(cuid())
-  name           String        @unique
-  password       String
-  messages       Message[]
-  participants   Participants? @relation(fields: [participantsId], references: [id])
-  participantsId Int?
+  pk            Int            @id @default(autoincrement())
+  id            String         @unique @default(cuid())
+  name          String         @unique
+  password      String
+  messages      Message[]
+  conversations Conversation[]
 }
 
 model Message {
@@ -34,17 +33,10 @@ model Message {
 }
 
 model Conversation {
-  id           String        @id @default(cuid())
-  title        String?
-  messages     Message[]
-  participants Participants?
-}
-
-model Participants {
-  id             Int          @id @default(autoincrement())
-  users          User[]
-  conversationId String       @unique
-  Conversation   Conversation @relation(references: [id], fields: [conversationId], onDelete: Cascade)
+  id       String    @id @default(cuid())
+  title    String?
+  messages Message[]
+  users    User[]
 }
 
 model Session {
