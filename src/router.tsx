@@ -5,7 +5,8 @@ import Signin from "./pages/signin";
 import Chatarea from "./pages/chat-area";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
-import { conversationLoader, userLoader } from "./utils/users";
+import { conversationLoader, userLoader } from "./utils/queries";
+import Conversation from "./pages/conversation";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,12 @@ const routes: RouteObject[] = [
         path: "conversations",
         loader: conversationLoader(queryClient),
         element: <Chatarea></Chatarea>,
+        children: [
+          {
+            path: ":id",
+            element: <Conversation></Conversation>,
+          },
+        ],
       },
       {
         path: "starred",

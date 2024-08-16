@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import SearchInput from "../components/search-input";
 import "../styles/css/people-area.css";
-import { getUsers } from "../utils/users";
+import { getUsers } from "../utils/queries";
 import UserCard from "../components/user-card";
 import { randomIp } from "../utils/functions";
-// import { useLoaderData } from "react-router-dom";
 import { User } from "../utils/schema";
 
 export default function People() {

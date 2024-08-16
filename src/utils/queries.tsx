@@ -1,6 +1,19 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Conversation, User } from "./schema";
 
+const getConversationById = (id: string|undefined) =>
+  queryOptions({
+    queryKey: ["conversation", id],
+    queryFn: async ():Promise<Conversation> => {
+      const res = await fetch(`${import.meta.env.VITE_API}/conversation/${id}`, {
+        mode: "cors",
+        credentials: "include",
+      });
+
+      return res.json();
+    },
+  });
+
 const getUserConversations = () =>
   queryOptions({
     queryKey: ["user-conversations"],
@@ -47,4 +60,4 @@ const userLoader = (queryClient: QueryClient) => async () => {
 
   return queryClient.ensureQueryData(query);
 };
-export { userLoader, getUsers, getUserConversations, conversationLoader };
+export { userLoader, getUsers, getUserConversations, conversationLoader ,getConversationById};

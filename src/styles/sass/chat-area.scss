@@ -8,7 +8,6 @@
   grid-template-columns: 1fr 4fr;
   background-color: vars.$bg-color-400;
   color: white;
-  padding: vars.$base * 2;
 
   border-radius: 23px;
 
@@ -17,7 +16,61 @@
     margin-bottom: vars.$base;
   }
 
-  & > div {
-    grid-column: 1 / 2;
+  & > div:nth-child(1) {
+    padding: vars.$base * 2;
   }
+}
+
+.conversation-box {
+  grid-column: 2/-1;
+  grid-row: 1 / -1;
+  background-color: vars.$bg-color;
+  border-radius: 12px;
+  padding: vars.$base * 2;
+}
+
+.message-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: vars.$base * 3;
+
+  form {
+    margin-top: auto;
+    display: flex;
+    width: 100%;
+  }
+}
+
+.message {
+  position: relative;
+  border-radius: 12px;
+  max-width: fit-content;
+  margin: vars.$base 0;
+  padding: vars.$base * 2;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:nth-child(odd) {
+    background-color: vars.$primary-500;
+    margin-left: auto;
+  }
+
+  &:nth-child(even) {
+    background-color: vars.$bg-color-400;
+  }
+}
+
+.message-input {
+  font-size: 1.5em;
+  background-color: vars.$bg-color-400;
+  border-style: none;
+  border-radius: 12px;
 }
