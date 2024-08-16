@@ -3,15 +3,23 @@
 
 .user-card {
   display: flex;
-  padding: vars.$base;
+  padding: vars.$base * 2;
   margin-bottom: 1em;
   background-color: vars.$bg-color;
   border-radius: 12px;
+  div {
+    margin-left: vars.$base * 3;
+  }
+  width: 100%;
 }
 
 .user-card-btn {
-  margin-left: auto;
   font-size: 1em;
   @include mixins.btn(vars.$primary-500, 1.5em);
   align-self: center;
+
+  transition: filter 0.3s ease-in 0s;
+  &:hover {
+    filter: brightness(1.2);
+  }
 }

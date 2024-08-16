@@ -14,9 +14,9 @@
 .user-card-container {
   display: grid;
   margin-top: 2em;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-template-rows: auto;
-  column-gap: 400px;
+  column-gap: 5em;
 }
 
 /*# sourceMappingURL=people-area.css.map */
