@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import App from ".";
 import Signup from "./pages/signup";
-import Signin from "./pages/signin";
+import Login from "./pages/login";
 import Chatarea from "./pages/chat-area";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
@@ -55,8 +55,8 @@ const routes: RouteObject[] = [
     element: <Signup></Signup>,
   },
   {
-    path: "/signin",
-    element: <Signin></Signin>,
+    path: "/login",
+    element: <Login></Login>,
   },
   {
     path: "/forgot-password",

@@ -11,7 +11,7 @@ const FormSchema = z.object({
     .min(5, { message: "Password should be at least 5 characters" }),
 });
 
-function Signin() {
+function Login() {
   const navigate = useNavigate();
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
     async onValidSubmit(e) {
@@ -34,7 +34,7 @@ function Signin() {
 
   return (
     <form className="form" ref={zodForm.ref}>
-      <h1>Create account</h1>
+      <h1>Login</h1>
       <TextInput
         name={zodForm.fields.username()}
         error={{
@@ -66,4 +66,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default Login;
