@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../components/text-input";
 import "../styles/css/form.css";
 import { z } from "zod";
@@ -10,16 +10,28 @@ const FormSchema = z
     password: z
       .string()
       .min(5, { message: "Password should be at least 5 characters" }),
-    confirmpassword: z.string().min(5, "Passwords do not match"),
+    confirmPassword: z.string().min(5, "Passwords do not match"),
   })
   .refine((values) => {
-    return values.password === values.confirmpassword;
+    return values.password === values.confirmPassword;
   }, "Passwords do not match!");
 
 function Signup() {
+  const navigate = useNavigate();
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
-    onValidSubmit(e) {
+    async onValidSubmit(e) {
       e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      await fetch(`${import.meta.env.VITE_API}/signup`, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(data),
+        credentials: "include",
+        headers: { "content-Type": "Application/json" },
+      });
+
+      navigate("/login");
     },
   });
 
@@ -45,7 +57,7 @@ function Signup() {
         }}
       ></TextInput>
       <TextInput
-        name={zodForm.fields.confirmpassword()}
+        name={zodForm.fields.confirmPassword()}
         label="Confirm Password"
         password={{
           isPassword: true,
@@ -54,7 +66,7 @@ function Signup() {
         error={{
           errorMsg:
             zodForm.errors()?.message ||
-            zodForm.errors.confirmpassword()?.message,
+            zodForm.errors.confirmPassword()?.message,
         }}
       ></TextInput>
       <button type="submit" className="btn-submit">
