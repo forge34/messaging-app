@@ -8,6 +8,7 @@ import { Outlet } from "react-router-dom";
 
 export default function Chatarea() {
   const { data } = useQuery(getUserConversations());
+
   return (
     <div className="chat-area">
       <div>
@@ -19,15 +20,13 @@ export default function Chatarea() {
             conversation?.messages[conversation.messages.length - 1]?.body;
 
           return (
-            lastMsg && (
-              <ChatCard
-                conversationTitle={conversation.title}
-                conversationLastMsg={lastMsg}
-                userImg="https://avatar.iran.liara.run/public"
-                conversationId={conversation.id}
-                key={conversation.id}
-              ></ChatCard>
-            )
+            <ChatCard
+              conversationTitle={conversation.title}
+              conversationLastMsg={lastMsg}
+              userImg="https://avatar.iran.liara.run/public"
+              conversationId={conversation.id}
+              key={conversation.id}
+            ></ChatCard>
           );
         })}
       </div>

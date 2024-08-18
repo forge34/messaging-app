@@ -17,6 +17,7 @@ export interface Message {
   conversationId: string;
   author: User;
   Conversation: Conversation;
+  ownMessage:boolean
 }
 
 export interface Conversation {

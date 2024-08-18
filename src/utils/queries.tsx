@@ -1,14 +1,18 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
-import { Conversation, User } from "./schema";
+import { Conversation, } from "./schema";
+import { redirect } from "react-router-dom";
 
-const getConversationById = (id: string|undefined) =>
+const getConversationById = (id: string | undefined) =>
   queryOptions({
     queryKey: ["conversation", id],
-    queryFn: async ():Promise<Conversation> => {
-      const res = await fetch(`${import.meta.env.VITE_API}/conversation/${id}`, {
-        mode: "cors",
-        credentials: "include",
-      });
+    queryFn: async (): Promise<Conversation> => {
+      const res = await fetch(
+        `${import.meta.env.VITE_API}/conversation/${id}`,
+        {
+          mode: "cors",
+          credentials: "include",
+        },
+      );
 
       return res.json();
     },
@@ -39,15 +43,15 @@ const conversationLoader = (queryClient: QueryClient) => async () => {
 const getUsers = () =>
   queryOptions({
     queryKey: ["users"],
-    queryFn: async (): Promise<Array<User>> => {
+    queryFn: async () => {
       const res = await fetch(`${import.meta.env.VITE_API}/users`, {
         method: "get",
         mode: "cors",
         credentials: "include",
       });
 
-      if (!res.ok) {
-        throw new Error("error during fetch");
+      if (res.status === 401) {
+        return redirect("/login");
       }
 
       return res.json();
@@ -60,4 +64,10 @@ const userLoader = (queryClient: QueryClient) => async () => {
 
   return queryClient.ensureQueryData(query);
 };
-export { userLoader, getUsers, getUserConversations, conversationLoader ,getConversationById};
+export {
+  userLoader,
+  getUsers,
+  getUserConversations,
+  conversationLoader,
+  getConversationById,
+};
