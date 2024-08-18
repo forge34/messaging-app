@@ -2,11 +2,13 @@ import { PrismaClient, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
+import passport from "passport";
 
 const prisma = new PrismaClient();
 
 class MessagesController {
   static createMessage = [
+    passport.authenticate("jwt", { session: false }),
     body("content").trim().isLength({ min: 1 }).escape(),
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
@@ -36,8 +38,9 @@ class MessagesController {
     }),
   ];
 
-  static deleteMessage = expressAsyncHandler(
-    async (req: Request, res: Response) => {
+  static deleteMessage = [
+    passport.authenticate("jwt", { session: false }),
+    expressAsyncHandler(async (req: Request, res: Response) => {
       const messageId = req.params.messageid;
 
       await prisma.message.delete({
@@ -47,8 +50,8 @@ class MessagesController {
       });
 
       res.status(200).json("message deleted");
-    },
-  );
+    }),
+  ];
 }
 
 export default MessagesController;
