@@ -1,6 +1,6 @@
+import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
-import { configDotenv } from "dotenv";
 import express, { Express } from "express";
 import morgan from "morgan";
 import router from "./routes/index";
@@ -11,7 +11,6 @@ import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
 import { PrismaClient } from "@prisma/client";
 
-configDotenv();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
@@ -27,6 +26,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+const prismaClient = new PrismaClient();
+
 const session: SessionOptions = {
   resave: false,
   saveUninitialized: true,
@@ -35,7 +36,7 @@ const session: SessionOptions = {
     maxAge: 604800000,
     httpOnly: false,
   },
-  store: new PrismaSessionStore(new PrismaClient(), {
+  store: new PrismaSessionStore(prismaClient, {
     checkPeriod: 2 * 60 * 1000, //ms
     dbRecordIdIsSessionId: true,
   }),
@@ -58,4 +59,4 @@ app.use("/", router);
 
 app.listen(port, () => {});
 
-export default app;
+export { prismaClient, app };

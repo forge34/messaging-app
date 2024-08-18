@@ -3,8 +3,8 @@ import { body, validationResult } from "express-validator";
 import { PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
+import { prismaClient } from "../app";
 
-const prisma = new PrismaClient();
 
 class ConversationController {
   static create = [
@@ -13,7 +13,7 @@ class ConversationController {
     body("otherId").trim().isLength({ min: 1 }).escape(),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const errors = validationResult(req);
-      const otherUser = await prisma.user.findUnique({
+      const otherUser = await prismaClient.user.findUnique({
         where: {
           id: req.body.otherId,
         },
@@ -21,7 +21,7 @@ class ConversationController {
       const currentUser = req.user as User;
       console.log(currentUser);
       if (errors.isEmpty()) {
-        await prisma.conversation.create({
+        await prismaClient.conversation.create({
           data: {
             title: req.body.title || otherUser.name,
             users: {
@@ -41,7 +41,7 @@ class ConversationController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationId = req.params.conversationid;
 
-      await prisma.conversation.delete({
+      await prismaClient.conversation.delete({
         where: {
           id: conversationId,
         },
@@ -56,7 +56,7 @@ class ConversationController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userid } = req.user as User;
 
-      const conversations = await prisma.conversation.findMany({
+      const conversations = await prismaClient.conversation.findMany({
         where: {
           users: {
             some: {
@@ -78,7 +78,7 @@ class ConversationController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationid = req.params.conversationid;
 
-      const conversation = await prisma.conversation.findFirst({
+      const conversation = await prismaClient.conversation.findFirst({
         where: {
           id: conversationid,
         },

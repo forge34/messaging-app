@@ -1,25 +1,25 @@
-import { PrismaClient, User } from "@prisma/client";
+import {  User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
+import { prismaClient } from "../app";
 
 interface IUser extends Omit<User, "password"> {
   relatedToCurrent: boolean;
 }
 
-const prisma = new PrismaClient();
 
 class UserController {
   static getMany = [
     passport.authenticate("jwt", { session: false }),
     async (req: Request, res: Response) => {
-      const users = await prisma.user.findMany({});
+      const users = await prismaClient.user.findMany({});
       const currentUser = req.user as User;
       const filteredUsers: IUser[] = [];
 
       for (let user of users) {
         if (user.id === currentUser.id) continue;
 
-        const privateConversation = await prisma.conversation.findFirst({
+        const privateConversation = await prismaClient.conversation.findFirst({
           where: {
             AND: [
               {

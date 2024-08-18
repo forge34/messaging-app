@@ -1,18 +1,17 @@
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcryptjs";
 import { Request } from "express";
 import passportJwt from "passport-jwt";
-
-const prisma = new PrismaClient();
+import { prismaClient } from "../app";
 
 const localVerify: passportLocal.VerifyFunction = async (
   username,
   password,
   done,
 ) => {
-  const user = await prisma.user.findFirst({
+  const user = await prismaClient.user.findFirst({
     where: {
       name: username,
     },
@@ -53,7 +52,7 @@ class PassportConfig {
     });
 
     passport.deserializeUser(async (id, done) => {
-      const user = await prisma.user.findFirst({
+      const user = await prismaClient.user.findFirst({
         where: {
           id: id,
         },
@@ -68,7 +67,7 @@ class PassportConfig {
     const jwtStrategy = new passportJwt.Strategy(
       jwtOptions,
       async (payload, done) => {
-        const user = await prisma.user.findFirst({
+        const user = await prismaClient.user.findFirst({
           where: {
             id: payload.id,
           },
@@ -79,7 +78,7 @@ class PassportConfig {
       },
     );
 
-    passport.use(jwtStrategy)
+    passport.use(jwtStrategy);
   }
 }
 

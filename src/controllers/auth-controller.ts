@@ -5,8 +5,7 @@ import passport from "passport";
 import { PrismaClient, type User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
+import { prismaClient } from "../app";
 
 class Auth {
   static signup = [
@@ -36,7 +35,7 @@ class Auth {
         if (errors.isEmpty()) {
           bcrypt.hash(req.body.password, 10, async (err, hash) => {
             if (!err) {
-              await prisma.user.create({
+              await prismaClient.user.create({
                 data: {
                   name: req.body.username,
                   password: hash,
