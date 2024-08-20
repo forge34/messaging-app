@@ -8,15 +8,15 @@ import { prismaClient } from "../app";
 
 class MessagesController {
   static createMessage = [
-    passport.authenticate("jwt", { session: false }),
     body("content").trim().isLength({ min: 1 }).escape(),
+    passport.authenticate("jwt", { session: false }),
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
-
         if (errors.isEmpty()) {
           next();
         } else {
+          console.log(errors.array())
           res.status(401).json({ errors: errors.array() });
         }
       },

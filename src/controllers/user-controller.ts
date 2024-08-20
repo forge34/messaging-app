@@ -1,12 +1,12 @@
-import {  User } from "@prisma/client";
+import { Conversation, User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prismaClient } from "../app";
 
 interface IUser extends Omit<User, "password"> {
   relatedToCurrent: boolean;
+  privateConversation: Conversation | null;
 }
-
 
 class UserController {
   static getMany = [
@@ -42,9 +42,17 @@ class UserController {
 
         const { password, ...rest } = user;
         if (privateConversation) {
-          filteredUsers.push({ ...rest, relatedToCurrent: true });
+          filteredUsers.push({
+            ...rest,
+            privateConversation,
+            relatedToCurrent: true,
+          });
         } else {
-          filteredUsers.push({ ...rest, relatedToCurrent: false });
+          filteredUsers.push({
+            ...rest,
+            privateConversation: null,
+            relatedToCurrent: false,
+          });
         }
       }
       res.status(200).json(filteredUsers);

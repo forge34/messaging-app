@@ -74,7 +74,7 @@ class PassportConfig {
         });
         if (user) {
           return done(null, user);
-        } else return done(true, null);
+        } else return done("invalid jwt", null);
       },
     );
 
