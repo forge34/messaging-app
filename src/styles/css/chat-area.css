@@ -3,7 +3,7 @@
   grid-column: 2/-1;
   display: grid;
   grid-template-rows: 100%;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: minmax(min-content, max-content) auto;
   background-color: #23262a;
   color: white;
   border-radius: 23px;
@@ -12,8 +12,11 @@
   font-size: 1.6em;
   margin-bottom: 0.5em;
 }
-.chat-area > div:nth-child(1) {
+.chat-area .chat-sidebar {
+  grid-column: 1/2;
   padding: 1em;
+  display: flex;
+  flex-direction: column;
 }
 
 .conversation-box {

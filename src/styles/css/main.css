@@ -52,14 +52,13 @@ form {
 
 #root {
   display: grid;
-  grid-template-columns: 6% 94%;
+  grid-template-columns: minmax(min-content, max-content) 1fr;
   grid-template-rows: 100%;
 }
 
 .search-input {
   margin-top: 0.5em;
   display: flex;
-  width: max-content;
   padding: 0.5em 0.5em;
   padding-right: 0.25em;
   border-radius: 9px;
@@ -75,7 +74,6 @@ form {
 .search-input input {
   font-size: 1.2em;
   color: #f0f0f0;
-  max-width: fit-content;
   border-style: none;
   padding: 0.5em;
   height: 4ch;

@@ -25,10 +25,9 @@ export default function Chatarea() {
     });
   }, [data]);
 
-
   return (
     <div className="chat-area">
-      <div>
+      <div className="chat-sidebar">
         <h1>Chats</h1>
         <SearchInput></SearchInput>
 

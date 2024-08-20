@@ -5,7 +5,7 @@
   grid-column: 2/ -1;
   display: grid;
   grid-template-rows: 100%;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: minmax(min-content, max-content) auto;
   background-color: vars.$bg-color-400;
   color: white;
 
@@ -16,8 +16,11 @@
     margin-bottom: vars.$base;
   }
 
-  & > div:nth-child(1) {
+  .chat-sidebar {
+    grid-column: 1 / 2;
     padding: vars.$base * 2;
+    display: flex;
+    flex-direction: column;
   }
 }
 

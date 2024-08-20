@@ -5,7 +5,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 body,
@@ -56,14 +56,13 @@ form {
 
 #root {
   display: grid;
-  grid-template-columns: 6% 94%;
+  grid-template-columns: minmax(min-content, max-content) 1fr;
   grid-template-rows: 100%;
 }
 
 .search-input {
   margin-top: vars.$base;
   display: flex;
-  width: max-content;
   padding: vars.$base vars.$base;
   padding-right: vars.$base * 0.5;
   border-radius: 9px;
@@ -81,7 +80,6 @@ form {
   input {
     font-size: 1.2em;
     color: vars.$text-color;
-    max-width: fit-content;
     border-style: none;
     padding: vars.$base;
     height: 4ch;

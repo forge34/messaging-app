@@ -20,7 +20,6 @@ function Login() {
       const data = Object.fromEntries(new FormData(e.target).entries());
 
       await fetch(`${import.meta.env.VITE_API}/login`, {
-        
         method: "POST",
         mode: "cors",
         body: JSON.stringify(data),
@@ -28,7 +27,7 @@ function Login() {
         headers: { "content-Type": "Application/json" },
       });
 
-      navigate("/");
+      navigate("/conversations");
     },
   });
 
