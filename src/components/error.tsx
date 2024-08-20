@@ -1,9 +1,18 @@
-import { useRouteError } from "react-router-dom";
+import {
+  isRouteErrorResponse,
+  useNavigate,
+  useRouteError,
+} from "react-router-dom";
 
 export function ErrorBoundary() {
   const errors = useRouteError();
+  const navigate = useNavigate()
 
-  console.log(errors);
+  if (isRouteErrorResponse(errors)) {
+    if (errors.status) {
+      return navigate("/login");
+    }
+  }
 
-  return <></>
+  return <></>;
 }

@@ -1,5 +1,4 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
-import { redirect } from "react-router-dom";
 
 const getConversationById = (id: string | undefined) =>
   queryOptions({
@@ -13,7 +12,7 @@ const getConversationById = (id: string | undefined) =>
         },
       );
       if (res.status === 401) {
-        return redirect("/login");
+        throw res;
       }
 
       return res.json();
@@ -32,7 +31,7 @@ const getUserConversations = () =>
         },
       );
       if (res.status === 401) {
-        return redirect("/login");
+        throw res;
       }
 
       return res.json();
@@ -56,7 +55,7 @@ const getUsers = () =>
       });
 
       if (res.status === 401) {
-        return redirect("/login");
+        throw res;
       }
 
       return res.json();
