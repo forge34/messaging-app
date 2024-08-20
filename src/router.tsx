@@ -2,12 +2,12 @@ import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import App from ".";
 import Signup from "./pages/signup";
 import Login from "./pages/login";
-import Chatarea from "./pages/chat-area";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
 import { conversationLoader, userLoader } from "./utils/queries";
 import Conversation from "./pages/conversation";
 import { ErrorBoundary } from "./components/error";
+import ChatSection from "./pages/chat-section";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,7 @@ const routes: RouteObject[] = [
       {
         path: "conversations",
         loader: conversationLoader(queryClient),
-        element: <Chatarea></Chatarea>,
+        element: <ChatSection></ChatSection>,
         children: [
           {
             path: ":id",

@@ -1,4 +1,4 @@
-.chat-area {
+.chat-section {
   grid-row: 1/-1;
   grid-column: 2/-1;
   display: grid;
@@ -8,11 +8,11 @@
   color: white;
   border-radius: 23px;
 }
-.chat-area h1 {
+.chat-section h1 {
   font-size: 1.6em;
   margin-bottom: 0.5em;
 }
-.chat-area .chat-sidebar {
+.chat-section .chat-sidebar {
   grid-column: 1/2;
   padding: 1em;
   display: flex;
@@ -35,11 +35,7 @@
   background-color: #23262a;
 }
 .top-bar img {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #23262a;
   padding: 0.3em;
-  border-radius: 4px;
   margin-left: 1em;
   filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg) brightness(91%) contrast(88%);
 }
@@ -66,6 +62,7 @@
   max-width: fit-content;
   margin: 0.5em 0;
   padding: 1em;
+  display: flex;
   background-color: #23262a;
 }
 .message img {
@@ -110,4 +107,4 @@
   outline-style: none;
 }
 
-/*# sourceMappingURL=chat-area.css.map */
+/*# sourceMappingURL=chat-section.css.map */

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import SearchInput from "../components/search-input";
-import "../styles/css/people-area.css";
+import "../styles/css/people-section.css";
 import { getUsers } from "../utils/queries";
 import UserCard from "../components/user-card";
 import { User } from "../utils/schema";

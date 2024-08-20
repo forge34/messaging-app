@@ -73,6 +73,7 @@ form {
 }
 .search-input input {
   font-size: 1.2em;
+  width: 100%;
   color: #f0f0f0;
   border-style: none;
   padding: 0.5em;

@@ -1,6 +1,6 @@
 @use "variables" as vars;
 
-.chat-area {
+.chat-section {
   grid-row: 1/ -1;
   grid-column: 2/ -1;
   display: grid;
@@ -41,11 +41,7 @@
   background-color: vars.$bg-color-400;
 
   img {
-    border-style: solid;
-    border-width: 1px;
-    border-color: vars.$bg-color-400;
     padding: vars.$base * 0.6;
-    border-radius: 4px;
     margin-left: vars.$base * 2;
     filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg)
       brightness(91%) contrast(88%);
@@ -76,6 +72,7 @@
   max-width: fit-content;
   margin: vars.$base 0;
   padding: vars.$base * 2;
+  display: flex;
 
   background-color: vars.$bg-color-400;
 
@@ -125,3 +122,5 @@
   font-size: 1.2em;
   height: 100%;
 }
+
+

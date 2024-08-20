@@ -1,4 +1,4 @@
-import "../styles/css/chat-area.css";
+import "../styles/css/chat-section.css";
 import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 import { useMemo } from "react";
 import { last } from "../utils/functions";
 
-export default function Chatarea() {
+export default function ChatSection() {
   const { data } = useQuery(getUserConversations());
 
   const sortedConversation = useMemo(() => {
@@ -26,7 +26,7 @@ export default function Chatarea() {
   }, [data]);
 
   return (
-    <div className="chat-area">
+    <div className="chat-section">
       <div className="chat-sidebar">
         <h1>Chats</h1>
         <SearchInput></SearchInput>
