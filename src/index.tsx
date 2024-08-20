@@ -7,10 +7,8 @@ import settingsIcon from "./assets/settings.svg";
 import profileIcon from "./assets/user.svg";
 import usersIcon from "./assets/users.svg";
 import { Outlet } from "react-router-dom";
-// import {   useState } from "react";
 
 function App() {
-  // const [selected, setSetlected] = useState(0);
 
   return (
     <>

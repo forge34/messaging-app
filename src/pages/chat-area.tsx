@@ -5,9 +5,23 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserConversations } from "../utils/queries";
 import { Conversation } from "../utils/schema";
 import { Outlet } from "react-router-dom";
+import { useMemo } from "react";
+import { last } from "../utils/functions";
 
 export default function Chatarea() {
   const { data } = useQuery(getUserConversations());
+
+  const sortedConversation = useMemo(() => {
+   return  data.sort((a: Conversation, b: Conversation) => {
+      if (last(a.messages).createdAt > last(b.messages).createdAt) {
+        return -1;
+      } else if (last(a.messages).createdAt < last(b.messages).createdAt) {
+        return 1;
+      }
+
+      return 0;
+    });
+  }, [data]);
 
   return (
     <div className="chat-area">
@@ -15,10 +29,9 @@ export default function Chatarea() {
         <h1>Chats</h1>
         <SearchInput></SearchInput>
 
-        {data?.map((conversation: Conversation) => {
+        {sortedConversation?.map((conversation: Conversation) => {
           const lastMsg =
             conversation?.messages[conversation.messages.length - 1];
-      console.log(conversation.users)
           return (
             <ChatCard
               conversationTitle={conversation.title}
