@@ -21,6 +21,7 @@ export default function People() {
               username={user.name}
               key={user.id}
               isRelated={user.relatedToCurrent}
+              conversation={user.privateConversation}
             ></UserCard>
           );
         })}

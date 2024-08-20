@@ -5,7 +5,7 @@ export interface User {
   password: string;
   messages: Message[];
   conversations: Conversation[];
-
+  privateConversation: Conversation | null;
   relatedToCurrent: boolean;
 }
 
@@ -17,7 +17,7 @@ export interface Message {
   conversationId: string;
   author: User;
   Conversation: Conversation;
-  ownMessage:boolean
+  ownMessage: boolean;
 }
 
 export interface Conversation {

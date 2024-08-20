@@ -7,10 +7,11 @@ import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
 import { FormEvent, useState } from "react";
 import { queryClient } from "../router";
+import { Message } from "../utils/schema";
 
 export default function Conversation() {
   const { id } = useParams();
-  const [value,setValue] = useState("")
+  const [value, setValue] = useState("");
   const mutation = useMutation({
     mutationFn: async ({
       id,
@@ -28,20 +29,22 @@ export default function Conversation() {
         headers: { "content-Type": "Application/json" },
       });
     },
-    onSuccess:() => {
-      queryClient.invalidateQueries({queryKey:["conversation"]})
-    }
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    },
   });
   function handelSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     mutation.mutate({ id, content: formData.get("content") });
-    setValue("")
+    setValue("");
   }
 
   const { data } = useQuery(getConversationById(id));
-  console.log(data)
+  console.log(data);
   return (
     <div className="conversation-box">
       <div className="top-bar">
@@ -50,7 +53,7 @@ export default function Conversation() {
         <img src={callIcon} width={40} height={40} />
       </div>
       <div className="message-container">
-        {data?.messages.map((message) => {
+        {data?.messages.map((message: Message) => {
           const ownMessageStyle = message.ownMessage ? "own" : "";
           return (
             <div className={"message " + ownMessageStyle} key={message.id}>
@@ -70,7 +73,7 @@ export default function Conversation() {
           <input
             value={value}
             onChange={(e) => {
-              setValue(e.target.value)
+              setValue(e.target.value);
             }}
             name="content"
             className="message-input"

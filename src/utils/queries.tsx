@@ -3,7 +3,7 @@ import { redirect } from "react-router-dom";
 
 const getConversationById = (id: string | undefined) =>
   queryOptions({
-    queryKey: ["conversation", id],
+    queryKey: ["conversations", id],
     queryFn: async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/${id}`,
@@ -22,7 +22,7 @@ const getConversationById = (id: string | undefined) =>
 
 const getUserConversations = () =>
   queryOptions({
-    queryKey: ["user-conversations"],
+    queryKey: ["conversations"],
     queryFn: async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/currentuser`,
