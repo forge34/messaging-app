@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/css/chat-card.css";
 import { formatDistanceToNow } from "date-fns";
 interface ChatCardProps {
   userImg: string;
   conversationTitle: string;
   conversationLastMsg: string;
-  conversationLastSent?: string|Date;
+  conversationLastSent?: string | Date;
   conversationId: string;
 }
 
@@ -17,10 +17,14 @@ export default function ChatCard({
   conversationId,
 }: ChatCardProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const contains = location.pathname.includes(`${conversationId}`);
+
+  const selected = contains ? "selected" : "";
 
   return (
     <div
-      className="chat-card"
+      className={`chat-card ${selected}`}
       onClick={() => {
         navigate(`${conversationId}`);
       }}

@@ -8,6 +8,10 @@
   border-radius: 15px;
   @include mixins.bg-transition($color: vars.$bg-color-300);
 
+  &.selected {
+    background-color: vars.$bg-color-300;
+  }
+
   img {
     margin-right: vars.$base;
   }

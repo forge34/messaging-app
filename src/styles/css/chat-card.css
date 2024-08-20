@@ -8,6 +8,9 @@
 .chat-card:hover {
   background-color: #515961;
 }
+.chat-card.selected {
+  background-color: #515961;
+}
 .chat-card img {
   margin-right: 0.5em;
 }
