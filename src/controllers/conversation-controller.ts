@@ -1,10 +1,9 @@
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prismaClient } from "../app";
-
 
 class ConversationController {
   static create = [
@@ -21,7 +20,7 @@ class ConversationController {
       const currentUser = req.user as User;
       console.log(currentUser);
       if (errors.isEmpty()) {
-        await prismaClient.conversation.create({
+        const conversation = await prismaClient.conversation.create({
           data: {
             title: req.body.title || otherUser.name,
             users: {
@@ -29,7 +28,7 @@ class ConversationController {
             },
           },
         });
-        res.status(200).json("conversation created");
+        res.status(200).json({ msg :"conversation created",conversation });
       } else {
         res.status(401).json({ errors: errors.array() });
       }
@@ -77,6 +76,7 @@ class ConversationController {
     passport.authenticate("jwt", { session: false }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationid = req.params.conversationid;
+      const currentUser = req.user as User;
 
       const conversation = await prismaClient.conversation.findFirst({
         where: {
@@ -87,7 +87,16 @@ class ConversationController {
         },
       });
 
-      res.status(200).json(conversation);
+      const conversationWithOwn = {
+        ...conversation,
+        messages: conversation.messages.map((message) => {
+          return {
+            ...message,
+            ownMessage: currentUser.id === message.authorId,
+          };
+        }),
+      };
+      res.status(200).json(conversationWithOwn);
     }),
   ];
 }
