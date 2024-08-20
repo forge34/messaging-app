@@ -28,7 +28,7 @@ class ConversationController {
             },
           },
         });
-        res.status(200).json({ msg :"conversation created",conversation });
+        res.status(200).json({ msg: "conversation created", conversation });
       } else {
         res.status(401).json({ errors: errors.array() });
       }
@@ -65,6 +65,7 @@ class ConversationController {
         },
         include: {
           messages: true,
+          users: true,
         },
       });
 
@@ -84,6 +85,7 @@ class ConversationController {
         },
         include: {
           messages: true,
+          users: true,
         },
       });
 
