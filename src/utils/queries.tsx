@@ -1,11 +1,10 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
-import { Conversation, } from "./schema";
 import { redirect } from "react-router-dom";
 
 const getConversationById = (id: string | undefined) =>
   queryOptions({
     queryKey: ["conversation", id],
-    queryFn: async (): Promise<Conversation> => {
+    queryFn: async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/${id}`,
         {
@@ -13,6 +12,9 @@ const getConversationById = (id: string | undefined) =>
           credentials: "include",
         },
       );
+      if (res.status === 401) {
+        return redirect("/login");
+      }
 
       return res.json();
     },
@@ -21,7 +23,7 @@ const getConversationById = (id: string | undefined) =>
 const getUserConversations = () =>
   queryOptions({
     queryKey: ["user-conversations"],
-    queryFn: async (): Promise<Array<Conversation>> => {
+    queryFn: async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/currentuser`,
         {
@@ -29,6 +31,9 @@ const getUserConversations = () =>
           credentials: "include",
         },
       );
+      if (res.status === 401) {
+        return redirect("/login");
+      }
 
       return res.json();
     },
