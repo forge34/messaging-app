@@ -2,17 +2,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/css/chat-card.css";
 import { formatDistanceToNow } from "date-fns";
 interface ChatCardProps {
-  userImg: string;
   conversationTitle: string;
   conversationLastMsg: string;
-  conversationLastSent?: string | Date;
+  conversationLastSent: Date;
   conversationId: string;
+  conversationImg: string;
 }
 
 export default function ChatCard({
   conversationLastMsg,
-  userImg,
-  conversationLastSent = "Seconds ago...",
+  conversationImg,
+  conversationLastSent = new Date(),
   conversationTitle,
   conversationId,
 }: ChatCardProps) {
@@ -29,7 +29,7 @@ export default function ChatCard({
         navigate(`${conversationId}`);
       }}
     >
-      <img width={48} height={48} src={userImg} />
+      <img width={48} height={48} src={conversationImg} />
       <div className="card-info">
         <h3>{conversationTitle}</h3>
         <p className="last-msg">{conversationLastMsg}</p>

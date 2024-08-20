@@ -12,16 +12,19 @@ export default function Chatarea() {
   const { data } = useQuery(getUserConversations());
 
   const sortedConversation = useMemo(() => {
-   return  data.sort((a: Conversation, b: Conversation) => {
-      if (last(a.messages).createdAt > last(b.messages).createdAt) {
+    return data.sort((a: Conversation, b: Conversation) => {
+      if (!last(a.messages) || !last(b.messages)) return 0;
+
+      if (last(a.messages)?.createdAt > last(b.messages)?.createdAt) {
         return -1;
-      } else if (last(a.messages).createdAt < last(b.messages).createdAt) {
+      } else if (last(a.messages)?.createdAt < last(b.messages)?.createdAt) {
         return 1;
       }
 
       return 0;
     });
   }, [data]);
+
 
   return (
     <div className="chat-area">
@@ -34,9 +37,9 @@ export default function Chatarea() {
             conversation?.messages[conversation.messages.length - 1];
           return (
             <ChatCard
+              conversationImg={conversation.conversationImg as string}
               conversationTitle={conversation.title}
               conversationLastMsg={lastMsg?.body}
-              userImg={conversation.users[1].imgUrl || ""}
               conversationId={conversation.id}
               key={conversation.id}
               conversationLastSent={lastMsg?.createdAt}

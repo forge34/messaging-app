@@ -27,6 +27,7 @@ export interface Conversation {
   messages: Message[];
   users: User[];
   type: ConversationType;
+  conversationImg: string | null;
 }
 
 export enum ConversationType {

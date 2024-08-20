@@ -54,11 +54,7 @@ export default function Conversation() {
           const ownMessageStyle = message.ownMessage ? "own" : "";
           return (
             <div className={"message " + ownMessageStyle} key={message.id}>
-              <img
-                src={ownMessageStyle ? data.users[0].imgUrl:data.users[1].imgUrl}
-                width={32}
-                height={32}
-              />
+              <img src={message.author.imgUrl} width={32} height={32} />
               <p>{message.body}</p>
             </div>
           );
