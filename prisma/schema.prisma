@@ -20,6 +20,7 @@ model User {
   password      String
   messages      Message[]
   conversations Conversation[]
+  imgUrl        String
 }
 
 model Message {
@@ -33,10 +34,11 @@ model Message {
 }
 
 model Conversation {
-  id       String    @id @default(cuid())
+  id       String           @id @default(cuid())
   title    String?
   messages Message[]
   users    User[]
+  type     ConversationType @default(PRIVATE)
 }
 
 model Session {
@@ -44,4 +46,9 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+enum ConversationType {
+  PRIVATE
+  GROUP
 }

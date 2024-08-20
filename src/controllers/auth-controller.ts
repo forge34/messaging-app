@@ -6,6 +6,9 @@ import { PrismaClient, type User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { prismaClient } from "../app";
+import { AvatarGenerator } from "random-avatar-generator";
+
+const generator = new AvatarGenerator();
 
 class Auth {
   static signup = [
@@ -39,6 +42,7 @@ class Auth {
                 data: {
                   name: req.body.username,
                   password: hash,
+                  imgUrl: generator.generateRandomAvatar(),
                 },
               });
               res.status(200).json("created user");
