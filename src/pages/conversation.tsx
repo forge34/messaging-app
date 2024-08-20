@@ -20,7 +20,6 @@ export default function Conversation() {
       id: string | undefined;
       content: FormDataEntryValue | null;
     }) => {
-      console.log(content);
       return fetch(`${import.meta.env.VITE_API}/conversation/${id}`, {
         method: "POST",
         mode: "cors",
@@ -44,7 +43,6 @@ export default function Conversation() {
   }
 
   const { data } = useQuery(getConversationById(id));
-  console.log(data);
   return (
     <div className="conversation-box">
       <div className="top-bar">

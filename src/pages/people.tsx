@@ -17,6 +17,7 @@ export default function People() {
         {data?.map((user: User) => {
           return (
             <UserCard
+              userId={user.id}
               imgSrc={randomIp()}
               username={user.name}
               key={user.id}
