@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import passport from "passport";
-import { prismaClient } from "../app";
+import { io, prismaClient } from "../app";
 
 
 class MessagesController {
@@ -33,6 +33,8 @@ class MessagesController {
           authorId: currentUser.id,
         },
       });
+
+      io.emit("create message")
 
       res.status(200).json("message created");
     }),

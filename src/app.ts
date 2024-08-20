@@ -10,8 +10,11 @@ import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
 import { PrismaClient } from "@prisma/client";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 
 const app: Express = express();
+const server = createServer(app);
 const port = process.env.PORT || 3000;
 
 const corsOptions: CorsOptions = {
@@ -57,6 +60,20 @@ app.use(passport.session());
 
 app.use("/", router);
 
-app.listen(port, () => {});
+const io = new Server(server, {
+  cors: corsOptions,
+});
 
-export { prismaClient, app };
+io.on("connection", (socket: Socket) => {
+  console.log("a user connected");
+
+  socket.on("disconnect", (reason) => {
+    console.log("user disconnected")
+  });
+});
+
+server.listen(port, () => {
+  console.log("server running at http://localhost:${port}");
+});
+
+export { prismaClient, app, io };
