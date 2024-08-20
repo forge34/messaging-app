@@ -23,7 +23,7 @@ export default function Chatarea() {
             <ChatCard
               conversationTitle={conversation.title}
               conversationLastMsg={lastMsg}
-              userImg="https://avatar.iran.liara.run/public"
+              userImg={conversation.users[0].imgUrl}
               conversationId={conversation.id}
               key={conversation.id}
             ></ChatCard>

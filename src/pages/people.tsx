@@ -3,7 +3,6 @@ import SearchInput from "../components/search-input";
 import "../styles/css/people-area.css";
 import { getUsers } from "../utils/queries";
 import UserCard from "../components/user-card";
-import { randomIp } from "../utils/functions";
 import { User } from "../utils/schema";
 
 export default function People() {
@@ -18,7 +17,7 @@ export default function People() {
           return (
             <UserCard
               userId={user.id}
-              imgSrc={randomIp()}
+              imgSrc={user.imgUrl}
               username={user.name}
               key={user.id}
               isRelated={user.relatedToCurrent}

@@ -47,7 +47,7 @@ export default function UserCard(props: UserCardProps) {
   return (
     <div className="user-card">
       <img
-        src={`https://robohash.org/${props.imgSrc}`}
+        src={props.imgSrc}
         width={64}
         height={64}
       />

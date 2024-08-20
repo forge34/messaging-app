@@ -7,6 +7,7 @@ export interface User {
   conversations: Conversation[];
   privateConversation: Conversation | null;
   relatedToCurrent: boolean;
+  imgUrl: string;
 }
 
 export interface Message {
@@ -24,5 +25,11 @@ export interface Conversation {
   id: string;
   title: string;
   messages: Message[];
-  users?: User[];
+  users: User[];
+  type: ConversationType;
+}
+
+export enum ConversationType {
+  PRIVATE = "PRIVATE",
+  GROUP = "GROUP",
 }
