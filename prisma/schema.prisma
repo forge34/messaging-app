@@ -34,11 +34,12 @@ model Message {
 }
 
 model Conversation {
-  id       String           @id @default(cuid())
-  title    String?
-  messages Message[]
-  users    User[]
-  type     ConversationType @default(PRIVATE)
+  id              String           @id @default(cuid())
+  title           String?
+  messages        Message[]
+  users           User[]
+  conversationImg String?
+  type            ConversationType @default(PRIVATE)
 }
 
 model Session {

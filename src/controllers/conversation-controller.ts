@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prismaClient } from "../app";
+import { title } from "process";
 
 class ConversationController {
   static create = [
@@ -22,7 +23,7 @@ class ConversationController {
       if (errors.isEmpty()) {
         const conversation = await prismaClient.conversation.create({
           data: {
-            title: req.body.title || otherUser.name,
+            title: req.body.title || "",
             users: {
               connect: [{ id: currentUser.id }, { id: otherUser.id }],
             },
@@ -69,7 +70,19 @@ class ConversationController {
         },
       });
 
-      res.status(200).json(conversations);
+      const filteredConversations = conversations.map((conversation) => {
+        const otherUser = conversation.users.filter((value) => {
+          return value.id !== userid;
+        })[0];
+
+        return {
+          ...conversation,
+          title: otherUser.name,
+          conversationImg: otherUser.imgUrl,
+        };
+      });
+
+      res.status(200).json(filteredConversations);
     }),
   ];
 
@@ -84,13 +97,22 @@ class ConversationController {
           id: conversationid,
         },
         include: {
-          messages: true,
+          messages: {
+            include: {
+              author: true,
+            },
+          },
           users: true,
         },
       });
+      const otherUser = conversation.users.filter((value) => {
+        return value.id !== currentUser.id;
+      })[0];
 
       const conversationWithOwn = {
         ...conversation,
+        title: otherUser.name,
+        conversationImg: otherUser.imgUrl,
         messages: conversation.messages.map((message) => {
           return {
             ...message,
