@@ -17,15 +17,16 @@ export default function Chatarea() {
 
         {data?.map((conversation: Conversation) => {
           const lastMsg =
-            conversation?.messages[conversation.messages.length - 1]?.body;
-
+            conversation?.messages[conversation.messages.length - 1];
+      console.log(conversation.users)
           return (
             <ChatCard
               conversationTitle={conversation.title}
-              conversationLastMsg={lastMsg}
-              userImg={conversation.users[0].imgUrl}
+              conversationLastMsg={lastMsg?.body}
+              userImg={conversation.users[1].imgUrl || ""}
               conversationId={conversation.id}
               key={conversation.id}
+              conversationLastSent={lastMsg?.createdAt}
             ></ChatCard>
           );
         })}

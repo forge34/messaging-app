@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getConversationById } from "../utils/queries";
-import { randomIp } from "../utils/functions";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
@@ -56,7 +55,7 @@ export default function Conversation() {
           return (
             <div className={"message " + ownMessageStyle} key={message.id}>
               <img
-                src={`https://robohash.org/${randomIp()}`}
+                src={ownMessageStyle ? data.users[0].imgUrl:data.users[1].imgUrl}
                 width={32}
                 height={32}
               />
@@ -77,6 +76,7 @@ export default function Conversation() {
             className="message-input"
             type="text"
             placeholder="Enter message ..."
+            autoComplete="off"
           />
         </form>
         <img src={send} width={32} height={32} />

@@ -96,8 +96,12 @@
   margin-top: auto;
   background-color: vars.$bg-color-400;
   border-radius: 7px;
-  height: 3ch;
+  height: 4.5ch;
   padding: vars.$base * 0.5;
+
+  form {
+    width: 100%;
+  }
 
   img {
     margin-left: auto;
@@ -107,6 +111,9 @@
 }
 
 .message-input {
+  &:focus {
+    outline-style: none;
+  }
   width: 100%;
   color: white;
   background-color: transparent;

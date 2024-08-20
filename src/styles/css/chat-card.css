@@ -24,4 +24,16 @@
   margin-top: auto;
 }
 
+.msg-time {
+  word-wrap: none;
+  word-break: break-word;
+  text-align: center;
+  margin-left: auto;
+  font-size: 0.8em;
+}
+
+.last-msg {
+  opacity: 0.7;
+}
+
 /*# sourceMappingURL=chat-card.css.map */
