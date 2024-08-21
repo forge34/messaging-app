@@ -32,6 +32,7 @@ app.use(cookieParser());
 const prismaClient = new PrismaClient();
 
 const session: SessionOptions = {
+  name: "session",
   resave: false,
   saveUninitialized: true,
   secret: process.env.SECRET,
@@ -67,8 +68,12 @@ const io = new Server(server, {
 io.on("connection", (socket: Socket) => {
   console.log("a user connected");
 
-  socket.on("disconnect", (reason) => {
-    console.log("user disconnected")
+  socket.on("connect/room", (id) => {
+    socket.join(id);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 

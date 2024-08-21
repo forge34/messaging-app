@@ -5,7 +5,6 @@ import { body, validationResult } from "express-validator";
 import passport from "passport";
 import { io, prismaClient } from "../app";
 
-
 class MessagesController {
   static createMessage = [
     body("content").trim().isLength({ min: 1 }).escape(),
@@ -16,7 +15,7 @@ class MessagesController {
         if (errors.isEmpty()) {
           next();
         } else {
-          console.log(errors.array())
+          console.log(errors.array());
           res.status(401).json({ errors: errors.array() });
         }
       },
@@ -34,7 +33,33 @@ class MessagesController {
         },
       });
 
-      io.emit("create message")
+      const otherUser = await prismaClient.user.findFirst({
+        where: {
+          conversations: {
+            some: {
+              users: {
+                some: {
+                  id: {
+                    contains: currentUser.id,
+                  },
+                },
+              },
+            },
+          },
+          NOT: {
+            id: {
+              contains: currentUser.id,
+            },
+          },
+        },
+      });
+
+      // console.log(otherUser);
+
+      io.to(otherUser.id).emit("create message", {
+        author: currentUser.name,
+        content: messageBody,
+      });
 
       res.status(200).json("message created");
     }),
