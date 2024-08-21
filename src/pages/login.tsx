@@ -27,7 +27,7 @@ function Login() {
         headers: { "content-Type": "Application/json" },
       });
 
-      navigate("/conversations");
+      navigate("/");
     },
   });
 

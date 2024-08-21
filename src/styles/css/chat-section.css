@@ -44,11 +44,12 @@
 }
 
 .message-container {
-  overflow-y: auto;
+  overflow-y: scroll;
   max-height: 100%;
   display: flex;
   flex-direction: column;
   padding: 1.5em;
+  scrollbar-width: thin;
 }
 .message-container form {
   margin-top: auto;

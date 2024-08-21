@@ -10,21 +10,27 @@ import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
+import toast, { Toaster } from "react-hot-toast";
+
 
 function App() {
   useEffect(() => {
+    socket.connect();
     socket.on("connection", () => {
       console.log("connected");
     });
 
-    socket.on("create message", () => {
-      console.log("Server says : message created")
+    socket.on("create message", (id) => {
+      
+      console.log("Server says : message created");
+      toast(`new message by  ${id}`)
       queryClient.invalidateQueries();
     });
   }, []);
 
   return (
     <>
+      <Toaster></Toaster>
       <Sidebar>
         <h1>MA</h1>
         <SidebarItem

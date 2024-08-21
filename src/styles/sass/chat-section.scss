@@ -53,11 +53,12 @@
 }
 
 .message-container {
-  overflow-y: auto;
+  overflow-y: scroll;
   max-height: 100%;
   display: flex;
   flex-direction: column;
   padding: vars.$base * 3;
+  scrollbar-width: thin;
 
   form {
     margin-top: auto;
@@ -122,5 +123,3 @@
   font-size: 1.2em;
   height: 100%;
 }
-
-
