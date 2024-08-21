@@ -2,6 +2,7 @@ import { Conversation, User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prismaClient } from "../app";
+import expressAsyncHandler from "express-async-handler";
 
 interface IUser extends Omit<User, "password"> {
   relatedToCurrent: boolean;
@@ -9,6 +10,13 @@ interface IUser extends Omit<User, "password"> {
 }
 
 class UserController {
+  static getCurrent = [
+    passport.authenticate("jwt", { session: false }),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      res.status(200).json(req.user as User);
+    }),
+  ];
+
   static getMany = [
     passport.authenticate("jwt", { session: false }),
     async (req: Request, res: Response) => {

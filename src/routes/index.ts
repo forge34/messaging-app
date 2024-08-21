@@ -25,5 +25,6 @@ router.get("/conversation/:conversationid", ConversationController.getById);
 router.delete("/messages/:messageid", MessagesController.deleteMessage);
 
 router.get("/users", UserController.getMany);
+router.get("/users/me" , UserController.getCurrent)
 
 export default router;
