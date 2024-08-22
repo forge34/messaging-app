@@ -89,7 +89,7 @@ class Auth {
         }
       },
     ),
-    passport.authenticate("local"),
+    passport.authenticate("local", { failWithError: true }),
     (req: Request, res: Response) => {
       const currentUser = req.user as User;
       const token = jwt.sign({ id: currentUser.id }, process.env.SECRET, {
@@ -99,6 +99,9 @@ class Auth {
       res.cookie("jwt", token, cookieOptions);
 
       res.status(200).json("Login sucess");
+    },
+    (err: Error, req: Request, res: Response, next: NextFunction) => {
+      res.status(401).json(err);
     },
   ];
 
