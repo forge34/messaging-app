@@ -12,6 +12,7 @@ router.get("/", (req: Request, res: Response) => {
 
 router.post("/signup", Auth.signup);
 router.post("/login", Auth.login);
+router.post("/logout" , Auth.logout)
 
 router.post("/conversation", ConversationController.create);
 router.post("/conversation/:conversationid", MessagesController.createMessage);

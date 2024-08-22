@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
-import { NextFunction, Request, Response } from "express";
+import { CookieOptions, NextFunction, Request, Response } from "express";
 import passport from "passport";
 import { PrismaClient, type User } from "@prisma/client";
 import jwt from "jsonwebtoken";
@@ -9,6 +9,15 @@ import { prismaClient } from "../app";
 import { AvatarGenerator } from "random-avatar-generator";
 
 const generator = new AvatarGenerator();
+
+const cookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 1000 * 60 * 60 * 24 * 7,
+  path: "/",
+  domain: "localhost",
+};
 
 class Auth {
   static signup = [
@@ -87,16 +96,19 @@ class Auth {
         expiresIn: "7d",
       });
 
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      });
+      res.cookie("jwt", token, cookieOptions);
 
       res.status(200).json("Login sucess");
     },
   ];
+
+  static logout = expressAsyncHandler(async (req: Request, res: Response) => {
+    res.clearCookie("jwt", cookieOptions);
+    req.logout((err) => {
+      if (err) res.status(500).json("internal server error");
+    });
+    res.status(200).json("logout sucess");
+  });
 }
 
 export default Auth;
