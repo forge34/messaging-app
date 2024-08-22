@@ -4,7 +4,7 @@ import {
   useRouteError,
 } from "react-router-dom";
 
-export function ErrorBoundary() {
+export function Error() {
   const errors = useRouteError();
   const navigate = useNavigate();
 

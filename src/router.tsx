@@ -6,7 +6,7 @@ import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
 import { conversationLoader, userLoader } from "./utils/queries";
 import Conversation from "./pages/conversation";
-import { ErrorBoundary } from "./components/error";
+import { Error} from "./components/error";
 import ChatSection from "./pages/chat-section";
 
 const queryClient = new QueryClient();
@@ -15,7 +15,7 @@ const routes: RouteObject[] = [
   {
     path: "/",
     element: <App></App>,
-    errorElement: <ErrorBoundary></ErrorBoundary>,
+    errorElement: <Error/>,
 
     children: [
       {
