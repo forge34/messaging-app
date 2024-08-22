@@ -70,7 +70,8 @@
 .message {
   position: relative;
   border-radius: 12px;
-  max-width: fit-content;
+  max-width: 50%;
+  width: fit-content;
   margin: vars.$base 0;
   padding: vars.$base * 2;
   display: flex;

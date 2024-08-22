@@ -32,7 +32,9 @@ export default function ChatCard({
       <img width={48} height={48} src={conversationImg} />
       <div className="card-info">
         <h3>{conversationTitle}</h3>
-        <p className="last-msg">{conversationLastMsg}</p>
+        <p className="last-msg">
+          {conversationLastMsg.substring(0, 30) + "..."}
+        </p>
       </div>
       <p className="msg-time">{formatDistanceToNow(conversationLastSent)}</p>
     </div>
