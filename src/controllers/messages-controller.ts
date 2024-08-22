@@ -54,9 +54,7 @@ class MessagesController {
         },
       });
 
-      // console.log(otherUser);
-
-      io.to(otherUser.id).emit("create message", {
+      io.to(`user:${otherUser.id}`).emit("message:create", {
         author: currentUser.name,
         content: messageBody,
       });

@@ -9,9 +9,10 @@ import passport from "passport";
 import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { createServer } from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
+import cookie from "cookie";
 
 const app: Express = express();
 const server = createServer(app);
@@ -38,7 +39,6 @@ const session: SessionOptions = {
   secret: process.env.SECRET,
   cookie: {
     maxAge: 604800000,
-    httpOnly: false,
   },
   store: new PrismaSessionStore(prismaClient, {
     checkPeriod: 2 * 60 * 1000, //ms
@@ -65,20 +65,31 @@ const io = new Server(server, {
   cors: corsOptions,
 });
 
-io.on("connection", (socket: Socket) => {
-  console.log("a user connected");
+io.engine.use((req: any, res: any, next: any) => {
+  req.cookies = {};
+  req.cookies.jwt = cookie.parse(req.headers.cookie).jwt;
+  const isHandshake = req._query.sid === undefined;
+  if (isHandshake) {
+    passport.authenticate("jwt", { session: false })(req, res, next);
+  } else {
+    next();
+  }
+});
 
-  socket.on("connect/room", (id) => {
-    socket.join(id);
-  });
+io.on("connection", (socket) => {
+  const req = socket.request as any;
+  const user = req.user as User;
 
+  console.log(`${user.name} connected`);
+
+  socket.join(`user:${user.id}`);
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log(`${user.name} disconnected`);
   });
 });
 
 server.listen(port, () => {
-  console.log("server running at http://localhost:${port}");
+  console.log(`server running at localhost:${port}`);
 });
 
 export { prismaClient, app, io };
