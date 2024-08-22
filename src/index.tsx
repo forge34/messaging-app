@@ -1,4 +1,3 @@
-// import SidebarItem from "./components/sidebar-item";
 import Sidebar from "./components/sidebar";
 import SidebarItem from "./components/sidebar-item";
 import messageIcon from "./assets/message.svg";
@@ -10,27 +9,25 @@ import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
-import toast, { Toaster } from "react-hot-toast";
-
 
 function App() {
   useEffect(() => {
-    socket.connect();
-    socket.on("connection", () => {
-      console.log("connected");
-    });
+    if (!socket.connect()) socket.connect();
 
-    socket.on("create message", (id) => {
-      
-      console.log("Server says : message created");
-      toast(`new message by  ${id}`)
+   
+    function onMessage() {
       queryClient.invalidateQueries();
-    });
+    }
+
+    socket.on("message:create", onMessage);
+
+    return () => {
+      socket.off("message:create", onMessage);
+    };
   }, []);
 
   return (
     <>
-      <Toaster></Toaster>
       <Sidebar>
         <h1>MA</h1>
         <SidebarItem
