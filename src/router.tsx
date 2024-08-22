@@ -4,7 +4,7 @@ import Signup from "./pages/signup";
 import Login from "./pages/login";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
-import { conversationLoader, userLoader } from "./utils/queries";
+import { conversationIdLoader, conversationLoader, userLoader } from "./utils/queries";
 import Conversation from "./pages/conversation";
 import { Error} from "./components/error";
 import ChatSection from "./pages/chat-section";
@@ -30,6 +30,7 @@ const routes: RouteObject[] = [
           {
             path: ":id",
             element: <Conversation></Conversation>,
+            loader:conversationIdLoader(queryClient)
           },
         ],
       },

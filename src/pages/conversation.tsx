@@ -1,16 +1,19 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import { getConversationById } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { queryClient } from "../router";
 import { Message } from "../utils/schema";
+import { last } from "../utils/functions";
+import type { Conversation } from "../utils/schema";
 
 export default function Conversation() {
   const { id } = useParams();
   const [value, setValue] = useState("");
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const mutation = useMutation({
     mutationFn: async ({
       id,
@@ -40,8 +43,16 @@ export default function Conversation() {
     mutation.mutate({ id, content: formData.get("content") });
     setValue("");
   }
+  const initialData = useLoaderData() as Conversation;
+  const { data } = useQuery({ ...getConversationById(id), initialData });
 
-  const { data } = useQuery(getConversationById(id));
+  useEffect(() => {
+    const LastMessage = document.getElementById(
+      last<Message>(data.messages).id,
+    );
+    LastMessage?.scrollIntoView?.();
+  }, [data.messages]);
+
   return (
     <div className="conversation-box">
       <div className="top-bar">
@@ -53,7 +64,12 @@ export default function Conversation() {
         {data?.messages.map((message: Message) => {
           const ownMessageStyle = message.ownMessage ? "own" : "";
           return (
-            <div className={"message " + ownMessageStyle} key={message.id}>
+            <div
+              className={"message " + ownMessageStyle}
+              ref={lastMessageRef}
+              id={message.id}
+              key={message.id}
+            >
               <img src={message.author.imgUrl} width={32} height={32} />
               <p>{message.body}</p>
             </div>
