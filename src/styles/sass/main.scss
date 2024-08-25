@@ -85,3 +85,12 @@ form {
     height: 4ch;
   }
 }
+
+.notification {
+  display: flex;
+
+  img {
+    margin: auto vars.$base * 0.5;
+    filter: invert(100%);
+  }
+}

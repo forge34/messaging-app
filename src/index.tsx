@@ -9,13 +9,36 @@ import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
+import toast from "react-hot-toast";
+import infoIcon from "./assets/info.svg";
 
 function App() {
   useEffect(() => {
     if (!socket.connect()) socket.connect();
 
-   
-    function onMessage() {
+    function onMessage({
+      author,
+      content,
+    }: {
+      author: string;
+      content: string;
+    }) {
+      toast(
+        <div className="notification">
+          <img src={infoIcon} width={32} height={32} />
+          <span>
+            <h3>{author}</h3>
+            <p>{content}</p>
+          </span>
+        </div>,
+        {
+          duration:100000,
+          style: {
+            backgroundColor: "#313338",
+            color: "white",
+          },
+        },
+      );
       queryClient.invalidateQueries();
     }
 

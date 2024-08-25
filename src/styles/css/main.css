@@ -79,4 +79,12 @@ form {
   height: 4ch;
 }
 
+.notification {
+  display: flex;
+}
+.notification img {
+  margin: auto 0.25em;
+  filter: invert(100%);
+}
+
 /*# sourceMappingURL=main.css.map */
