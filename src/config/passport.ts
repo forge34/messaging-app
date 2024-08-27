@@ -57,6 +57,9 @@ class PassportConfig {
         where: {
           id: id,
         },
+        include: {
+          messages: true,
+        },
       });
 
       done(null, user);
@@ -71,6 +74,9 @@ class PassportConfig {
         const user = await prismaClient.user.findFirst({
           where: {
             id: payload.id,
+          },
+          include: {
+            messages: true,
           },
         });
         if (user) {
