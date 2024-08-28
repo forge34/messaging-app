@@ -12,7 +12,7 @@ export default function ChatSection() {
   const { data } = useQuery(getUserConversations());
 
   const sortedConversation = useMemo(() => {
-    return data.sort((a: Conversation, b: Conversation) => {
+    return data?.sort((a: Conversation, b: Conversation) => {
       if (!last(a.messages) || !last(b.messages)) return 0;
 
       if (last(a.messages)?.createdAt > last(b.messages)?.createdAt) {

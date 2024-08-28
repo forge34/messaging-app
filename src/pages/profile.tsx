@@ -19,6 +19,8 @@ export default function Profile() {
           <h2>{user?.messages.length}</h2>
         </div>
       </div>
+
+      <button className="btn-edit">Edit profile</button>
     </div>
   );
 }

@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["../sass/user-card.scss","../sass/_variables.scss","../sass/_mixins.scss"],"names":[],"mappings":"AAGA;EACE;EACA;EACA;EACA,kBCFS;EDGT;;AACA;EACE;;;AAIJ;EACE;EENA,kBDLY;ECMZ;EACA;EACA;EACA;EACA;EFGA;EAEA;;AACA;EACE","file":"user-card.css"}
+{"version":3,"sourceRoot":"","sources":["../sass/user-card.scss","../sass/_variables.scss","../sass/_mixins.scss"],"names":[],"mappings":"AAGA;EACE;EACA;EACA;EACA,kBCDS;EDET;;AACA;EACE;;;AAIJ;EACE;EENA,kBDJY;ECKZ;EACA;EACA;EACA;EACA;EFGA;EAEA;;AACA;EACE","file":"user-card.css"}

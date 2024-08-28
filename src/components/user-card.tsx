@@ -30,9 +30,9 @@ export default function UserCard(props: UserCardProps) {
 
       return res.json();
     },
-    onSuccess: (data:Conversation) => {
-      queryClient.invalidateQueries();
-      navigate(`/conversations/${data.id}`)
+    onSuccess: async ({  conversation } : {conversation:Conversation}) => {
+      await queryClient.invalidateQueries();
+      navigate(`/conversations/${conversation.id}`);
     },
   });
 
@@ -46,11 +46,7 @@ export default function UserCard(props: UserCardProps) {
 
   return (
     <div className="user-card">
-      <img
-        src={props.imgSrc}
-        width={64}
-        height={64}
-      />
+      <img src={props.imgSrc} width={64} height={64} />
       <div>
         <h1 className="username">{props.username}</h1>
         <button onClick={goToConversation} className="user-card-btn">

@@ -1,4 +1,5 @@
 @use "variables" as vars;
+@use "mixins" as mx;
 
 .profile-section {
   margin: auto auto;
@@ -10,18 +11,21 @@
   display: flex;
   flex-direction: column;
   height: fit-content;
+  position: relative;
 
   & img {
+    position: absolute;
     margin-inline: auto;
     margin-bottom: 1em;
+    top: -105%;
+    transform: translate(35%);
   }
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  padding: 3em;
+  padding: 2em;
 }
 
 .info-row {
@@ -32,6 +36,14 @@
   :nth-child(2) {
     margin-left: auto;
     font-weight: lighter;
-    color: #ADB6BD;
+    color: #adb6bd;
   }
+}
+
+.btn-edit {
+  @include mx.btn(vars.$primary-500, 2em);
+  @include mx.bg-transition(vars.$primary-400);
+  font-size: 1.5em;
+  align-self: center;
+  margin-bottom: 1em;
 }

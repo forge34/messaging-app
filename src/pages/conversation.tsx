@@ -48,11 +48,10 @@ export default function Conversation() {
 
   useEffect(() => {
     const LastMessage = document.getElementById(
-      last<Message>(data.messages).id,
+      last<Message>(data.messages)?.id,
     );
     LastMessage?.scrollIntoView?.();
   }, [data.messages]);
-
   return (
     <div className="conversation-box">
       <div className="top-bar">

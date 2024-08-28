@@ -8,17 +8,20 @@
   display: flex;
   flex-direction: column;
   height: fit-content;
+  position: relative;
 }
 .profile-section img {
+  position: absolute;
   margin-inline: auto;
   margin-bottom: 1em;
+  top: -105%;
+  transform: translate(35%);
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  padding: 3em;
+  padding: 2em;
 }
 
 .info-row {
@@ -29,7 +32,23 @@
 .info-row :nth-child(2) {
   margin-left: auto;
   font-weight: lighter;
-  color: #ADB6BD;
+  color: #adb6bd;
+}
+
+.btn-edit {
+  background-color: #4967d0;
+  padding: 0.5em 2em;
+  border-radius: 8px;
+  color: white;
+  border-style: none;
+  align-self: self-start;
+  transition: background-color 0.3s ease-in 0s;
+  font-size: 1.5em;
+  align-self: center;
+  margin-bottom: 1em;
+}
+.btn-edit:hover {
+  background-color: #7189da;
 }
 
 /*# sourceMappingURL=profile.css.map */
