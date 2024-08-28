@@ -1,0 +1,35 @@
+.profile-section {
+  margin: auto auto;
+  transform: translateY(-10%);
+  width: clamp(20%, 500px, 45%);
+  border-radius: 12px;
+  color: white;
+  background-color: #23262a;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+.profile-section img {
+  margin-inline: auto;
+  margin-bottom: 1em;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 3em;
+}
+
+.info-row {
+  margin-bottom: 1em;
+  width: 100%;
+  display: flex;
+}
+.info-row :nth-child(2) {
+  margin-left: auto;
+  font-weight: lighter;
+  color: #ADB6BD;
+}
+
+/*# sourceMappingURL=profile.css.map */

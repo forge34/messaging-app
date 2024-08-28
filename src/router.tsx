@@ -8,6 +8,7 @@ import { conversationIdLoader, conversationLoader, userLoader } from "./utils/qu
 import Conversation from "./pages/conversation";
 import { Error} from "./components/error";
 import ChatSection from "./pages/chat-section";
+import Profile from "./pages/profile";
 
 const queryClient = new QueryClient();
 
@@ -40,7 +41,7 @@ const routes: RouteObject[] = [
       },
       {
         path: "profile",
-        element: <h1>Soon</h1>,
+        element: <Profile></Profile>
       },
       {
         path: "people",

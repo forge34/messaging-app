@@ -2,6 +2,21 @@ import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
 import { Conversation, User } from "./schema";
 
+const getCurrentUser = () =>
+  queryOptions({
+    queryKey: ["user", "current"],
+    queryFn: async (): Promise<User> => {
+      const res = await fetch(`${import.meta.env.VITE_API}/users/me`, {
+        mode: "cors",
+        credentials: "include",
+      });
+
+      if (res.status === 401) throw res;
+
+      return res.json();
+    },
+  });
+
 const getConversationById = (id: string | undefined) =>
   queryOptions({
     queryKey: ["conversations", id],
@@ -85,4 +100,5 @@ export {
   conversationLoader,
   getConversationById,
   conversationIdLoader,
+  getCurrentUser,
 };
