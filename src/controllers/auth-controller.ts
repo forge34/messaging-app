@@ -16,7 +16,6 @@ const cookieOptions: CookieOptions = {
   sameSite: "none",
   maxAge: 1000 * 60 * 60 * 24 * 7,
   path: "/",
-  domain: "localhost",
 };
 
 class Auth {
