@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface sidebarItemProps {
@@ -17,7 +18,9 @@ export default function SidebarItem(props: sidebarItemProps) {
     <div
       className={"sidebar-item " + selected}
       onClick={() => {
-        navigate(`${props.to}`);
+        if (props.to === "starred" || props.to === "settings") {
+          toast.error("for decoration purposes only");
+        } else navigate(`${props.to}`);
       }}
     >
       <img src={props.imgSrc} width={32} height={32} />
