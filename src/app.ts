@@ -18,6 +18,7 @@ const app: Express = express();
 const server = createServer(app);
 const port = process.env.PORT || 3000;
 
+console.log(process.env.CLIENT_URL)
 const corsOptions: CorsOptions = {
   origin: ["http://localhost:5173" , process.env.CLIENT_URL],
   credentials: true,
@@ -66,6 +67,7 @@ const io = new Server(server, {
 });
 
 io.engine.use((req: any, res: any, next: any) => {
+  if (!req.headers.cookie) return
   req.cookies = {};
   req.cookies.jwt = cookie.parse(req.headers.cookie).jwt;
   const isHandshake = req._query.sid === undefined;
