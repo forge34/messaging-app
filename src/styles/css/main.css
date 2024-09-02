@@ -87,4 +87,11 @@ form {
   filter: invert(100%);
 }
 
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /*# sourceMappingURL=main.css.map */

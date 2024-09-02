@@ -11,11 +11,13 @@ import { socket } from "./utils/socket";
 import { queryClient } from "./router";
 import toast from "react-hot-toast";
 import infoIcon from "./assets/info.svg";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "./utils/queries";
+import { Puff } from "react-loader-spinner";
 
 function App() {
+  const { isLoading } = useQuery(getCurrentUser());
   useEffect(() => {
-    if (!socket.connect()) socket.connect();
-
     function onMessage({
       author,
       content,
@@ -32,7 +34,7 @@ function App() {
           </span>
         </div>,
         {
-          duration:100000,
+          duration: 100000,
           style: {
             backgroundColor: "#313338",
             color: "white",
@@ -42,12 +44,26 @@ function App() {
       queryClient.invalidateQueries();
     }
 
-    socket.on("message:create", onMessage);
+    if (!isLoading) {
+      if (!socket.connect()) socket.connect();
+      socket.on("message:create", onMessage);
+    }
 
     return () => {
       socket.off("message:create", onMessage);
     };
-  }, []);
+  }, [isLoading]);
+
+  if (isLoading) {
+    return (
+      <Puff
+        width={180}
+        height={180}
+        color="#4967d0"
+        wrapperClass="spinner"
+      ></Puff>
+    );
+  }
 
   return (
     <>
