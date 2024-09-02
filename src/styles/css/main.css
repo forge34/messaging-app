@@ -94,4 +94,37 @@ form {
   transform: translate(-50%, -50%);
 }
 
+.error-page {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: white;
+  width: 70%;
+}
+.error-page button {
+  margin-top: 1em;
+  font-size: 0.7em;
+  background-color: #4967d0;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  color: white;
+  border-style: none;
+  align-self: self-start;
+  align-self: center;
+}
+
+.error-msg {
+  margin-inline: auto;
+}
+
+.error-code {
+  font-size: 5em;
+  color: #d9534f;
+  margin-inline: auto;
+}
+
 /*# sourceMappingURL=main.css.map */
