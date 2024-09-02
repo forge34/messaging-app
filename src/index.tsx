@@ -16,7 +16,7 @@ import { getCurrentUser } from "./utils/queries";
 import { Puff } from "react-loader-spinner";
 
 function App() {
-  const { isLoading } = useQuery(getCurrentUser());
+  const { isLoading, isSuccess } = useQuery(getCurrentUser());
   useEffect(() => {
     function onMessage({
       author,
@@ -44,7 +44,7 @@ function App() {
       queryClient.invalidateQueries();
     }
 
-    if (!isLoading) {
+    if (!isSuccess) {
       if (!socket.connect()) socket.connect();
       socket.on("message:create", onMessage);
     }
@@ -52,7 +52,7 @@ function App() {
     return () => {
       socket.off("message:create", onMessage);
     };
-  }, [isLoading]);
+  }, [isSuccess]);
 
   if (isLoading) {
     return (

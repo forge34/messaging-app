@@ -11,9 +11,18 @@ const getCurrentUser = () =>
         credentials: "include",
       });
 
-      if (res.status === 401) throw res;
+      if (res.status === 401) {
+        console.log("throwing");
+        throw res;
+      }
 
       return res.json();
+    },
+    retry(_, error: Response) {
+      if (error.status === 401) {
+        return false;
+      }
+      return true;
     },
   });
 
