@@ -5,7 +5,7 @@ import starIcon from "./assets/star.svg";
 import settingsIcon from "./assets/settings.svg";
 import profileIcon from "./assets/user.svg";
 import usersIcon from "./assets/users.svg";
-import { Outlet } from "react-router-dom";
+import {  Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
@@ -44,7 +44,7 @@ function App() {
       queryClient.invalidateQueries();
     }
 
-    if (!isSuccess) {
+    if (isSuccess) {
       if (!socket.connect()) socket.connect();
       socket.on("message:create", onMessage);
     }

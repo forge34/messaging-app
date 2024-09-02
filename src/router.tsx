@@ -4,9 +4,14 @@ import Signup from "./pages/signup";
 import Login from "./pages/login";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
-import { conversationIdLoader, conversationLoader, userLoader } from "./utils/queries";
+import {
+  conversationIdLoader,
+  conversationLoader,
+  getCurrentUser,
+  userLoader,
+} from "./utils/queries";
 import Conversation from "./pages/conversation";
-import { Error} from "./components/error";
+import { Error } from "./components/error";
 import ChatSection from "./pages/chat-section";
 import Profile from "./pages/profile";
 
@@ -16,12 +21,17 @@ const routes: RouteObject[] = [
   {
     path: "/",
     element: <App></App>,
-    errorElement: <Error/>,
-
+    errorElement: <Error />,
+    loader: () => queryClient.ensureQueryData(getCurrentUser()),
     children: [
       {
         index: true,
         element: <Navigate to={"conversations"}></Navigate>,
+      },
+
+      {
+        path: "/forgot-password",
+        element: <Navigate to={"/signin"}></Navigate>,
       },
       {
         path: "conversations",
@@ -31,7 +41,7 @@ const routes: RouteObject[] = [
           {
             path: ":id",
             element: <Conversation></Conversation>,
-            loader:conversationIdLoader(queryClient)
+            loader: conversationIdLoader(queryClient),
           },
         ],
       },
@@ -41,7 +51,7 @@ const routes: RouteObject[] = [
       },
       {
         path: "profile",
-        element: <Profile></Profile>
+        element: <Profile></Profile>,
       },
       {
         path: "people",
@@ -61,10 +71,6 @@ const routes: RouteObject[] = [
   {
     path: "/login",
     element: <Login></Login>,
-  },
-  {
-    path: "/forgot-password",
-    element: <Navigate to={"/signin"}></Navigate>,
   },
 ];
 
