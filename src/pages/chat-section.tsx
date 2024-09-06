@@ -3,7 +3,7 @@ import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
 import { useQuery } from "@tanstack/react-query";
 import { getUserConversations } from "../utils/queries";
-import { Conversation } from "../utils/schema";
+import { ConversationSchema } from "../utils/schema";
 import { Outlet } from "react-router-dom";
 import { useMemo } from "react";
 import { last } from "../utils/functions";
@@ -12,7 +12,7 @@ export default function ChatSection() {
   const { data } = useQuery(getUserConversations());
 
   const sortedConversation = useMemo(() => {
-    return data?.sort((a: Conversation, b: Conversation) => {
+    return data?.sort((a: ConversationSchema, b: ConversationSchema) => {
       if (!last(a.messages) || !last(b.messages)) return 0;
 
       if (last(a.messages)?.createdAt > last(b.messages)?.createdAt) {
@@ -31,7 +31,7 @@ export default function ChatSection() {
         <h1>Chats</h1>
         <SearchInput></SearchInput>
 
-        {sortedConversation?.map((conversation: Conversation) => {
+        {sortedConversation?.map((conversation: ConversationSchema) => {
           const lastMsg =
             conversation?.messages[conversation.messages.length - 1];
           return (

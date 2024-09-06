@@ -1,11 +1,11 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
-import { Conversation, User } from "./schema";
+import { ConversationSchema, UserSchema } from "./schema";
 
 const getCurrentUser = () =>
   queryOptions({
     queryKey: ["user", "current"],
-    queryFn: async (): Promise<User> => {
+    queryFn: async (): Promise<UserSchema> => {
       const res = await fetch(`${import.meta.env.VITE_API}/users/me`, {
         mode: "cors",
         credentials: "include",
@@ -29,7 +29,7 @@ const getCurrentUser = () =>
 const getConversationById = (id: string | undefined) =>
   queryOptions({
     queryKey: ["conversations", id],
-    queryFn: async (): Promise<Conversation> => {
+    queryFn: async (): Promise<ConversationSchema> => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/${id}`,
         {
@@ -56,7 +56,7 @@ const conversationIdLoader =
 const getUserConversations = () =>
   queryOptions({
     queryKey: ["conversations"],
-    queryFn: async (): Promise<Array<Conversation>> => {
+    queryFn: async (): Promise<Array<ConversationSchema>> => {
       const res = await fetch(
         `${import.meta.env.VITE_API}/conversation/currentuser`,
         {
@@ -81,7 +81,7 @@ const conversationLoader = (queryClient: QueryClient) => async () => {
 const getUsers = () =>
   queryOptions({
     queryKey: ["users"],
-    queryFn: async (): Promise<Array<User>> => {
+    queryFn: async (): Promise<Array<UserSchema>> => {
       const res = await fetch(`${import.meta.env.VITE_API}/users`, {
         method: "get",
         mode: "cors",

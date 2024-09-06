@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/css/user-card.css";
-import { Conversation } from "../utils/schema";
+import { ConversationSchema } from "../utils/schema";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../router";
 
@@ -8,7 +8,7 @@ interface UserCardProps {
   imgSrc: string;
   username: string;
   isRelated: boolean;
-  conversation: Conversation | null;
+  conversation: ConversationSchema | null;
   userId: string;
 }
 
@@ -30,7 +30,11 @@ export default function UserCard(props: UserCardProps) {
 
       return res.json();
     },
-    onSuccess: async ({  conversation } : {conversation:Conversation}) => {
+    onSuccess: async ({
+      conversation,
+    }: {
+      conversation: ConversationSchema;
+    }) => {
       await queryClient.invalidateQueries();
       navigate(`/conversations/${conversation.id}`);
     },

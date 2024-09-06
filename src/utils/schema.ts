@@ -1,31 +1,31 @@
-export interface User {
+export interface UserSchema {
   pk: number;
   id: string;
   name: string;
   password: string;
-  messages: Message[];
-  conversations: Conversation[];
-  privateConversation: Conversation | null;
+  messages: MessageSchema[];
+  conversations: ConversationSchema[];
+  privateConversation: ConversationSchema | null;
   relatedToCurrent: boolean;
   imgUrl: string;
 }
 
-export interface Message {
+export interface MessageSchema {
   id: string;
   body: string;
   createdAt: Date;
   authorId: string;
   conversationId: string;
-  author: User;
-  Conversation: Conversation;
+  author: UserSchema;
+  Conversation: ConversationSchema;
   ownMessage: boolean;
 }
 
-export interface Conversation {
+export interface ConversationSchema {
   id: string;
   title: string;
-  messages: Message[];
-  users: User[];
+  messages: MessageSchema[];
+  users: UserSchema[];
   type: ConversationType;
   conversationImg: string | null;
 }
