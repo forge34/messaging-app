@@ -6,9 +6,10 @@ import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { queryClient } from "../router";
-import { Message } from "../utils/schema";
+import { MessageSchema } from "../utils/schema";
 import { last } from "../utils/functions";
-import type { Conversation } from "../utils/schema";
+import type { ConversationSchema } from "../utils/schema";
+import Message from "../components/message";
 
 export default function Conversation() {
   const { id } = useParams();
@@ -36,6 +37,16 @@ export default function Conversation() {
       });
     },
   });
+  const initialData = useLoaderData() as ConversationSchema;
+  const { data } = useQuery({ ...getConversationById(id), initialData });
+
+  useEffect(() => {
+    const LastMessage = document.getElementById(
+      last<MessageSchema>(data.messages)?.id,
+    );
+    LastMessage?.scrollIntoView?.();
+  }, [data.messages]);
+
   function handelSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -43,15 +54,7 @@ export default function Conversation() {
     mutation.mutate({ id, content: formData.get("content") });
     setValue("");
   }
-  const initialData = useLoaderData() as Conversation;
-  const { data } = useQuery({ ...getConversationById(id), initialData });
 
-  useEffect(() => {
-    const LastMessage = document.getElementById(
-      last<Message>(data.messages)?.id,
-    );
-    LastMessage?.scrollIntoView?.();
-  }, [data.messages]);
   return (
     <div className="conversation-box">
       <div className="top-bar">
@@ -60,18 +63,15 @@ export default function Conversation() {
         <img src={callIcon} width={40} height={40} />
       </div>
       <div className="message-container">
-        {data?.messages.map((message: Message) => {
-          const ownMessageStyle = message.ownMessage ? "own" : "";
+        {data?.messages.map((message: MessageSchema) => {
           return (
-            <div
-              className={"message " + ownMessageStyle}
-              ref={lastMessageRef}
+            <Message
+              lastMessageRef={lastMessageRef}
+              author={message.author}
+              body={message.body}
               id={message.id}
-              key={message.id}
-            >
-              <img src={message.author.imgUrl} width={32} height={32} />
-              <p>{message.body}</p>
-            </div>
+              ownMessage={message.ownMessage}
+            ></Message>
           );
         })}
       </div>
