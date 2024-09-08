@@ -1,30 +1,24 @@
-# React + TypeScript + Vite
+# Messaging app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Messaging app project from [The odin project](https://www.theodinproject.com/) assignment .
 
-Currently, two official plugins are available:
+a chat app where users can add other users and send them messages real-time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Links
+- [Live demo](https://forge-messaging-app.netlify.app/)
+- [Backend API url](https://github.com/forge34)
 
-## Expanding the ESLint configuration
+### Tools & Frameworks used
+- ReactJs
+- ExpressJs
+- Socket.io
+- React-query
+- React testing library
+- SASS
+- Vite
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### TO-DO 
+- [ ]  allow users to block other users
+- [ ]  allow users to customize their profile
+- [ ]  allow users to bookmark messages
+- [ ]  make the website mobile responsive
