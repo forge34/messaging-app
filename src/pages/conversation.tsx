@@ -1,44 +1,33 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "react-router-dom";
-import { getConversationById } from "../utils/queries";
+import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { queryClient } from "../router";
+// import { queryClient } from "../router";
 import { MessageSchema } from "../utils/schema";
 import { last } from "../utils/functions";
-import type { ConversationSchema } from "../utils/schema";
+import type { ConversationSchema, UserSchema } from "../utils/schema";
 import Message from "../components/message";
+import { socket } from "../utils/socket";
+import cuid2 from "@paralleldrive/cuid2";
+import { queryClient } from "../router";
+
+export interface sentMessages
+  extends Pick<MessageSchema, "author" | "body" | "id"> {
+  status?: "pending" | "sent";
+  lastMessageRef?: React.Ref<HTMLDivElement>;
+  ownMessage?: boolean;
+}
 
 export default function Conversation() {
-  const { id } = useParams();
+  const { id = "" } = useParams();
   const [value, setValue] = useState("");
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  const mutation = useMutation({
-    mutationFn: async ({
-      id,
-      content,
-    }: {
-      id: string | undefined;
-      content: FormDataEntryValue | null;
-    }) => {
-      return fetch(`${import.meta.env.VITE_API}/conversation/${id}`, {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({ content }),
-        credentials: "include",
-        headers: { "content-Type": "Application/json" },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["conversations"],
-      });
-    },
-  });
   const initialData = useLoaderData() as ConversationSchema;
   const { data } = useQuery({ ...getConversationById(id), initialData });
+  const { data: user } = useQuery(getCurrentUser());
 
   useEffect(() => {
     const LastMessage = document.getElementById(
@@ -47,11 +36,35 @@ export default function Conversation() {
     LastMessage?.scrollIntoView?.();
   }, [data.messages]);
 
-  function handelSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handelSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    mutation.mutate({ id, content: formData.get("content") });
+    const content = formData.get("content") as string;
+    const definedUser = user as unknown as UserSchema;
+    const message: MessageSchema = {
+      id: cuid2.createId(),
+      body: content,
+      author: definedUser,
+      createdAt: new Date(),
+      authorId: definedUser.id,
+      conversationId: id,
+      Conversation: data,
+      ownMessage: true,
+    };
+
+    queryClient.setQueryData(
+      ["conversations", id],
+      (old: ConversationSchema) => {
+        return { ...old, messages: [...old.messages, message] };
+      },
+    );
+
+    socket.emit("message:create", {
+      conversationId: id,
+      content,
+      messageId: message.id,
+    });
     setValue("");
   }
 
@@ -71,6 +84,7 @@ export default function Conversation() {
               body={message.body}
               id={message.id}
               ownMessage={message.ownMessage}
+              key={message.id}
             ></Message>
           );
         })}

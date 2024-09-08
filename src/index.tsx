@@ -5,7 +5,7 @@ import starIcon from "./assets/star.svg";
 import settingsIcon from "./assets/settings.svg";
 import profileIcon from "./assets/user.svg";
 import usersIcon from "./assets/users.svg";
-import {  Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
@@ -34,7 +34,7 @@ function App() {
           </span>
         </div>,
         {
-          duration: 100000,
+          duration: 1500,
           style: {
             backgroundColor: "#313338",
             color: "white",
