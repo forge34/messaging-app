@@ -18,9 +18,9 @@ const app: Express = express();
 const server = createServer(app);
 const port = process.env.PORT || 3000;
 
-console.log(process.env.CLIENT_URL)
+console.log(process.env.CLIENT_URL);
 const corsOptions: CorsOptions = {
-  origin: ["http://localhost:5173" , process.env.CLIENT_URL],
+  origin: ["http://localhost:5173", process.env.CLIENT_URL],
   credentials: true,
   allowedHeaders: ["Content-type"],
 };
@@ -67,7 +67,7 @@ const io = new Server(server, {
 });
 
 io.engine.use((req: any, res: any, next: any) => {
-  if (!req.headers.cookie) return
+  if (!req.headers.cookie) return;
   req.cookies = {};
   req.cookies.jwt = cookie.parse(req.headers.cookie).jwt;
   const isHandshake = req._query.sid === undefined;
@@ -87,6 +87,41 @@ io.on("connection", (socket) => {
   socket.join(`user:${user.id}`);
   socket.on("disconnect", () => {
     console.log(`${user.name} disconnected`);
+  });
+
+  socket.on("message:create", async ({ conversationId, content }) => {
+    await prismaClient.message.create({
+      data: {
+        body: content,
+        conversationId: conversationId,
+        authorId: user.id,
+      },
+    });
+
+    const otherUser = await prismaClient.user.findFirst({
+      where: {
+        conversations: {
+          some: {
+            users: {
+              some: {
+                id: {
+                  contains: user.id,
+                },
+              },
+            },
+          },
+        },
+        NOT: {
+          id: {
+            contains: user.id,
+          },
+        },
+      },
+    });
+    socket.to(`user:${otherUser.id}`).emit("message:create", {
+      author: user.name,
+      content: content,
+    });
   });
 });
 
