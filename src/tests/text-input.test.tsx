@@ -31,4 +31,14 @@ describe("text input test suite", () => {
 
     expect(input.value).toMatch("Forge");
   });
+
+  test("should focus input on click", async () => {
+    const user = userEvent.setup();
+    render(<TextInput name="username" label="Username"></TextInput>);
+
+    const input = screen.getByRole<HTMLInputElement>("textbox");
+    await user.click(input);
+
+    expect(input).toHaveFocus();
+  });
 });
