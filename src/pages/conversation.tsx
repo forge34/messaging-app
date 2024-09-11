@@ -4,8 +4,7 @@ import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
-import { FormEvent, useEffect, useRef, useState } from "react";
-// import { queryClient } from "../router";
+import { FormEvent, useEffect, useState } from "react";
 import { MessageSchema } from "../utils/schema";
 import { last } from "../utils/functions";
 import type { ConversationSchema, UserSchema } from "../utils/schema";
@@ -24,7 +23,6 @@ export interface sentMessages
 export default function Conversation() {
   const { id = "" } = useParams();
   const [value, setValue] = useState("");
-  const lastMessageRef = useRef<HTMLDivElement>(null);
   const initialData = useLoaderData() as ConversationSchema;
   const { data } = useQuery({ ...getConversationById(id), initialData });
   const { data: user } = useQuery(getCurrentUser());
@@ -79,7 +77,6 @@ export default function Conversation() {
         {data?.messages.map((message: MessageSchema) => {
           return (
             <Message
-              lastMessageRef={lastMessageRef}
               author={message.author}
               body={message.body}
               id={message.id}

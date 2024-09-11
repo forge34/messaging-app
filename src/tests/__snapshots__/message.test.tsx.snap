@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`message component test > should match snapshot 1`] = `
+<div>
+  <div
+    class="message own"
+    id="cm0xulkra000209mb6b6nbwp1"
+  >
+    <img
+      height="32"
+      src="url.com"
+      width="32"
+    />
+    <p>
+      Hello
+    </p>
+    <img
+      src=""
+    />
+  </div>
+</div>
+`;
