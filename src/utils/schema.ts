@@ -2,10 +2,8 @@ export interface UserSchema {
   pk: number;
   id: string;
   name: string;
-  password: string;
   messages: MessageSchema[];
   conversations: ConversationSchema[];
-  privateConversation: ConversationSchema | null;
   relatedToCurrent: boolean;
   imgUrl: string;
 }
