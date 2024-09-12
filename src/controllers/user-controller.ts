@@ -1,8 +1,9 @@
 import { Conversation, User } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import { prismaClient } from "../app";
 import expressAsyncHandler from "express-async-handler";
+import { body, validationResult } from "express-validator";
 
 interface IUser extends Omit<User, "password"> {
   relatedToCurrent: boolean;
@@ -65,6 +66,36 @@ class UserController {
       }
       res.status(200).json(filteredUsers);
     },
+  ];
+
+  static blockUser = [
+    body("id").trim().isLength({ min: 1 }).escape(),
+    expressAsyncHandler(
+      async (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+          next();
+        } else {
+          console.log(errors.array());
+          res.status(401).json({ errors: errors.array() });
+        }
+      },
+    ),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const user = req.user as User;
+      const blockedId = req.params.userid as string;
+
+      await prismaClient.user.update({
+        where: { id: user.id },
+        data: {
+          blocked: {
+            connect: [{ id: blockedId }],
+          },
+        },
+      });
+
+      res.status(200).json("successfully blocked user");
+    }),
   ];
 }
 
