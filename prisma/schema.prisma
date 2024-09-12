@@ -17,10 +17,13 @@ model User {
   pk            Int            @id @default(autoincrement())
   id            String         @unique @default(cuid())
   name          String         @unique
+  blocked       User[]         @relation("blocked")
   password      String
   messages      Message[]
   conversations Conversation[]
   imgUrl        String
+  User          User?          @relation(name: "blocked", fields: [userPk], references: [pk])
+  userPk        Int?
 }
 
 model Message {
