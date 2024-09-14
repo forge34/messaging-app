@@ -1,9 +1,9 @@
-import { PrismaClient, User } from "@prisma/client";
+import {  User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import passport from "passport";
-import { io, prismaClient } from "../app";
+import { prismaClient } from "../app";
 
 class MessagesController {
   static createMessage = [
@@ -31,32 +31,6 @@ class MessagesController {
           conversationId: conversationId,
           authorId: currentUser.id,
         },
-      });
-
-      const otherUser = await prismaClient.user.findFirst({
-        where: {
-          conversations: {
-            some: {
-              users: {
-                some: {
-                  id: {
-                    contains: currentUser.id,
-                  },
-                },
-              },
-            },
-          },
-          NOT: {
-            id: {
-              contains: currentUser.id,
-            },
-          },
-        },
-      });
-
-      io.to(`user:${otherUser.id}`).emit("message:create", {
-        author: currentUser.name,
-        content: messageBody,
       });
 
       res.status(200).json("message created");

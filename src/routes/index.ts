@@ -12,7 +12,7 @@ router.get("/", (req: Request, res: Response) => {
 
 router.post("/signup", Auth.signup);
 router.post("/login", Auth.login);
-router.post("/logout" , Auth.logout)
+router.post("/logout", Auth.logout);
 
 router.post("/conversation", ConversationController.create);
 router.post("/conversation/:conversationid", MessagesController.createMessage);
@@ -26,7 +26,7 @@ router.get("/conversation/:conversationid", ConversationController.getById);
 router.delete("/messages/:messageid", MessagesController.deleteMessage);
 
 router.get("/users", UserController.getMany);
-router.get("/users/me" , UserController.getCurrent)
-router.get("/users/:userid/block",UserController.blockUser)
+router.get("/users/me", UserController.getCurrent);
+router.get("/users/:userid/block", UserController.blockUser);
 
 export default router;
