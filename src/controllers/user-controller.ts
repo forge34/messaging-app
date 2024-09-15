@@ -69,18 +69,7 @@ class UserController {
   ];
 
   static blockUser = [
-    body("id").trim().isLength({ min: 1 }).escape(),
-    expressAsyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
-        const errors = validationResult(req);
-        if (errors.isEmpty()) {
-          next();
-        } else {
-          console.log(errors.array());
-          res.status(401).json({ errors: errors.array() });
-        }
-      },
-    ),
+    passport.authenticate("jwt", { session: false }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const user = req.user as User;
       const blockedId = req.params.userid as string;

@@ -59,6 +59,7 @@ class PassportConfig {
         },
         include: {
           messages: true,
+          blocked: true,
         },
       });
 
@@ -77,6 +78,7 @@ class PassportConfig {
           },
           include: {
             messages: true,
+            blocked: true,
           },
         });
         if (user) {
