@@ -9,7 +9,7 @@ import passport from "passport";
 import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "./config/prisma-client";
 
 const app: Express = express();
 
@@ -25,19 +25,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const databaseUrl =
-  process.env.NODE_ENV === "test"
-    ? process.env.TEST_DATABASE_URL
-    : process.env.DATABASE_URL;
-
-const prismaClient = new PrismaClient({
-  datasources: {
-    db: {
-      url: databaseUrl,
-    },
-  },
-});
-
 const session: SessionOptions = {
   name: "session",
   resave: false,
@@ -46,7 +33,7 @@ const session: SessionOptions = {
   cookie: {
     maxAge: 604800000,
   },
-  store: new PrismaSessionStore(prismaClient, {
+  store: new PrismaSessionStore(prisma, {
     checkPeriod: 2 * 60 * 1000, //ms
     dbRecordIdIsSessionId: true,
   }),
@@ -67,4 +54,4 @@ app.use(passport.session());
 
 app.use("/", router);
 
-export { prismaClient, app };
+export { app };

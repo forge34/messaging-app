@@ -2,7 +2,7 @@ import request from "supertest";
 import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { createServer } from "http";
-import { app, prismaClient } from "../app";
+import { app } from "../app";
 const server = createServer(app);
 
 const token = jwt.sign(

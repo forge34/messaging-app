@@ -2,10 +2,10 @@ import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { PrismaClient, type User } from "@prisma/client";
+import {  type User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { prismaClient } from "../app";
+import { prisma} from "../config/prisma-client";
 import { AvatarGenerator } from "random-avatar-generator";
 
 const generator = new AvatarGenerator();
@@ -46,7 +46,7 @@ class Auth {
         if (errors.isEmpty()) {
           bcrypt.hash(req.body.password, 10, async (err, hash) => {
             if (!err) {
-              await prismaClient.user.create({
+              await prisma.user.create({
                 data: {
                   name: req.body.username,
                   password: hash,

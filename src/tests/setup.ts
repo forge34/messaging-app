@@ -1,11 +1,11 @@
-import { prismaClient } from "../app";
+import { prisma } from "../config/prisma-client";
 
 
 
 beforeAll(async () => {
-  // await prismaClient.user.deleteMany({});
+  // await prisma.user.deleteMany({});
 
-  await prismaClient.user.createMany({
+  await prisma.user.createMany({
     data: [
       {
         id: "cm13m1xlm000108m8dwe25r9k",
@@ -25,5 +25,5 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await prismaClient.user.deleteMany();
+  await prisma.user.deleteMany();
 });

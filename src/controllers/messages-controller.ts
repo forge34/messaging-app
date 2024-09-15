@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import passport from "passport";
-import { prismaClient } from "../app";
+import { prisma } from "../config/prisma-client";
 
 class MessagesController {
   static createMessage = [
@@ -25,7 +25,7 @@ class MessagesController {
       const conversationId: string = req.params.conversationid;
       const currentUser = req.user as User;
 
-      await prismaClient.message.create({
+      await prisma.message.create({
         data: {
           body: messageBody,
           conversationId: conversationId,
@@ -42,7 +42,7 @@ class MessagesController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const messageId = req.params.messageid;
 
-      await prismaClient.message.delete({
+      await prisma.message.delete({
         where: {
           id: messageId,
         },

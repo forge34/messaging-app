@@ -1,7 +1,7 @@
 import { Conversation, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { prismaClient } from "../app";
+import { prisma } from "../config/prisma-client";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 
@@ -21,14 +21,14 @@ class UserController {
   static getMany = [
     passport.authenticate("jwt", { session: false }),
     async (req: Request, res: Response) => {
-      const users = await prismaClient.user.findMany({});
+      const users = await prisma.user.findMany({});
       const currentUser = req.user as User;
       const filteredUsers: IUser[] = [];
 
       for (let user of users) {
         if (user.id === currentUser.id) continue;
 
-        const privateConversation = await prismaClient.conversation.findFirst({
+        const privateConversation = await prisma.conversation.findFirst({
           where: {
             AND: [
               {
@@ -74,7 +74,7 @@ class UserController {
       const user = req.user as User;
       const blockedId = req.params.userid as string;
 
-      await prismaClient.user.update({
+      await prisma.user.update({
         where: { id: user.id },
         data: {
           blocked: {

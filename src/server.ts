@@ -1,5 +1,6 @@
 import { createServer } from "http";
-import { app, corsOptions, prismaClient } from "./app";
+import { app, corsOptions } from "./app";
+import { prisma } from "./config/prisma-client";
 import { Server } from "socket.io";
 import { socketJwtVerify } from "./sockets";
 import { User } from "@prisma/client";
@@ -25,7 +26,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message:create", async ({ conversationId, content }) => {
-    await prismaClient.message.create({
+    await prisma.message.create({
       data: {
         body: content,
         conversationId: conversationId,
@@ -33,7 +34,7 @@ io.on("connection", (socket) => {
       },
     });
 
-    const otherUser = await prismaClient.user.findFirst({
+    const otherUser = await prisma.user.findFirst({
       where: {
         conversations: {
           some: {
