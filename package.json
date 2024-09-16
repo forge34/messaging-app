@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "test": "NODE_ENV=test && vitest",
+    "test": "NODE_ENV=test && vitest --coverage",
     "start": "node dist/server.js",
     "build": "tsc && npx prisma db push",
     "dev": "NODE_ENV=development && nodemon src/server.ts"
@@ -46,6 +46,8 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
+    "@vitest/coverage-v8": "^2.1.1",
+    "@vitest/ui": "^2.1.1",
     "i": "^0.3.7",
     "nodemon": "^3.1.4",
     "npm": "^10.8.3",

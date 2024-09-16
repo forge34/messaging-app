@@ -1,11 +1,18 @@
 import { prisma } from "../config/prisma-client";
+import jwt from "jsonwebtoken"
 
+const token = jwt.sign(
+  { id: "cm13m1xlm000108m8dwe25r9k" },
+  process.env.SECRET,
+  {
+    expiresIn: "7d",
+  },
+);
 
-
-beforeAll(async () => {
-  // await prisma.user.deleteMany({});
-
-  await prisma.user.createMany({
+export const tokenString = `jwt=${token}`;
+beforeEach(async () => {
+  const deleteUsers = prisma.user.deleteMany();
+  const createUsers = prisma.user.createMany({
     data: [
       {
         id: "cm13m1xlm000108m8dwe25r9k",
@@ -22,8 +29,7 @@ beforeAll(async () => {
       },
     ],
   });
+
+  await prisma.$transaction([deleteUsers, createUsers]);
 });
 
-afterAll(async () => {
-  await prisma.user.deleteMany();
-});

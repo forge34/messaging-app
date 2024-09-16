@@ -1,9 +1,8 @@
 import { Conversation, User } from "@prisma/client";
-import { NextFunction, Request, Response } from "express";
+import {  Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "../config/prisma-client";
 import expressAsyncHandler from "express-async-handler";
-import { body, validationResult } from "express-validator";
 
 interface IUser extends Omit<User, "password"> {
   relatedToCurrent: boolean;

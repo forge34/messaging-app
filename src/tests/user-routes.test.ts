@@ -1,19 +1,10 @@
 import request from "supertest";
-import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { createServer } from "http";
 import { app } from "../app";
+import { tokenString } from "./setup";
 const server = createServer(app);
 
-const token = jwt.sign(
-  { id: "cm13m1xlm000108m8dwe25r9k" },
-  process.env.SECRET,
-  {
-    expiresIn: "7d",
-  },
-);
-
-const tokenString = `jwt=${token}`;
 
 
 describe("user GET routes", () => {
