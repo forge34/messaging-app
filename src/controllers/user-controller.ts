@@ -1,7 +1,7 @@
 import { Conversation, User } from "@prisma/client";
-import { Request, Response } from "express";
+import {  Request, Response } from "express";
 import passport from "passport";
-import { prismaClient } from "../app";
+import { prisma } from "../config/prisma-client";
 import expressAsyncHandler from "express-async-handler";
 
 interface IUser extends Omit<User, "password"> {
@@ -20,14 +20,14 @@ class UserController {
   static getMany = [
     passport.authenticate("jwt", { session: false }),
     async (req: Request, res: Response) => {
-      const users = await prismaClient.user.findMany({});
+      const users = await prisma.user.findMany({});
       const currentUser = req.user as User;
       const filteredUsers: IUser[] = [];
 
       for (let user of users) {
         if (user.id === currentUser.id) continue;
 
-        const privateConversation = await prismaClient.conversation.findFirst({
+        const privateConversation = await prisma.conversation.findFirst({
           where: {
             AND: [
               {
@@ -65,6 +65,25 @@ class UserController {
       }
       res.status(200).json(filteredUsers);
     },
+  ];
+
+  static blockUser = [
+    passport.authenticate("jwt", { session: false }),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const user = req.user as User;
+      const blockedId = req.params.userid as string;
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          blocked: {
+            connect: [{ id: blockedId }],
+          },
+        },
+      });
+
+      res.status(200).json("successfully blocked user");
+    }),
   ];
 }
 

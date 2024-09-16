@@ -9,17 +9,11 @@ import passport from "passport";
 import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
-import { PrismaClient, User } from "@prisma/client";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import cookie from "cookie";
+import { prisma } from "./config/prisma-client";
 
 const app: Express = express();
-const server = createServer(app);
-const port = process.env.PORT || 3000;
 
-console.log(process.env.CLIENT_URL);
-const corsOptions: CorsOptions = {
+export const corsOptions: CorsOptions = {
   origin: ["http://localhost:5173", process.env.CLIENT_URL],
   credentials: true,
   allowedHeaders: ["Content-type"],
@@ -31,8 +25,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const prismaClient = new PrismaClient();
-
 const session: SessionOptions = {
   name: "session",
   resave: false,
@@ -41,7 +33,7 @@ const session: SessionOptions = {
   cookie: {
     maxAge: 604800000,
   },
-  store: new PrismaSessionStore(prismaClient, {
+  store: new PrismaSessionStore(prisma, {
     checkPeriod: 2 * 60 * 1000, //ms
     dbRecordIdIsSessionId: true,
   }),
@@ -62,71 +54,4 @@ app.use(passport.session());
 
 app.use("/", router);
 
-const io = new Server(server, {
-  cors: corsOptions,
-});
-
-io.engine.use((req: any, res: any, next: any) => {
-  if (!req.headers.cookie) return;
-  req.cookies = {};
-  req.cookies.jwt = cookie.parse(req.headers.cookie).jwt;
-  const isHandshake = req._query.sid === undefined;
-  if (isHandshake) {
-    passport.authenticate("jwt", { session: false })(req, res, next);
-  } else {
-    next();
-  }
-});
-
-io.on("connection", (socket) => {
-  const req = socket.request as any;
-  const user = req.user as User;
-
-  console.log(`${user.name} connected`);
-
-  socket.join(`user:${user.id}`);
-  socket.on("disconnect", () => {
-    console.log(`${user.name} disconnected`);
-  });
-
-  socket.on("message:create", async ({ conversationId, content }) => {
-    await prismaClient.message.create({
-      data: {
-        body: content,
-        conversationId: conversationId,
-        authorId: user.id,
-      },
-    });
-
-    const otherUser = await prismaClient.user.findFirst({
-      where: {
-        conversations: {
-          some: {
-            users: {
-              some: {
-                id: {
-                  contains: user.id,
-                },
-              },
-            },
-          },
-        },
-        NOT: {
-          id: {
-            contains: user.id,
-          },
-        },
-      },
-    });
-    socket.to(`user:${otherUser.id}`).emit("message:create", {
-      author: user.name,
-      content: content,
-    });
-  });
-});
-
-server.listen(port, () => {
-  console.log(`server running at localhost:${port}`);
-});
-
-export { prismaClient, app, io };
+export { app };

@@ -3,7 +3,7 @@ import { body, validationResult } from "express-validator";
 import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
-import { prismaClient } from "../app";
+import { prisma } from "../config/prisma-client";
 import { title } from "process";
 
 class ConversationController {
@@ -13,7 +13,7 @@ class ConversationController {
     body("otherId").trim().isLength({ min: 1 }).escape(),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const errors = validationResult(req);
-      const otherUser = await prismaClient.user.findUnique({
+      const otherUser = await prisma.user.findUnique({
         where: {
           id: req.body.otherId,
         },
@@ -21,7 +21,7 @@ class ConversationController {
       const currentUser = req.user as User;
       console.log(currentUser);
       if (errors.isEmpty()) {
-        const conversation = await prismaClient.conversation.create({
+        const conversation = await prisma.conversation.create({
           data: {
             title: req.body.title || "",
             users: {
@@ -41,7 +41,7 @@ class ConversationController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationId = req.params.conversationid;
 
-      await prismaClient.conversation.delete({
+      await prisma.conversation.delete({
         where: {
           id: conversationId,
         },
@@ -56,7 +56,7 @@ class ConversationController {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userid } = req.user as User;
 
-      const conversations = await prismaClient.conversation.findMany({
+      const conversations = await prisma.conversation.findMany({
         where: {
           users: {
             some: {
@@ -92,7 +92,7 @@ class ConversationController {
       const conversationid = req.params.conversationid;
       const currentUser = req.user as User;
 
-      const conversation = await prismaClient.conversation.findFirst({
+      const conversation = await prisma.conversation.findFirst({
         where: {
           id: conversationid,
         },
