@@ -14,16 +14,15 @@ datasource db {
 }
 
 model User {
-  pk            Int            @id @default(autoincrement())
-  id            String         @unique @default(cuid())
+  id            String         @id @unique @default(cuid())
   name          String         @unique
   blocked       User[]         @relation("blocked")
   password      String
   messages      Message[]
   conversations Conversation[]
   imgUrl        String
-  User          User?          @relation(name: "blocked", fields: [userPk], references: [pk])
-  userPk        Int?
+  User          User?          @relation(name: "blocked", fields: [userPk], references: [id])
+  userPk        String?
 }
 
 model Message {
