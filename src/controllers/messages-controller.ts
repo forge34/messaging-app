@@ -15,7 +15,6 @@ class MessagesController {
         if (errors.isEmpty()) {
           next();
         } else {
-          console.log(errors.array());
           res.status(401).json({ errors: errors.array() });
         }
       },
