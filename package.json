@@ -8,7 +8,7 @@
     "test": "NODE_ENV=test && vitest --coverage",
     "start": "node dist/server.js",
     "build": "tsc && npx prisma db push",
-    "dev": "NODE_ENV=development && nodemon src/server.ts"
+    "dev": " nodemon src/server.ts"
   },
   "author": "",
   "license": "ISC",

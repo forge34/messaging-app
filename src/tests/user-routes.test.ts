@@ -78,12 +78,11 @@ describe("/users route", () => {
     });
 
     describe("given invalid jwt", () => {
-      test("returns 404", async () => {
+      test("returns 401", async () => {
         const res = await request(server)
           .get("/users")
-          .set("Cookie", tokenString);
 
-        expect(res.status).toEqual(200);
+        expect(res.status).toEqual(401);
       });
     });
   });

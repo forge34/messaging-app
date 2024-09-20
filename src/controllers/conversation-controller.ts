@@ -4,7 +4,6 @@ import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "../config/prisma-client";
-import { title } from "process";
 
 class ConversationController {
   static create = [
@@ -19,7 +18,7 @@ class ConversationController {
         },
       });
       const currentUser = req.user as User;
-      console.log(currentUser);
+
       if (errors.isEmpty()) {
         const conversation = await prisma.conversation.create({
           data: {
