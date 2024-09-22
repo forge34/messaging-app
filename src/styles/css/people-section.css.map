@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["../sass/people-section.scss","../sass/_variables.scss"],"names":[],"mappings":"AAEA;EACE;EACA;EACA;EACA,kBCGa;EDFb;EACA;;AAEA;EACE,eCTG;EDUH;;;AAIJ;EACE;EACA;EACA;EACA;EAEA","file":"people-section.css"}
+{"version":3,"sourceRoot":"","sources":["../sass/people-section.scss","../sass/_variables.scss"],"names":[],"mappings":"AAEA;EACE;EACA;EACA;EACA,kBCGa;EDFb;EACA;;AAEA;EACE,eCTG;EDUH;;;AAIJ;EACE;EACA;EACA;EACA;EAEA;;;AAGF;EACE;IACE;IACA;IACA;;EAGF;IACE;IACA","file":"people-section.css"}

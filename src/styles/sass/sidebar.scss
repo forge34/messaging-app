@@ -13,6 +13,14 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .sidebar {
+    flex-direction: row;
+    grid-column: 1 / -1;
+    grid-row: 2 / -1;
+  }
+}
+
 .sidebar-item {
   display: flex;
   flex-direction: column;
@@ -29,6 +37,8 @@
   img {
     filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg)
       brightness(99%) contrast(94%);
+      max-width: 100%;
+      height: auto;
   }
 
   p {

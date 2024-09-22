@@ -15,10 +15,11 @@
 
   & img {
     position: absolute;
-    margin-inline: auto;
     margin-bottom: 1em;
-    top: -105%;
-    transform: translate(35%);
+    top: -90%;
+    left: 25%;
+
+    width: 50%;
   }
 }
 
@@ -46,4 +47,16 @@
   font-size: 1.5em;
   align-self: center;
   margin-bottom: 1em;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-section {
+    width: 90%;
+    & img {
+      top: -70%;
+      left: 25%;
+    }
+
+    margin-inline: 1rem;
+  }
 }

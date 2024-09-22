@@ -7,7 +7,7 @@ export default function Profile() {
 
   return (
     <div className="profile-section">
-      <img src={user?.imgUrl} width={300} height={300} />
+      <img src={user?.imgUrl} />
 
       <div className="profile-info">
         <div className="info-row">

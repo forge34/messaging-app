@@ -68,7 +68,6 @@ function App() {
   return (
     <>
       <Sidebar>
-        <h1>MA</h1>
         <SidebarItem
           imgSrc={messageIcon}
           itemtext="All messages"

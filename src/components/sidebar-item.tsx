@@ -23,7 +23,7 @@ export default function SidebarItem(props: sidebarItemProps) {
         } else navigate(`${props.to}`);
       }}
     >
-      <img src={props.imgSrc} width={32} height={32} />
+      <img src={props.imgSrc}  />
       <p>{props.itemtext}</p>
     </div>
   );

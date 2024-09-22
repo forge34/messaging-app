@@ -19,4 +19,16 @@
   column-gap: 5em;
 }
 
+@media screen and (max-width: 768px) {
+  .people-section {
+    grid-row: 1/2;
+    grid-column: 1/-1;
+    border-radius: 0;
+  }
+  .user-card-container {
+    grid-template-rows: repeat(auto-fill, minmax(max-content, 1fr));
+    grid-template-columns: auto;
+  }
+}
+
 /*# sourceMappingURL=people-section.css.map */

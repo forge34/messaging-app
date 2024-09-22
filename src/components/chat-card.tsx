@@ -1,6 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/css/chat-card.css";
 import { formatDistanceToNow } from "date-fns";
+import { useActiveLink } from "../utils/hooks/use-active-link";
 interface ChatCardProps {
   conversationTitle: string;
   conversationLastMsg: string;
@@ -17,10 +18,7 @@ export default function ChatCard({
   conversationId,
 }: ChatCardProps) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const contains = location.pathname.includes(`${conversationId}`);
-
-  const selected = contains ? "selected" : "";
+  const { selected } = useActiveLink({ link: conversationId, exact: false });
 
   return (
     <div

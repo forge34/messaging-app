@@ -8,6 +8,7 @@
 body,
 body > #root {
   height: 100dvh;
+  width: 100dvw;
   background-color: #181a1d;
 }
 
@@ -51,10 +52,16 @@ form {
 
 #root {
   display: grid;
-  grid-template-columns: minmax(min-content, max-content) 1fr;
+  grid-template-columns: 1fr 12fr;
   grid-template-rows: 100%;
 }
 
+@media screen and (max-width: 768px) {
+  #root {
+    grid-template-columns: 100%;
+    grid-template-rows: 12fr 1fr;
+  }
+}
 .search-input {
   margin-top: 0.5em;
   display: flex;
