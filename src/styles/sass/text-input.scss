@@ -8,47 +8,54 @@
     margin: variables.$base * 2 0 variables.$base * 0.5 0;
     display: flex;
     align-items: center;
-
-    label {
-      font-size: 0.8em;
-
-      &::after {
-        content: "\00a0*";
-        color: red;
-      }
-    }
-
-    a {
-      font-size: 0.9em;
-      margin: 0;
-      margin-left: auto;
-      color: variables.$primary-500;
-    }
   }
-  input {
-    font-size: 1.1em;
-    border-radius: 4px;
-    width: 40ch;
-    height: 4ch;
-    padding: variables.$base * 0.4 0.3em;
-    border-style: none;
+}
+.text-input label {
+  font-size: 0.8em;
 
-    background-color: variables.$bg-color-500;
-    color: white;
-    outline-color: transparent;
-    outline-style: solid;
-    outline-width: 1px;
-
-    &:is(:-webkit-autofill, :autofill) {
-      background-color: wheat !important;
-    }
-
-    &.valid {
-      outline-color: green;
-    }
-
-    &.invalid {
-      outline-color: red;
-    }
+  &::after {
+    content: "\00a0*";
+    color: red;
   }
+}
+
+a {
+  font-size: 0.9em;
+  margin: 0;
+  margin-left: auto;
+  color: variables.$primary-500;
+}
+
+.text-input input {
+  font-size: 1.1em;
+  border-radius: 4px;
+  width: 40ch;
+  height: 4ch;
+  padding: variables.$base * 0.4 0.3em;
+  border-style: none;
+
+  background-color: variables.$bg-color-500;
+  color: white;
+  outline-color: transparent;
+  outline-style: solid;
+  outline-width: 1px;
+
+  &:is(:-webkit-autofill, :autofill) {
+    background-color: wheat !important;
+  }
+
+  &.valid {
+    outline-color: green;
+  }
+
+  &.invalid {
+    outline-color: red;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .text-input label ,.text-input input{
+    font-size: 1em;
+  }
+
 }
