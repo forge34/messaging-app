@@ -18,7 +18,7 @@ a chat app where users can add other users and send them messages real-time.
 - Vite
 
 ### TO-DO 
+- [x]  make the website mobile responsive
 - [ ]  allow users to block other users
 - [ ]  allow users to customize their profile
 - [ ]  allow users to bookmark messages
-- [ ]  make the website mobile responsive
