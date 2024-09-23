@@ -59,16 +59,6 @@ export default function ChatSection() {
           <Outlet></Outlet>
         </div>
       );
-    } else {
-      return (
-        <div className="chat-section">
-          <div className="chat-sidebar">
-            <h1>Chats</h1>
-            <SearchInput></SearchInput>
-            <ChatSection.SortedConversation data={sortedConversation} />
-          </div>
-        </div>
-      );
     }
   }
   return (
