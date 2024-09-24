@@ -13,7 +13,6 @@
 
   h1 {
     font-size: 1.6em;
-    margin-bottom: vars.$base;
   }
 
   .chat-sidebar {
@@ -45,6 +44,10 @@
 
 .top-bar {
   display: flex;
+
+  & > * {
+    margin: auto 0;
+  }
 
   padding: vars.$base vars.$base 0;
   border-radius: 0 0 7px 7px;
@@ -133,4 +136,14 @@
   padding: vars.$base * 0.5;
   font-size: 1.2em;
   height: 100%;
+}
+
+.close-btn {
+  background-color: transparent;
+  border-style: none;
+  background-image: url("/src/assets/close-btn.svg");
+  filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg)
+    brightness(91%) contrast(88%);
+  margin-right: 0.5em;
+  cursor: pointer;
 }
