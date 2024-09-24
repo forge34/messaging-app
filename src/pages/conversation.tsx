@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
@@ -12,6 +12,7 @@ import Message from "../components/message";
 import { socket } from "../utils/socket";
 import cuid2 from "@paralleldrive/cuid2";
 import { queryClient } from "../router";
+import closeBtnPath from "../assets/close-btn.svg";
 
 export interface sentMessages
   extends Pick<MessageSchema, "author" | "body" | "id"> {
@@ -26,6 +27,7 @@ export default function Conversation() {
   const initialData = useLoaderData() as ConversationSchema;
   const { data } = useQuery({ ...getConversationById(id), initialData });
   const { data: user } = useQuery(getCurrentUser());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const LastMessage = document.getElementById(
@@ -69,6 +71,14 @@ export default function Conversation() {
   return (
     <div className="conversation-box">
       <div className="top-bar">
+        <input
+          className="close-btn"
+          type="image"
+          src={closeBtnPath}
+          onClick={() => {
+            navigate("/conversations");
+          }}
+        />
         <h1>{data?.title}</h1>
         <img src={videoUcon} width={40} height={40} />
         <img src={callIcon} width={40} height={40} />

@@ -10,7 +10,6 @@
 }
 .chat-section h1 {
   font-size: 1.6em;
-  margin-bottom: 0.5em;
 }
 .chat-section .chat-sidebar {
   grid-column: 1/2;
@@ -42,6 +41,9 @@
   padding: 0.5em 0.5em 0;
   border-radius: 0 0 7px 7px;
   background-color: #23262a;
+}
+.top-bar > * {
+  margin: auto 0;
 }
 .top-bar img {
   padding: 0.3em;
@@ -116,6 +118,15 @@
 }
 .message-input:focus {
   outline-style: none;
+}
+
+.close-btn {
+  background-color: transparent;
+  border-style: none;
+  background-image: url("/src/assets/close-btn.svg");
+  filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg) brightness(91%) contrast(88%);
+  margin-right: 0.5em;
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=chat-section.css.map */
