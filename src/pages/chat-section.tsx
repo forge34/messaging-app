@@ -1,10 +1,10 @@
 import "../styles/css/chat-section.css";
 import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
-import { useQuery } from "@tanstack/react-query";
-import { conversationLoader, getUserConversations } from "../utils/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getUserConversations } from "../utils/queries";
 import { ConversationSchema } from "../utils/schema";
-import { Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useMemo } from "react";
 import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
@@ -27,26 +27,8 @@ function useSortedConversations(data: ConversationSchema[]) {
   return sortedConversation;
 }
 
-ChatSection.SortedConversation = ({ data }: { data: ConversationSchema[] }) =>
-  data?.map((conversation: ConversationSchema) => {
-    const lastMsg = conversation?.messages[conversation.messages.length - 1];
-    return (
-      <ChatCard
-        conversationImg={conversation.conversationImg as string}
-        conversationTitle={conversation.title}
-        conversationLastMsg={lastMsg?.body}
-        conversationId={conversation.id}
-        key={conversation.id}
-        conversationLastSent={lastMsg?.createdAt}
-      ></ChatCard>
-    );
-  });
-
 export default function ChatSection() {
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof conversationLoader>>
-  >;
-  const { data } = useQuery({ ...getUserConversations(), initialData });
+  const { data } = useSuspenseQuery(getUserConversations());
   const sortedConversation = useSortedConversations(data);
   const { matches } = useMatchMedia("(max-width: 768px)");
   const location = useLocation();
@@ -72,3 +54,18 @@ export default function ChatSection() {
     </div>
   );
 }
+
+ChatSection.SortedConversation = ({ data }: { data: ConversationSchema[] }) =>
+  data?.map((conversation: ConversationSchema) => {
+    const lastMsg = conversation?.messages[conversation.messages.length - 1];
+    return (
+      <ChatCard
+        conversationImg={conversation.conversationImg as string}
+        conversationTitle={conversation.title}
+        conversationLastMsg={lastMsg?.body}
+        conversationId={conversation.id}
+        key={conversation.id}
+        conversationLastSent={lastMsg?.createdAt}
+      ></ChatCard>
+    );
+  });

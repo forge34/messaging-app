@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
 import callIcon from "../assets/phone.svg";
@@ -24,8 +24,7 @@ export interface sentMessages
 export default function Conversation() {
   const { id = "" } = useParams();
   const [value, setValue] = useState("");
-  const initialData = useLoaderData() as ConversationSchema;
-  const { data } = useQuery({ ...getConversationById(id), initialData });
+  const { data } = useSuspenseQuery(getConversationById(id));
   const { data: user } = useQuery(getCurrentUser());
   const navigate = useNavigate();
 

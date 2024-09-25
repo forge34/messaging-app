@@ -18,7 +18,7 @@ export default function ChatCard({
   conversationId,
 }: ChatCardProps) {
   const navigate = useNavigate();
-  const { selected } = useActiveLink({ link: conversationId, exact: false });
+  const { selected } = useActiveLink({ link: conversationId });
 
   return (
     <div
