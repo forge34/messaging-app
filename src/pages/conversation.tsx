@@ -1,4 +1,4 @@
-import {  useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
@@ -24,6 +24,8 @@ export interface sentMessages
 export default function Conversation() {
   const { id = "" } = useParams();
   const { data } = useSuspenseQuery(getConversationById(id));
+
+  const { data: user } = useSuspenseQuery(getCurrentUser());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,24 +52,32 @@ export default function Conversation() {
       </div>
       <div className="message-container">
         {data?.messages.map((message: MessageSchema) => {
+          const ownMessage = message.author.id === user.id;
           return (
             <Message
               author={message.author}
               body={message.body}
               id={message.id}
-              ownMessage={message.ownMessage}
+              ownMessage={ownMessage}
               key={message.id}
             ></Message>
           );
         })}
       </div>
-      <MessageInput id={id} data={data} />
+      <MessageInput id={id} data={data} user={user}/>
     </div>
   );
 }
 
-function MessageInput({ id, data }: { id: string; data: ConversationSchema }) {
-  const { data: user } = useSuspenseQuery(getCurrentUser());
+function MessageInput({
+  id,
+  data,
+  user,
+}: {
+  id: string;
+  data: ConversationSchema;
+  user: UserSchema;
+}) {
   const [value, setValue] = useState("");
   async function handelSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -83,7 +93,6 @@ function MessageInput({ id, data }: { id: string; data: ConversationSchema }) {
       authorId: definedUser.id,
       conversationId: id,
       Conversation: data,
-      ownMessage: true,
     };
 
     queryClient.setQueryData(

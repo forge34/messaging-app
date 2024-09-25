@@ -16,7 +16,6 @@ export interface MessageSchema {
   conversationId: string;
   author: UserSchema;
   Conversation: ConversationSchema;
-  ownMessage: boolean;
 }
 
 export interface ConversationSchema {
