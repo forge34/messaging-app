@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {  useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getConversationById, getCurrentUser } from "../utils/queries";
 import videoUcon from "../assets/video.svg";
@@ -23,9 +23,7 @@ export interface sentMessages
 
 export default function Conversation() {
   const { id = "" } = useParams();
-  const [value, setValue] = useState("");
   const { data } = useSuspenseQuery(getConversationById(id));
-  const { data: user } = useQuery(getCurrentUser());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +33,42 @@ export default function Conversation() {
     LastMessage?.scrollIntoView?.();
   }, [data.messages]);
 
+  return (
+    <div className="conversation-box">
+      <div className="top-bar">
+        <input
+          className="close-btn"
+          type="image"
+          src={closeBtnPath}
+          onClick={() => {
+            navigate("/conversations");
+          }}
+        />
+        <h1>{data?.title}</h1>
+        <img src={videoUcon} width={40} height={40} />
+        <img src={callIcon} width={40} height={40} />
+      </div>
+      <div className="message-container">
+        {data?.messages.map((message: MessageSchema) => {
+          return (
+            <Message
+              author={message.author}
+              body={message.body}
+              id={message.id}
+              ownMessage={message.ownMessage}
+              key={message.id}
+            ></Message>
+          );
+        })}
+      </div>
+      <MessageInput id={id} data={data} />
+    </div>
+  );
+}
+
+function MessageInput({ id, data }: { id: string; data: ConversationSchema }) {
+  const { data: user } = useSuspenseQuery(getCurrentUser());
+  const [value, setValue] = useState("");
   async function handelSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -68,50 +102,22 @@ export default function Conversation() {
   }
 
   return (
-    <div className="conversation-box">
-      <div className="top-bar">
+    <div className="message-input-container">
+      <form onSubmit={handelSubmit}>
+        <input type="submit" hidden />
         <input
-          className="close-btn"
-          type="image"
-          src={closeBtnPath}
-          onClick={() => {
-            navigate("/conversations");
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
           }}
+          name="content"
+          className="message-input"
+          type="text"
+          placeholder="Enter message ..."
+          autoComplete="off"
         />
-        <h1>{data?.title}</h1>
-        <img src={videoUcon} width={40} height={40} />
-        <img src={callIcon} width={40} height={40} />
-      </div>
-      <div className="message-container">
-        {data?.messages.map((message: MessageSchema) => {
-          return (
-            <Message
-              author={message.author}
-              body={message.body}
-              id={message.id}
-              ownMessage={message.ownMessage}
-              key={message.id}
-            ></Message>
-          );
-        })}
-      </div>
-      <div className="message-input-container">
-        <form onSubmit={handelSubmit}>
-          <input type="submit" hidden />
-          <input
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
-            name="content"
-            className="message-input"
-            type="text"
-            placeholder="Enter message ..."
-            autoComplete="off"
-          />
-        </form>
-        <img src={send} width={32} height={32} />
-      </div>
+      </form>
+      <img src={send} width={32} height={32} />
     </div>
   );
 }
