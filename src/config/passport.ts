@@ -81,9 +81,12 @@ class PassportConfig {
             blocked: true,
           },
         });
+
         if (user) {
           return done(null, user);
-        } else return done("invalid jwt", null);
+        } else if (!user) {
+          done(null, false);
+        }
       },
     );
 
