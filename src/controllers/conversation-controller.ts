@@ -89,7 +89,6 @@ class ConversationController {
     passport.authenticate("jwt", { session: false }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationid = req.params.conversationid;
-      const currentUser = req.user as User;
 
       const conversation = await prisma.conversation.findFirst({
         where: {
@@ -104,22 +103,7 @@ class ConversationController {
           users: true,
         },
       });
-      const otherUser = conversation.users.filter((value) => {
-        return value.id !== currentUser.id;
-      })[0];
-
-      const conversationWithOwn = {
-        ...conversation,
-        title: otherUser.name,
-        conversationImg: otherUser.imgUrl,
-        messages: conversation.messages.map((message) => {
-          return {
-            ...message,
-            ownMessage: currentUser.id === message.authorId,
-          };
-        }),
-      };
-      res.status(200).json(conversationWithOwn);
+      res.status(200).json(conversation);
     }),
   ];
 }
