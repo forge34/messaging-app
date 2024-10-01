@@ -17,7 +17,7 @@
 
   .chat-sidebar {
     grid-column: 1 / 2;
-    padding: vars.$base ;
+    padding: vars.$base;
     display: flex;
     flex-direction: column;
   }
@@ -118,12 +118,13 @@
     width: 100%;
   }
 
-  img {
+  input[type="image"] {
     margin-left: auto;
     filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg)
       brightness(91%) contrast(88%);
     transition: transform 0.3s ease-in;
     margin-right: 0.5em;
+    transform: rotate(15deg);
 
     &:hover {
       transform: scale(1.1);

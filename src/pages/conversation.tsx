@@ -64,7 +64,7 @@ export default function Conversation() {
           );
         })}
       </div>
-      <MessageInput id={id} data={data} user={user}/>
+      <MessageInput id={id} data={data} user={user} />
     </div>
   );
 }
@@ -79,7 +79,7 @@ function MessageInput({
   user: UserSchema;
 }) {
   const [value, setValue] = useState("");
-  async function handelSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -111,22 +111,20 @@ function MessageInput({
   }
 
   return (
-    <div className="message-input-container">
-      <form onSubmit={handelSubmit}>
-        <input type="submit" hidden />
-        <input
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-          name="content"
-          className="message-input"
-          type="text"
-          placeholder="Enter message ..."
-          autoComplete="off"
-        />
-      </form>
-      <img src={send} width={32} height={32} />
-    </div>
+    <form className="message-input-container" onSubmit={handleSubmit}>
+      <input type="submit" hidden />
+      <input
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        name="content"
+        className="message-input"
+        type="text"
+        placeholder="Enter message ..."
+        autoComplete="off"
+      />
+      <input type="image" src={send} width={32} height={32} />
+    </form>
   );
 }
