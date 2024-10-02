@@ -15,7 +15,7 @@ export default function Logout() {
 
   useEffect(() => {
     mutation.mutate();
-  }, []);
+  }, [mutation]);
 
   if (mutation.isPending) {
     return <div>Logging out</div>;

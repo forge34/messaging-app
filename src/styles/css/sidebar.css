@@ -18,11 +18,12 @@
   }
 }
 .sidebar-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 1em 0.65em;
-  margin-top: 1em;
+  margin-top: 0.5em;
   border-radius: 9px;
   transition: background-color 0.2s ease-in 0s;
 }
@@ -48,6 +49,17 @@
 }
 .logout-icon:hover {
   background-color: rgba(213, 57, 57, 0.9490196078);
+}
+
+.tooltip {
+  position: absolute;
+  left: 80%;
+  top: -20%;
+  background-color: #515961;
+  padding: 0.5em 1em;
+  font-size: 1.2em;
+  border-radius: 0.5rem;
+  z-index: 100;
 }
 
 /*# sourceMappingURL=sidebar.css.map */
