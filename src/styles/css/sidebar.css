@@ -39,11 +39,15 @@
   width: max-content;
   font-size: 0.7em;
 }
-.sidebar-item:last-child {
-  margin-top: auto;
-}
 .sidebar-item.selected, .sidebar-item:hover {
   background-color: #4967d0;
+}
+
+.logout {
+  margin-top: auto;
+}
+.logout:hover {
+  background-color: rgba(213, 57, 57, 0.9490196078);
 }
 
 /*# sourceMappingURL=sidebar.css.map */

@@ -5,6 +5,7 @@ import starIcon from "./assets/star.svg";
 import settingsIcon from "./assets/settings.svg";
 import profileIcon from "./assets/user.svg";
 import usersIcon from "./assets/users.svg";
+import logOutIcon from "./assets/log-out.svg";
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
@@ -72,29 +73,19 @@ function App() {
           imgSrc={messageIcon}
           itemtext="All messages"
           to="conversations"
-        ></SidebarItem>
+        />
+        <SidebarItem imgSrc={starIcon} itemtext="Starred" to="starred" />
+        <SidebarItem imgSrc={profileIcon} itemtext="Profle" to="profile" />
+        <SidebarItem imgSrc={usersIcon} itemtext="people" to="people" />
         <SidebarItem
-          imgSrc={starIcon}
-          itemtext="Starred"
-          to="starred"
-        ></SidebarItem>
-        <SidebarItem
-          imgSrc={profileIcon}
-          itemtext="Profle"
-          to="profile"
-        ></SidebarItem>
-        <SidebarItem
-          imgSrc={usersIcon}
-          itemtext="people"
-          to="people"
-        ></SidebarItem>
-        <SidebarItem
-          imgSrc={settingsIcon}
-          itemtext="Settings"
-          to="settings"
-        ></SidebarItem>
+          imgSrc={logOutIcon}
+          itemtext="Logout"
+          to="logout"
+          className="logout"
+        />
+        <SidebarItem imgSrc={settingsIcon} itemtext="Settings" to="settings" />
       </Sidebar>
-      <Outlet></Outlet>
+      <Outlet />
     </>
   );
 }

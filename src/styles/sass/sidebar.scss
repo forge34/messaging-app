@@ -30,6 +30,7 @@
   border-radius: 9px;
 
   transition: background-color 0.2s ease-in 0s;
+
   * {
     margin-inline: auto;
   }
@@ -37,8 +38,8 @@
   img {
     filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg)
       brightness(99%) contrast(94%);
-      max-width: 100%;
-      height: auto;
+    max-width: 100%;
+    height: auto;
   }
 
   p {
@@ -47,12 +48,16 @@
     font-size: 0.7em;
   }
 
-  &:last-child {
-    margin-top: auto;
-  }
-
   &.selected,
   &:hover {
     background-color: vars.$primary-500;
+  }
+}
+
+.logout {
+  margin-top: auto;
+
+  &:hover {
+    background-color: #d53939f2;
   }
 }

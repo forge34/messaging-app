@@ -5,6 +5,7 @@ interface sidebarItemProps {
   imgSrc: string;
   itemtext: string;
   to: string;
+  className?: string;
 }
 
 export default function SidebarItem(props: sidebarItemProps) {
@@ -12,18 +13,18 @@ export default function SidebarItem(props: sidebarItemProps) {
   const navigate = useNavigate();
   const contains = location.pathname.includes(`${props.to}`);
 
-  const selected = contains ? "selected" : "";
+  const selected = contains ? "selected " : "";
 
   return (
     <div
-      className={"sidebar-item " + selected}
+      className={"sidebar-item " + selected + props.className}
       onClick={() => {
         if (props.to === "starred" || props.to === "settings") {
           toast.error("for decoration purposes only");
         } else navigate(`${props.to}`);
       }}
     >
-      <img src={props.imgSrc}  />
+      <img src={props.imgSrc} />
       <p>{props.itemtext}</p>
     </div>
   );
