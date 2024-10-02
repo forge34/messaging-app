@@ -43,10 +43,10 @@
   background-color: #4967d0;
 }
 
-.logout {
+.logout-icon {
   margin-top: auto;
 }
-.logout:hover {
+.logout-icon:hover {
   background-color: rgba(213, 57, 57, 0.9490196078);
 }
 

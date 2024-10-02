@@ -14,6 +14,7 @@ import Conversation from "./pages/conversation";
 import { Error } from "./components/error";
 import ChatSection from "./pages/chat-section";
 import Profile from "./pages/profile";
+import Logout from "./pages/logout";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,10 @@ const routes: RouteObject[] = [
     path: "/login",
     element: <Login></Login>,
   },
+  {
+    path:"/logout",
+    element:<Logout/>
+  }
 ];
 
 const router = createBrowserRouter(routes);

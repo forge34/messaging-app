@@ -81,7 +81,7 @@ function App() {
           imgSrc={logOutIcon}
           itemtext="Logout"
           to="logout"
-          className="logout"
+          className="logout-icon"
         />
         <SidebarItem imgSrc={settingsIcon} itemtext="Settings" to="settings" />
       </Sidebar>
