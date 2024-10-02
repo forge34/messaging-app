@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma-client";
 import { AvatarGenerator } from "random-avatar-generator";
+import { io } from "../server";
 
 const generator = new AvatarGenerator();
 
@@ -102,11 +103,12 @@ class Auth {
   ];
 
   static logout = expressAsyncHandler(async (req: Request, res: Response) => {
-    res.clearCookie("jwt", cookieOptions);
-    req.logout((err) => {
-      if (err) res.status(500).json("internal server error");
+    const { id: userId } = req.user as User;
+    req.session.destroy(() => {
+      res.cookie("jwt", "", cookieOptions);
+      io.in(`user:${userId}`).disconnectSockets(true);
+      res.status(200).json("logout sucess");
     });
-    res.status(200).json("logout sucess");
   });
 }
 
