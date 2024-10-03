@@ -10,6 +10,7 @@ import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
 import { prisma } from "./config/prisma-client";
+import compression from "compression"
 
 const app: Express = express();
 
@@ -19,6 +20,7 @@ export const corsOptions: CorsOptions = {
   allowedHeaders: ["Content-type"],
 };
 
+app.use(compression())
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());

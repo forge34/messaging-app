@@ -18,12 +18,8 @@ io.on("connection", (socket) => {
   const req = socket.request as any;
   const user = req.user as User;
 
-  console.log(`${user.name} connected`);
-
   socket.join(`user:${user.id}`);
-  socket.on("disconnect", () => {
-    console.log(`${user.name} disconnected`);
-  });
+  socket.on("disconnect", () => {});
 
   socket.on("message:create", async ({ conversationId, content }) => {
     await prisma.message.create({
@@ -61,6 +57,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`server running at port:${port}`);
-});
+server.listen(port, () => {});
