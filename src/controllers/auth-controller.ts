@@ -90,7 +90,7 @@ class Auth {
     (req: Request, res: Response) => {
       const currentUser = req.user as User;
       const token = jwt.sign({ id: currentUser.id }, process.env.SECRET, {
-        expiresIn: "7d",
+        expiresIn: "1h",
       });
 
       res.cookie("jwt", token, cookieOptions);
