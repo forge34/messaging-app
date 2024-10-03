@@ -4,6 +4,7 @@ import { ConversationSchema, UserSchema } from "./schema";
 
 const getCurrentUser = () =>
   queryOptions({
+    staleTime: 60 * 1000 * 60,
     queryKey: ["user", "current"],
     queryFn: async (): Promise<UserSchema> => {
       const res = await fetch(`${import.meta.env.VITE_API}/users/me`, {
