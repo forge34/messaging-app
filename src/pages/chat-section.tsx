@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getUserConversations } from "../utils/queries";
 import { ConversationSchema } from "../utils/schema";
 import { Outlet, useLocation } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
 
@@ -32,7 +32,25 @@ export default function ChatSection() {
   const sortedConversation = useSortedConversations(data);
   const { matches } = useMatchMedia("(max-width: 768px)");
   const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredResults, setFilteredResults] = useState<ConversationSchema[]>(
+    [],
+  );
   const activeConversation = /\/conversations\/.+/.test(location.pathname);
+
+  useEffect(() => {
+    if (searchTerm !== "") {
+      const filtered = sortedConversation.filter((conversation) =>
+        conversation.title.includes(searchTerm),
+      );
+
+      if (filtered.length > 0) {
+        setFilteredResults(filtered);
+      }
+    } else if (searchTerm === "") {
+      setFilteredResults([]);
+    }
+  }, [searchTerm, sortedConversation]);
 
   if (matches) {
     if (activeConversation) {
@@ -47,16 +65,20 @@ export default function ChatSection() {
     <div className="chat-section">
       <div className="chat-sidebar">
         <h1>Chats</h1>
-        <SearchInput></SearchInput>
-        <ChatSection.SortedConversation data={sortedConversation} />
+        <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        {filteredResults.length > 0 ? (
+          <Conversations data={filteredResults} />
+        ) : (
+          <Conversations data={sortedConversation} />
+        )}
       </div>
-      <Outlet></Outlet>
+      <Outlet />
     </div>
   );
 }
 
-ChatSection.SortedConversation = ({ data }: { data: ConversationSchema[] }) =>
-  data?.map((conversation: ConversationSchema) => {
+function Conversations({ data }: { data: ConversationSchema[] }) {
+  return data?.map((conversation: ConversationSchema) => {
     const lastMsg = conversation?.messages[conversation.messages.length - 1];
     return (
       <ChatCard
@@ -69,3 +91,4 @@ ChatSection.SortedConversation = ({ data }: { data: ConversationSchema[] }) =>
       ></ChatCard>
     );
   });
+}
