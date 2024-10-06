@@ -7,7 +7,7 @@ export default function Profile() {
 
   return (
     <div className="profile-section">
-      <img src={user?.imgUrl} />
+      <img src={user?.imgUrl} alt="user avatar" />
 
       <div className="profile-info">
         <div className="info-row">

@@ -9,9 +9,9 @@ function Sidebar({
   handleClick?: React.MouseEventHandler<HTMLDivElement>;
 }) {
   return (
-    <div onClick={handleClick} className="sidebar">
+    <nav onClick={handleClick} className="sidebar">
       {children}
-    </div>
+    </nav>
   );
 }
 

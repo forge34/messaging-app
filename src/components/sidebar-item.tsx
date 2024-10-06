@@ -25,7 +25,8 @@ export default function SidebarItem({
   const selected = contains ? "selected " : "";
 
   return (
-    <div
+    <section
+      aria-current={contains ? "page" : "false"}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={"sidebar-item " + selected + className}
@@ -35,13 +36,13 @@ export default function SidebarItem({
         } else navigate(`${to}`);
       }}
     >
-      <img src={imgSrc} />
+      <img src={imgSrc} alt={`${to} navigation icon`} />
       {matches && <p>{itemtext}</p>}
       {!matches && hovered && (
         <span className="tooltip">
           <p>{itemtext}</p>
         </span>
       )}
-    </div>
+    </section>
   );
 }

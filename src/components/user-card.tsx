@@ -50,7 +50,7 @@ export default function UserCard(props: UserCardProps) {
 
   return (
     <div className="user-card">
-      <img src={props.imgSrc} width={64} height={64} />
+      <img src={props.imgSrc} width={64} height={64} alt="user avatar" />
       <div>
         <h1 className="username">{props.username}</h1>
         <button onClick={goToConversation} className="user-card-btn">

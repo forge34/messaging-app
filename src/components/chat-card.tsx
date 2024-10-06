@@ -27,7 +27,7 @@ export default function ChatCard({
         navigate(`${conversationId}`);
       }}
     >
-      <img width={48} height={48} src={conversationImg} />
+      <img width={48} height={48} src={conversationImg} alt="user avatar" />
       <div className="card-info">
         <h3>{conversationTitle}</h3>
         <p className="last-msg">{conversationLastMsg?.substring?.(0, 30)}</p>

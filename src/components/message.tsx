@@ -22,7 +22,7 @@ export default function Message({
       id={id}
       key={id}
     >
-      <img src={author.imgUrl} width={32} height={32} />
+      <img src={author.imgUrl} width={32} height={32} alt="user avatar"/>
       <p>{body}</p>
       <img src={status === "pending" ? "" : ""} />
     </div>
