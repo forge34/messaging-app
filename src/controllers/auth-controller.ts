@@ -134,14 +134,15 @@ class Auth {
     ),
   ];
 
-  static logout = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id: userId } = req.user as User;
-    req.session.destroy(() => {
+  static logout = [
+    passport.authenticate("jwt", { session: false }),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const { id: userId } = req.user as User;
       res.cookie("jwt", "", cookieOptions);
       io.in(`user:${userId}`).disconnectSockets(true);
       res.status(200).json("logout sucess");
-    });
-  });
+    }),
+  ];
 }
 
 export default Auth;
