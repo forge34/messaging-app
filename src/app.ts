@@ -9,11 +9,6 @@ import passport from "passport";
 
 import compression from "compression";
 
-interface RouteError extends Error {
-  statusCode?: number;
-  message: string;
-}
-
 const app: Express = express();
 
 export const corsOptions: CorsOptions = {
@@ -35,9 +30,9 @@ app.use(passport.initialize());
 
 app.use("/", router);
 
-app.use((err: RouteError, req: Request, res: Response, next: NextFunction) => {
-  console.log(err)
-  res.status(err.statusCode || 500).json(err.message);
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
+  res.status(err.code || 500).json(err.message);
 });
 
 export { app };

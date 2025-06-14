@@ -8,7 +8,6 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma-client";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server";
-import { error } from "console";
 
 const generator = new AvatarGenerator();
 
@@ -110,7 +109,7 @@ class Auth {
 
             if (!user) {
               const error = {
-                statusCode: 401,
+                code: 401,
                 message: "Authentication failed",
               };
               next(error);
