@@ -2,20 +2,18 @@ import { useNavigate, useRouteError } from "react-router-dom";
 import { RouteError } from "../utils/fetch-wrapper";
 
 export function Error() {
-  const errors = useRouteError() as RouteError;
+  const error = useRouteError() as RouteError;
   const navigate = useNavigate();
+
+  console.log("Error reached boundary");
 
   return (
     <div className="error-page">
-      <h1 className="error-code">{errors.status}</h1>
-      <h1 className="error-msg">{errors.message}</h1>
-      <button
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Home page
-      </button>
+      <h1 className="error-code">{error.status}</h1>
+      <h1 className="error-msg">{error.message}</h1>
+      {error.status === 401 ? <button onClick={() => {
+        navigate("/login")
+      }}>Go to Login</button> : null}
     </div>
   );
 }

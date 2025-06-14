@@ -7,7 +7,6 @@ import { QueryClient } from "@tanstack/react-query";
 import {
   conversationIdLoader,
   conversationLoader,
-  // getCurrentUser,
   userLoader,
 } from "./utils/queries";
 import Conversation from "./pages/conversation";
@@ -19,12 +18,10 @@ import Logout from "./pages/logout";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      throwOnError(error) {
-        console.log(error);
-        return true;
-      },
+      throwOnError: true,
     },
   },
+  
 });
 
 const routes: RouteObject[] = [
@@ -32,7 +29,6 @@ const routes: RouteObject[] = [
     path: "/",
     element: <App></App>,
     errorElement: <Error />,
-    // loader: () => queryClient.ensureQueryData(getCurrentUser()),
     children: [
       {
         index: true,
