@@ -21,31 +21,39 @@ io.on("connection", (socket) => {
   socket.join(`user:${user.id}`);
   socket.on("disconnect", () => {});
 
-  socket.on("message:create", async ({ conversationId, content }) => {
-    if (content === "") {
-      return;
-    }
+  socket.on(
+    "message:create",
+    async ({
+      conversationId,
+      content,
+    }: {
+      conversationId: string;
+      content: string;
+    }) => {
+      if (!content?.trim()) {
+        return;
+      }
+      await prisma.message.create({
+        data: {
+          body: content,
+          conversationId: conversationId,
+          authorId: user.id,
+        },
+      });
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: conversationId },
+        include: {
+          users: true,
+        },
+      });
+      const otherUser = conversation?.users.find((u) => u.id !== user.id);
 
-    await prisma.message.create({
-      data: {
-        body: content,
-        conversationId: conversationId,
-        authorId: user.id,
-      },
-    });
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId },
-      include: {
-        users: true,
-      },
-    });
-    const otherUser = conversation?.users.find((u) => u.id !== user.id);
-
-    socket.to(`user:${otherUser.id}`).emit("message:create", {
-      author: user.name,
-      content: content,
-    });
-  });
+      socket.to(`user:${otherUser.id}`).emit("message:create", {
+        author: user.name,
+        content: content,
+      });
+    },
+  );
 });
 
 server.listen(port, () => {});
