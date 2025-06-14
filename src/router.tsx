@@ -7,7 +7,7 @@ import { QueryClient } from "@tanstack/react-query";
 import {
   conversationIdLoader,
   conversationLoader,
-  getCurrentUser,
+  // getCurrentUser,
   userLoader,
 } from "./utils/queries";
 import Conversation from "./pages/conversation";
@@ -16,14 +16,23 @@ import ChatSection from "./pages/chat-section";
 import Profile from "./pages/profile";
 import Logout from "./pages/logout";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      throwOnError(error) {
+        console.log(error);
+        return true;
+      },
+    },
+  },
+});
 
 const routes: RouteObject[] = [
   {
     path: "/",
     element: <App></App>,
     errorElement: <Error />,
-    loader: () => queryClient.ensureQueryData(getCurrentUser()),
+    // loader: () => queryClient.ensureQueryData(getCurrentUser()),
     children: [
       {
         index: true,
@@ -74,9 +83,9 @@ const routes: RouteObject[] = [
     element: <Login></Login>,
   },
   {
-    path:"/logout",
-    element:<Logout/>
-  }
+    path: "/logout",
+    element: <Logout />,
+  },
 ];
 
 const router = createBrowserRouter(routes);

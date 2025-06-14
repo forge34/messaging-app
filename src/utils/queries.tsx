@@ -1,49 +1,23 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
 import { ConversationSchema, UserSchema } from "./schema";
+import { safeFetch } from "./fetch-wrapper";
 
 const getCurrentUser = () =>
   queryOptions({
     staleTime: 60 * 1000 * 60,
     queryKey: ["user", "current"],
-    queryFn: async (): Promise<UserSchema> => {
-      const res = await fetch(`${import.meta.env.VITE_API}/users/me`, {
-        mode: "cors",
-        credentials: "include",
-      });
 
-      if (res.status === 401) {
-        console.log("throwing");
-        throw res;
-      }
-
-      return res.json();
-    },
-    retry(_, error: Response) {
-      if (error.status === 401) {
-        return false;
-      }
-      return true;
-    },
+    queryFn: async (): Promise<UserSchema> =>
+      safeFetch(`${import.meta.env.VITE_API}/users/me`),
+    retry: false,
   });
 
 const getConversationById = (id: string | undefined) =>
   queryOptions({
     queryKey: ["conversations", id],
-    queryFn: async (): Promise<ConversationSchema> => {
-      const res = await fetch(
-        `${import.meta.env.VITE_API}/conversation/${id}`,
-        {
-          mode: "cors",
-          credentials: "include",
-        },
-      );
-      if (res.status === 401) {
-        throw res;
-      }
-
-      return res.json();
-    },
+    queryFn: async (): Promise<ConversationSchema> =>
+      safeFetch(`${import.meta.env.VITE_API}/conversation/${id}`),
   });
 
 const conversationIdLoader =
@@ -57,20 +31,8 @@ const conversationIdLoader =
 const getUserConversations = () =>
   queryOptions({
     queryKey: ["conversations"],
-    queryFn: async (): Promise<Array<ConversationSchema>> => {
-      const res = await fetch(
-        `${import.meta.env.VITE_API}/conversation/currentuser`,
-        {
-          mode: "cors",
-          credentials: "include",
-        },
-      );
-      if (res.status === 401) {
-        throw res;
-      }
-
-      return res.json();
-    },
+    queryFn: async (): Promise<Array<ConversationSchema>> =>
+      await safeFetch(`${import.meta.env.VITE_API}/conversation/currentuser`),
   });
 
 const conversationLoader = (queryClient: QueryClient) => async () => {
@@ -82,19 +44,8 @@ const conversationLoader = (queryClient: QueryClient) => async () => {
 const getUsers = () =>
   queryOptions({
     queryKey: ["users"],
-    queryFn: async (): Promise<Array<UserSchema>> => {
-      const res = await fetch(`${import.meta.env.VITE_API}/users`, {
-        method: "get",
-        mode: "cors",
-        credentials: "include",
-      });
-
-      if (res.status === 401) {
-        throw res;
-      }
-
-      return res.json();
-    },
+    queryFn: async (): Promise<Array<UserSchema>> =>
+      await safeFetch(`${import.meta.env.VITE_API}/users`),
     staleTime: 1000 * 60 * 2,
   });
 

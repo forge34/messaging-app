@@ -1,22 +1,14 @@
-import {
-  isRouteErrorResponse,
-  Navigate,
-  useNavigate,
-  useRouteError,
-} from "react-router-dom";
+import { useNavigate, useRouteError } from "react-router-dom";
+import { RouteError } from "../utils/fetch-wrapper";
 
 export function Error() {
-  const errors = useRouteError();
+  const errors = useRouteError() as RouteError;
   const navigate = useNavigate();
-
-  if (isRouteErrorResponse(errors) && errors.status === 401) {
-    return <Navigate to={"/login"} />;
-  }
 
   return (
     <div className="error-page">
-      <h1 className="error-code">404</h1>
-      <h1 className="error-msg">Page not found</h1>
+      <h1 className="error-code">{errors.status}</h1>
+      <h1 className="error-msg">{errors.message}</h1>
       <button
         onClick={() => {
           navigate("/");
