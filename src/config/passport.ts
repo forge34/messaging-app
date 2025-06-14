@@ -26,7 +26,7 @@ const localVerify: passportLocal.VerifyFunction = async (
   if (match) {
     return done(null, user);
   } else if (!match) {
-    return done("Invalid username or password", false);
+    return done(null, false);
   }
 };
 

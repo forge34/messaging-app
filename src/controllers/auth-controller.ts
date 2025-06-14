@@ -40,28 +40,27 @@ class Auth {
       })
       .escape(),
 
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const errors = validationResult(req);
-
-      if (errors.isEmpty()) {
-        bcrypt.hash(req.body.password, 10, async (err, hash) => {
-          if (!err) {
-            await prisma.user.create({
-              data: {
-                name: req.body.username,
-                password: hash,
-                imgUrl: generator.generateRandomAvatar(),
-              },
-            });
-            res.status(200).json("created user");
-          } else if (err) {
-            res.status(401);
-          }
-        });
-      } else {
-        res.status(401).json({ errors: errors.array() });
-      }
-    }),
+    expressAsyncHandler(
+      async (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+          bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if (!err) {
+              await prisma.user.create({
+                data: {
+                  name: req.body.username,
+                  password: hash,
+                  imgUrl: generator.generateRandomAvatar(),
+                },
+              });
+              res.status(200).json("created user");
+            } else if (err) {
+              next(err);
+            }
+          });
+        }
+      },
+    ),
   ];
 
   static login = [
@@ -86,20 +85,40 @@ class Auth {
         }
       },
     ),
-    passport.authenticate("local", { failWithError: true }),
-    (req: Request, res: Response) => {
-      const currentUser = req.user as User;
-      const token = jwt.sign({ id: currentUser.id }, process.env.SECRET, {
-        expiresIn: "1h",
-      });
+    expressAsyncHandler(
+      async (req: Request, res: Response, next: NextFunction) => {
+        passport.authenticate(
+          "local",
+          { session: false },
+          (err: any, user: any) => {
+            if (err) {
+              return next(err);
+            }
 
-      res.cookie("jwt", token, cookieOptions);
+            if (!user) {
+              const error = {
+                statusCode: 401,
+                message: "Authentication failed",
+              };
+              next(error);
+            } else {
+              const currentUser = user as User;
+              const token = jwt.sign(
+                { id: currentUser.id },
+                process.env.SECRET,
+                {
+                  expiresIn: "1h",
+                },
+              );
 
-      res.status(200).json("Login sucess");
-    },
-    (err: Error, req: Request, res: Response, next: NextFunction) => {
-      res.status(401).json(err);
-    },
+              res.cookie("jwt", token, cookieOptions);
+
+              res.status(200).json("Login sucess");
+            }
+          },
+        )(req, res, next);
+      },
+    ),
   ];
 
   static logout = expressAsyncHandler(async (req: Request, res: Response) => {
