@@ -6,10 +6,7 @@ import morgan from "morgan";
 import router from "./routes/index";
 import { PassportConfig } from "./config/passport";
 import passport from "passport";
-import { SessionOptions } from "express-session";
-import { PrismaSessionStore } from "@quixo3/prisma-session-store";
-import expressSession from "express-session";
-import { prisma } from "./config/prisma-client";
+
 import compression from "compression";
 
 interface RouteError extends Error {
@@ -32,37 +29,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const session: SessionOptions = {
-  name: "session",
-  resave: false,
-  saveUninitialized: true,
-  secret: process.env.SECRET,
-  cookie: {
-    maxAge: 604800000,
-  },
-  store: new PrismaSessionStore(prisma, {
-    checkPeriod: 2 * 60 * 1000, //ms
-    dbRecordIdIsSessionId: true,
-  }),
-};
-
-if (app.get("env") === "production") {
-  app.set("trust proxy", 1);
-  session.cookie.httpOnly = true;
-  session.cookie.secure = true;
-  session.cookie.sameSite = "none";
-}
-app.use(expressSession(session));
-
 PassportConfig.configLocal();
 PassportConfig.configJwt();
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/", router);
 
 app.use((err: RouteError, req: Request, res: Response, next: NextFunction) => {
-  console.log(err.name);
+  console.log(err)
   res.status(err.statusCode || 500).json(err.message);
 });
 
