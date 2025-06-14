@@ -1,7 +1,7 @@
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
-import express, { Express } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import router from "./routes/index";
 import { PassportConfig } from "./config/passport";
@@ -10,7 +10,12 @@ import { SessionOptions } from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import expressSession from "express-session";
 import { prisma } from "./config/prisma-client";
-import compression from "compression"
+import compression from "compression";
+
+interface RouteError extends Error {
+  statusCode?: number;
+  message: string;
+}
 
 const app: Express = express();
 
@@ -20,7 +25,7 @@ export const corsOptions: CorsOptions = {
   allowedHeaders: ["Content-type"],
 };
 
-app.use(compression())
+app.use(compression());
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
@@ -55,5 +60,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/", router);
+
+app.use((err: RouteError, req: Request, res: Response, next: NextFunction) => {
+  console.log(err.name);
+  res.status(err.statusCode || 500).json(err.message);
+});
 
 export { app };
