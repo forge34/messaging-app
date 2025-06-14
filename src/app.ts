@@ -32,6 +32,9 @@ app.use("/", router);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
+  if (err.name === "AuthenticationError") {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   res.status(err.code || 500).json(err.message);
 });
 

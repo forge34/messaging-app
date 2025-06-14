@@ -11,14 +11,14 @@ interface IUser extends Omit<User, "password"> {
 
 class UserController {
   static getCurrent = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       res.status(200).json(req.user as User);
     }),
   ];
 
   static getMany = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     async (req: Request, res: Response) => {
       const users = await prisma.user.findMany({});
       const currentUser = req.user as User;
@@ -68,7 +68,7 @@ class UserController {
   ];
 
   static blockUser = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const user = req.user as User;
       const blockedId = req.params.userid as string;

@@ -8,7 +8,7 @@ import { prisma } from "../config/prisma-client";
 class MessagesController {
   static createMessage = [
     body("content").trim().isLength({ min: 1 }).escape(),
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
@@ -37,7 +37,7 @@ class MessagesController {
   ];
 
   static deleteMessage = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const messageId = req.params.messageid;
 

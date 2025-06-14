@@ -7,7 +7,7 @@ import { prisma } from "../config/prisma-client";
 
 class ConversationController {
   static create = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false ,failWithError:true}),
     body("title").trim().optional().isLength({ min: 1 }).escape(),
     body("otherId").trim().isLength({ min: 1 }).escape(),
     expressAsyncHandler(async (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ class ConversationController {
   ];
 
   static delete = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationId = req.params.conversationid;
 
@@ -51,7 +51,7 @@ class ConversationController {
   ];
 
   static getCurrentUserConversations = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false ,failWithError:true}),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userid } = req.user as User;
       const st = Date.now();
@@ -86,7 +86,7 @@ class ConversationController {
   ];
 
   static getById = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const conversationid = req.params.conversationid;
 

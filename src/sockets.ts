@@ -7,7 +7,7 @@ export const socketJwtVerify = (req: any, res: any, next: any) => {
   req.cookies.jwt = cookie.parse(req.headers.cookie).jwt;
   const isHandshake = req._query.sid === undefined;
   if (isHandshake) {
-    passport.authenticate("jwt", { session: false })(req, res, next);
+    passport.authenticate("jwt", { session: false,failWithError:true })(req, res, next);
   } else {
     next();
   }

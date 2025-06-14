@@ -101,7 +101,7 @@ class Auth {
       async (req: Request, res: Response, next: NextFunction) => {
         passport.authenticate(
           "local",
-          { session: false },
+          { session: false,failWithError:true },
           (err: any, user: any) => {
             if (err) {
               return next(err);
@@ -134,7 +134,7 @@ class Auth {
   ];
 
   static logout = [
-    passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false,failWithError:true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userId } = req.user as User;
       res.cookie("jwt", "", cookieOptions);
