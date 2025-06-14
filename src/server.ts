@@ -22,6 +22,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {});
 
   socket.on("message:create", async ({ conversationId, content }) => {
+    if (content === "") {
+      return;
+    }
+
     await prisma.message.create({
       data: {
         body: content,
@@ -29,27 +33,14 @@ io.on("connection", (socket) => {
         authorId: user.id,
       },
     });
-
-    const otherUser = await prisma.user.findFirst({
-      where: {
-        conversations: {
-          some: {
-            users: {
-              some: {
-                id: {
-                  contains: user.id,
-                },
-              },
-            },
-          },
-        },
-        NOT: {
-          id: {
-            contains: user.id,
-          },
-        },
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: {
+        users: true,
       },
     });
+    const otherUser = conversation?.users.find((u) => u.id !== user.id);
+
     socket.to(`user:${otherUser.id}`).emit("message:create", {
       author: user.name,
       content: content,
