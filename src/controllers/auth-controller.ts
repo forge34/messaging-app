@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma-client";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server";
+import { error } from "console";
 
 const generator = new AvatarGenerator();
 
@@ -25,6 +26,14 @@ class Auth {
       .trim()
       .isLength({ min: 1 })
       .withMessage("username is too short")
+      .custom(async (value) => {
+        const exists = await prisma.user.findFirst({ where: { name: value } });
+
+        if (exists) {
+          return Promise.reject();
+        }
+      })
+      .withMessage("Username already exists")
       .escape(),
     body("password")
       .trim()
@@ -38,6 +47,7 @@ class Auth {
       .custom((value, { req }) => {
         return value === req.body.password;
       })
+      .withMessage("Passwords don't match")
       .escape(),
 
     expressAsyncHandler(
@@ -55,9 +65,12 @@ class Auth {
               });
               res.status(200).json("created user");
             } else if (err) {
+              console.log(err);
               next(err);
             }
           });
+        } else {
+          res.status(400).json(errors.mapped());
         }
       },
     ),
