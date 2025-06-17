@@ -1,4 +1,4 @@
-import {  User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
@@ -8,15 +8,14 @@ import { prisma } from "../config/prisma-client";
 class MessagesController {
   static createMessage = [
     body("content").trim().isLength({ min: 1 }).escape(),
-    passport.authenticate("jwt", { session: false,failWithError:true }),
+    passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
-        if (errors.isEmpty()) {
-          next();
-        } else {
-          res.status(401).json({ errors: errors.array() });
+        if (!errors.isEmpty()) {
+          res.status(400).json({ errors: errors.array() });
         }
+        next();
       },
     ),
     expressAsyncHandler(async (req: Request, res: Response) => {
@@ -24,7 +23,7 @@ class MessagesController {
       const conversationId: string = req.params.conversationid;
       const currentUser = req.user as User;
 
-      await prisma.message.create({
+      const newMessage = await prisma.message.create({
         data: {
           body: messageBody,
           conversationId: conversationId,
@@ -32,12 +31,12 @@ class MessagesController {
         },
       });
 
-      res.status(200).json("message created");
+      res.status(200).json({ message: "message created", data: newMessage });
     }),
   ];
 
   static deleteMessage = [
-    passport.authenticate("jwt", { session: false,failWithError:true }),
+    passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const messageId = req.params.messageid;
 
