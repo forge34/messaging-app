@@ -7,8 +7,8 @@ import { queryClient } from "../router";
 interface UserCardProps {
   imgSrc: string;
   username: string;
-  isRelated: boolean;
-  conversation: ConversationSchema | null;
+  isCurrent: boolean;
+  conversationId: string | null;
   userId: string;
 }
 
@@ -41,8 +41,8 @@ export default function UserCard(props: UserCardProps) {
   });
 
   async function goToConversation() {
-    if (props.conversation) {
-      navigate(`/conversations/${props.conversation.id}`);
+    if (props.conversationId) {
+      navigate(`/conversations/${props.conversationId}`);
     } else {
       mutation.mutateAsync({ otherId: props.userId });
     }
@@ -54,7 +54,7 @@ export default function UserCard(props: UserCardProps) {
       <div>
         <h1 className="username">{props.username}</h1>
         <button onClick={goToConversation} className="user-card-btn">
-          {props.isRelated ? "open conversation" : "start conversation"}
+          {props.conversationId  ? "open conversation" : "start conversation"}
         </button>
       </div>
     </div>

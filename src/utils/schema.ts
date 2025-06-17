@@ -4,7 +4,8 @@ export interface UserSchema {
   name: string;
   messages: MessageSchema[];
   conversations: ConversationSchema[];
-  relatedToCurrent: boolean;
+  isCurrent: boolean;
+  conversationId: string;
   imgUrl: string;
 }
 
