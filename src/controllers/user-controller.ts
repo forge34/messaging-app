@@ -1,13 +1,10 @@
-import { Conversation, User } from "@prisma/client";
+import {  User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "../config/prisma-client";
 import expressAsyncHandler from "express-async-handler";
 
-interface IUser extends Omit<User, "password"> {
-  relatedToCurrent: boolean;
-  privateConversation: Conversation | null;
-}
+
 
 class UserController {
   static getCurrent = [
