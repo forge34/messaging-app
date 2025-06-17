@@ -46,7 +46,7 @@ export default function Conversation() {
             navigate("/conversations");
           }}
         />
-        <h1>{data?.title}</h1>
+        <h1>{data.users.find((u) => u.id !== user.id)?.name}</h1>
         <img src={videoUcon} width={40} height={40} />
         <img src={callIcon} width={40} height={40} />
       </div>
@@ -82,15 +82,15 @@ function MessageInput({
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const content = formData.get("content") as string;
-    const definedUser = user as unknown as UserSchema;
+    const content = value.trim();
+    if (!content) return;
+
     const message: MessageSchema = {
       id: cuid2.createId(),
       body: content,
-      author: definedUser,
+      author: user,
       createdAt: new Date(),
-      authorId: definedUser.id,
+      authorId: user.id,
       conversationId: id,
       Conversation: data,
     };
@@ -124,7 +124,13 @@ function MessageInput({
         placeholder="Enter message ..."
         autoComplete="off"
       />
-      <input type="image" src={send} width={32} height={32} />
+      <input
+        type="image"
+        src={send}
+        width={32}
+        height={32}
+        disabled={!value.trim()}
+      />
     </form>
   );
 }
