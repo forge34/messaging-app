@@ -13,7 +13,7 @@ const generator = new AvatarGenerator();
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
+  secure: process.env.NODE_ENV === "production",
   sameSite: "none",
   maxAge: 1000 * 60 * 60 * 24 * 7,
   path: "/",
