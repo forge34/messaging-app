@@ -44,7 +44,7 @@ function Login() {
             color: "white",
           },
         });
-        await queryClient.invalidateQueries({ queryKey: ["user", "current"] });
+        await queryClient.invalidateQueries({});
         navigate("/");
       }
     },
