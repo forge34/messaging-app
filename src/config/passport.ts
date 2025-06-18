@@ -18,7 +18,7 @@ const localVerify: passportLocal.VerifyFunction = async (
   });
 
   if (!user) {
-    return done("User not found", false);
+    return done(null, false, { message: "user not found" });
   }
 
   const match = await bcrypt.compare(password, user.password);
