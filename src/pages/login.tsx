@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { queryClient } from "../router";
 
 const FormSchema = z.object({
   username: z.string().min(1, { message: "Username can not be empty" }),
@@ -43,6 +44,7 @@ function Login() {
             color: "white",
           },
         });
+        await queryClient.invalidateQueries({ queryKey: ["user", "current"] });
         navigate("/");
       }
     },

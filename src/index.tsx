@@ -18,6 +18,7 @@ import { Puff } from "react-loader-spinner";
 
 function App() {
   const { isLoading, isSuccess } = useQuery(getCurrentUser());
+
   useEffect(() => {
     function onMessage({
       author,
@@ -58,9 +59,9 @@ function App() {
   if (isLoading) {
     return (
       <Puff
-        width={180}
-        height={180}
-        color="#4967d0"
+        width={181}
+        height={181}
+        color="#4968d0"
         wrapperClass="spinner"
       ></Puff>
     );
