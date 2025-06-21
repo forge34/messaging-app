@@ -3,6 +3,7 @@ import TextInput from "../components/text-input";
 import "../styles/form.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
+import { useState } from "react";
 
 const FormSchema = z
   .object({
@@ -18,15 +19,23 @@ const FormSchema = z
 
 function Signup() {
   const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPasswrd] = useState("");
+
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
     async onValidSubmit(e) {
       e.preventDefault();
 
-      const data = Object.fromEntries(new FormData(e.target).entries());
       await fetch(`${import.meta.env.VITE_API}/signup`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          username,
+          password,
+          confirmPassword,
+        }),
         credentials: "include",
         headers: { "content-Type": "Application/json" },
       });
@@ -39,6 +48,10 @@ function Signup() {
     <form className="form" ref={zodForm.ref}>
       <h1>Create account</h1>
       <TextInput
+        value={username}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setUsername(e.target.value);
+        }}
         name={zodForm.fields.username()}
         error={{
           errorMsg: zodForm.errors.username()?.message,
@@ -46,23 +59,25 @@ function Signup() {
         label="Username"
       ></TextInput>
       <TextInput
+        value={password}
         name={zodForm.fields.password()}
         label="Password"
-        password={{
-          isPassword: true,
-          type: "new-password",
-        }}
+        isPassword={true}
         error={{
           errorMsg: zodForm.errors.password()?.message,
         }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setPassword(e.target.value);
+        }}
       ></TextInput>
       <TextInput
+        value={confirmPassword}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setConfirmPasswrd(e.target.value);
+        }}
         name={zodForm.fields.confirmPassword()}
         label="Confirm Password"
-        password={{
-          isPassword: true,
-          type: "new-password",
-        }}
+        isPassword={true}
         error={{
           errorMsg:
             zodForm.errors()?.message ||
