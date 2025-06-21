@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "test": "NODE_ENV=test && vitest --coverage",
+    "test": "NODE_ENV=test && ./run-integrations.sh",
     "start": "node dist/server.js",
     "build": "tsc && npx prisma db push --accept-data-loss",
     "dev": " nodemon src/server.ts"

@@ -7,4 +7,5 @@ export $(grep -v '^#' .test.env | xargs)
 docker compose -f ./docker-compose.yml up -d
 echo ${DATABASE_URL}
 npx dotenv -e .test.env -- npx prisma db push
+npx vitest --coverage
 npm run test
