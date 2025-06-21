@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/css/text-input.css";
+import "../styles/text-input.css";
 import { Link } from "react-router-dom";
 
 interface Password {

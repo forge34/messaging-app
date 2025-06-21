@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/css/user-card.css";
+import "../styles/user-card.css";
 import { ConversationSchema } from "../utils/schema";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../router";

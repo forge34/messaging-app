@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "../utils/queries";
-import "../styles/css/profile.css";
+import "../styles/profile.css";
 
 export default function Profile() {
   const { data: user } = useQuery(getCurrentUser());

@@ -1,4 +1,4 @@
-import "../styles/css/chat-section.css";
+import "../styles/chat-section.css";
 import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
 import { useSuspenseQuery } from "@tanstack/react-query";

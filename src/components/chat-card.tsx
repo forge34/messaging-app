@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/css/chat-card.css";
+import "../styles/chat-card.css";
 import { formatDistanceToNow } from "date-fns";
 import { useActiveLink } from "../utils/hooks/use-active-link";
 interface ChatCardProps {

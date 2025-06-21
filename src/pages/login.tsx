@@ -1,5 +1,5 @@
 import TextInput from "../components/text-input";
-import "../styles/css/form.css";
+import "../styles/form.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { Link, useNavigate } from "react-router-dom";

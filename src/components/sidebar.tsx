@@ -1,4 +1,4 @@
-import "../styles/css/sidebar.css";
+import "../styles/sidebar.css";
 import { ReactNode } from "react";
 
 function Sidebar({
