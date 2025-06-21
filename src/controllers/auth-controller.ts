@@ -14,7 +14,7 @@ const generator = new AvatarGenerator();
 const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "none",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7,
   path: "/",
 };
@@ -101,7 +101,7 @@ class Auth {
       async (req: Request, res: Response, next: NextFunction) => {
         passport.authenticate(
           "local",
-          { session: false,failWithError:true },
+          { session: false, failWithError: true },
           (err: any, user: any) => {
             if (err) {
               return next(err);
@@ -134,7 +134,7 @@ class Auth {
   ];
 
   static logout = [
-    passport.authenticate("jwt", { session: false,failWithError:true }),
+    passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userId } = req.user as User;
       res.cookie("jwt", "", cookieOptions);
