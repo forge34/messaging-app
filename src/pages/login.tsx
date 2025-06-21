@@ -10,7 +10,7 @@ const FormSchema = z.object({
   username: z.string().min(1, { message: "Username can not be empty" }),
   password: z
     .string()
-    .min(5, { message: "Password should be at least 5 characters" }),
+    .min(8, { message: "Password should be at least 8 characters" }),
 });
 
 function Login() {
