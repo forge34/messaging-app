@@ -5,7 +5,6 @@ export function Error() {
   const error = useRouteError() as RouteError;
   const navigate = useNavigate();
 
-  console.log("Error reached boundary");
 
   return (
     <div className="error-page">

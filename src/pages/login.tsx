@@ -31,7 +31,7 @@ function Login() {
 
       if (res.status === 401) {
         const err = await res.json();
-        toast.error(err, {
+        toast.error(err.message, {
           style: {
             backgroundColor: "#313338",
             color: "white",
