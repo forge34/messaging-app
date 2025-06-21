@@ -1,0 +1,43 @@
+div:has(> .message) {
+  position: relative;
+  max-width: 50%;
+  width: fit-content;
+}
+
+.message {
+  border-radius: 12px;
+  margin: 0.5em 0.25em;
+  padding: 1em;
+  display: flex;
+  background-color: #23262a;
+}
+.message img:not(:last-child) {
+  position: absolute;
+  top: 0.75rem;
+
+  left: 0.5rem;
+
+  background-color: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.message img:last-child {
+  position: absolute;
+  filter: invert(100%);
+  opacity: 70%;
+  top: -1rem;
+  left: 91%;
+
+  &:hover {
+    opacity: 100%;
+    filter: brightness(350%) invert(100%);
+  }
+}
+
+div:has(> .message[data-own="true"]) {
+  .message {
+    background-color: #4967d0;
+  }
+  margin-left: auto;
+}

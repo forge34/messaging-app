@@ -67,28 +67,7 @@
   width: 100%;
 }
 
-.message {
-  position: relative;
-  border-radius: 12px;
-  max-width: 50%;
-  width: fit-content;
-  margin: 0.5em 0;
-  padding: 1em;
-  display: flex;
-  background-color: #23262a;
-}
-.message img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: white;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.message.own {
-  background-color: #4967d0;
-  margin-left: auto;
-}
+
 
 .message-input-container {
   display: flex;

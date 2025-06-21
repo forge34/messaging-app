@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { UserSchema } from "../utils/schema";
+import styles from "../styles/message.module.css";
+import MoreHorizontal from "../assets/more-horizontal.svg";
 
 export interface MessageProps {
   body: string;
@@ -13,18 +16,20 @@ export default function Message({
   id,
   author,
   ownMessage,
-  status = "pending",
+  // status = "pending",
 }: MessageProps) {
-  const ownMessageStyle = ownMessage ? "own" : "";
+  const [hovering, setHovering] = useState(false);
   return (
     <div
-      className={"message " + ownMessageStyle}
-      id={id}
-      key={id}
+      style={{ paddingTop: "0.25em" }}
+      onMouseOver={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
-      <img src={author.imgUrl} width={32} height={32} alt="user avatar"/>
-      <p>{body}</p>
-      <img src={status === "pending" ? "" : ""} />
+      <div className={styles.message} id={id} key={id} data-own={ownMessage}>
+        <img src={author.imgUrl} width={32} height={32} alt="user avatar" />
+        <p>{body}</p>
+        {hovering && <img src={MoreHorizontal} width={24} height={24} />}
+      </div>
     </div>
   );
 }
