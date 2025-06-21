@@ -5,6 +5,7 @@ import { useZorm, Zorm } from "react-zorm";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { queryClient } from "../router";
+import { useState } from "react";
 
 const FormSchema = z.object({
   username: z.string().min(1, { message: "Username can not be empty" }),
@@ -15,16 +16,20 @@ const FormSchema = z.object({
 
 function Login() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
     async onValidSubmit(e) {
       e.preventDefault();
 
-      const data = Object.fromEntries(new FormData(e.target).entries());
-
       const res = await fetch(`${import.meta.env.VITE_API}/login`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          username,
+          password,
+        }),
         credentials: "include",
         headers: { "content-Type": "Application/json" },
       });
@@ -60,21 +65,27 @@ function Login() {
             errorMsg: zodForm.errors.username()?.message,
           }}
           label="Username"
+          value={username}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setUsername(e.target.value);
+          }}
         ></TextInput>
         <TextInput
           name={zodForm.fields.password()}
           label="Password"
-          password={{
-            isPassword: true,
-            type: "password",
-          }}
+          isPassword={true}
           error={{
             errorMsg: zodForm.errors.password()?.message,
+          }}
+          value={password}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setPassword(e.target.value);
           }}
         ></TextInput>
         <button type="submit" className="btn-submit">
           Sign in
         </button>
+        <Link to="/forgot-password">Forgot your password?</Link>
         <p>
           Don't have an account?{" "}
           <Link style={{ fontWeight: 600 }} to="/signup">
