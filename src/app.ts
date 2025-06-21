@@ -35,7 +35,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "AuthenticationError") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  res.status(err.code || 500).json(err.message);
+  res.status(err.code || 500).json({ message: err.message });
 });
 
 export { app };
