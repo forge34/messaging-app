@@ -35,7 +35,7 @@ div:has(> .message[data-own="true"]) {
   display: flex;
   flex-direction: row;
   top: -0.5rem;
-  left: 88%;
+  left: 85%;
 }
 
 .hoverMenu img {

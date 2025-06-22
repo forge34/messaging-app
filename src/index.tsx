@@ -12,12 +12,29 @@ import { socket } from "./utils/socket";
 import { queryClient } from "./router";
 import toast from "react-hot-toast";
 import infoIcon from "./assets/info.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "./utils/queries";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteMessage, getCurrentUser } from "./utils/queries";
 import { Puff } from "react-loader-spinner";
+import { useDropdown } from "./utils/message-dropdown-context";
+import MessageDropdown from "./components/message-dropdown.tsx";
+import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
+import deleteIcon from "./assets/trash.svg";
+import bookmarkIcon from "./assets/star.svg";
 
 function App() {
-  const { isLoading, isSuccess } = useQuery(getCurrentUser());
+  const { isLoading, isSuccess, data: user } = useQuery(getCurrentUser());
+  const context = useDropdown();
+  const mutation = useMutation({
+    mutationFn: deleteMessage,
+    retry: false,
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations", context!.dropdownState!.conversationId],
+      });
+    },
+  });
+
+  const message = context?.dropdownState.message;
 
   useEffect(() => {
     function onMessage({
@@ -87,6 +104,22 @@ function App() {
         <SidebarItem imgSrc={settingsIcon} itemtext="Settings" to="settings" />
       </Sidebar>
       <Outlet />
+      <MessageDropdown>
+        <MessageDropdownBtn text="Bookmark" iconSrc={bookmarkIcon} />
+        <MessageDropdownBtn text="Message info" iconSrc={infoIcon} />
+        {message?.author.id === user?.id && (
+          <MessageDropdownBtn
+            text="Delete"
+            iconSrc={deleteIcon}
+            extraClass="dropdown-delete"
+            onClick={async () => {
+              console.log("clicked");
+              await mutation.mutateAsync(message!.id);
+              context?.closeDropdown();
+            }}
+          />
+        )}
+      </MessageDropdown>
     </>
   );
 }

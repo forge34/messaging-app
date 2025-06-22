@@ -13,7 +13,7 @@ import { socket } from "../utils/socket";
 import cuid2 from "@paralleldrive/cuid2";
 import { queryClient } from "../router";
 import closeBtnPath from "../assets/close-btn.svg";
-import styles from "../styles/conversation.module.css"
+import styles from "../styles/conversation.module.css";
 
 export interface sentMessages
   extends Pick<MessageSchema, "author" | "body" | "id"> {
@@ -56,9 +56,8 @@ export default function Conversation() {
           const ownMessage = message.author.id === user.id;
           return (
             <Message
-              author={message.author}
-              body={message.body}
-              id={message.id}
+              conversationId={id}
+              message={message}
               ownMessage={ownMessage}
               key={message.id}
             ></Message>
@@ -135,4 +134,3 @@ function MessageInput({
     </form>
   );
 }
-

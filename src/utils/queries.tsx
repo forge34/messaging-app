@@ -54,6 +54,12 @@ const userLoader = (queryClient: QueryClient) => async () => {
 
   return queryClient.ensureQueryData(query);
 };
+
+const deleteMessage = async (id: string) => {
+  await safeFetch(`${import.meta.env.VITE_API}/messages/${id}`, {
+    method: "delete",
+  });
+};
 export {
   userLoader,
   getUsers,
@@ -62,4 +68,5 @@ export {
   getConversationById,
   conversationIdLoader,
   getCurrentUser,
+  deleteMessage,
 };
