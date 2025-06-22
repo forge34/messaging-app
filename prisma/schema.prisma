@@ -21,6 +21,7 @@ model User {
   password      String
   messages      Message[]
   conversations Conversation[]
+  bio String @default("")
   imgUrl        String
   User          User?          @relation(name: "blocked", fields: [userPk], references: [id])
   userPk        String?
