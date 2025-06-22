@@ -22,12 +22,25 @@ div:has(> .message) {
   transform: translate(-50%, -50%);
 }
 
-.message img:last-child {
+
+div:has(> .message[data-own="true"]) {
+  .message {
+    background-color: #4967d0;
+  }
+  margin-left: auto;
+}
+
+.hoverMenu {
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  top: -0.5rem;
+  left: 88%;
+}
+
+.hoverMenu img {
   filter: invert(100%);
   opacity: 70%;
-  top: -1rem;
-  left: 91%;
 
   &:hover {
     opacity: 100%;
@@ -35,9 +48,7 @@ div:has(> .message) {
   }
 }
 
-div:has(> .message[data-own="true"]) {
-  .message {
-    background-color: #4967d0;
-  }
-  margin-left: auto;
+.hoverMenu img:first-child { 
+  margin-top: 0.25em;
+  margin-right: 0.25em;
 }
