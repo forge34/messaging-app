@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../components/text-input";
-import "../styles/form.css";
+import styles from "../styles/form.module.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { useState } from "react";
@@ -45,7 +45,7 @@ function Signup() {
   });
 
   return (
-    <form className="form" ref={zodForm.ref}>
+    <form className={styles.formContainer} ref={zodForm.ref}>
       <h1>Create account</h1>
       <TextInput
         value={username}
@@ -84,7 +84,7 @@ function Signup() {
             zodForm.errors.confirmPassword()?.message,
         }}
       ></TextInput>
-      <button type="submit" className="btn-submit">
+      <button type="submit" className={styles.btnSubmit}>
         Create account
       </button>
       <p>

@@ -1,4 +1,3 @@
-import "../styles/chat-section.css";
 import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -8,6 +7,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
+import styles from "../styles/chat-section.module.css";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {
@@ -55,15 +55,15 @@ export default function ChatSection() {
   if (matches) {
     if (activeConversation) {
       return (
-        <div className="chat-section">
+        <div className={styles.chatSection}>
           <Outlet></Outlet>
         </div>
       );
     }
   }
   return (
-    <div className="chat-section">
-      <div className="chat-sidebar">
+    <div className={styles.chatSection}>
+      <div className={styles.chatSidebar}>
         <h1>Chats</h1>
         <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         {filteredResults.length > 0 ? (

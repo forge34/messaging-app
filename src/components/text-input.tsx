@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/text-input.css";
+import styles from "../styles/text-input.module.css";
 
 interface TextInputProps {
   name: string;
@@ -10,6 +10,7 @@ interface TextInputProps {
     errorMsg: string | undefined;
   };
   isPassword?: boolean;
+  isRequired?: boolean;
 }
 
 export default function TextInput({
@@ -19,12 +20,15 @@ export default function TextInput({
   onChange,
   error,
   isPassword,
+  isRequired = true,
 }: TextInputProps) {
   const state = error?.errorMsg ? "invalid" : "";
 
   return (
-    <div className={"text-input"}>
-      <label htmlFor={name}>{label} </label>
+    <div className={styles.inputContainer}>
+      <label data-required={isRequired} htmlFor={name}>
+        {label}{" "}
+      </label>
       <input
         aria-invalid={!!error?.errorMsg}
         className={state}
@@ -32,8 +36,11 @@ export default function TextInput({
         value={value}
         name={name}
         onChange={onChange}
+        aria-required={isRequired}
       />
-      {error?.errorMsg && <span className="error">{error.errorMsg}</span>}
+      {error?.errorMsg && (
+        <span className={styles.inputError}>{error.errorMsg}</span>
+      )}
     </div>
   );
 }

@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer label {
+  font-size: var(--font-size-label);
+  margin-block: 0.5rem;
+  margin-inline: 0.1rem;
+}
+
+.inputContainer input {
+  background-color: var(--color-background);
+  font-size: var(--font-size-input);
+  width: 32ch;
+  color: var(--text-primary);
+  padding-inline: 0.25rem;
+  padding-block: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-border);
+}
+.inputContainer label[data-required="true"]::after {
+  content: "*";
+  font-weight: bold;
+  color: var(--text-danger);
+}
+
+.inputError {
+  margin-block: 0.25rem;
+  margin-inline: 0.1rem;
+  font-size: var(--font-size-small);
+  color: var(--text-danger);
+  font-weight: 600;
+}

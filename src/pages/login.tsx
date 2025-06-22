@@ -1,5 +1,5 @@
 import TextInput from "../components/text-input";
-import "../styles/form.css";
+import styles from "../styles/form.module.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { Link, useNavigate } from "react-router-dom";
@@ -57,7 +57,7 @@ function Login() {
 
   return (
     <>
-      <form className="form" ref={zodForm.ref}>
+      <form className={styles.formContainer} ref={zodForm.ref}>
         <h1>Login</h1>
         <TextInput
           name={zodForm.fields.username()}
@@ -82,7 +82,7 @@ function Login() {
             setPassword(e.target.value);
           }}
         ></TextInput>
-        <button type="submit" className="btn-submit">
+        <button type="submit" className={styles.btnSubmit}>
           Sign in
         </button>
         <Link to="/forgot-password">Forgot your password?</Link>

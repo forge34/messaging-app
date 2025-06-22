@@ -1,4 +1,4 @@
-import "../styles/sidebar.css";
+import styles from "../styles/sidebar.module.css";
 import { ReactNode } from "react";
 
 function Sidebar({
@@ -9,7 +9,7 @@ function Sidebar({
   handleClick?: React.MouseEventHandler<HTMLDivElement>;
 }) {
   return (
-    <nav onClick={handleClick} className="sidebar">
+    <nav onClick={handleClick} className={styles.sidebar}>
       {children}
     </nav>
   );

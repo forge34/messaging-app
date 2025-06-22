@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
 import { useState } from "react";
+import styles from "../styles/sidebar.module.css";
 
 interface sidebarItemProps {
   imgSrc: string;
@@ -14,7 +15,7 @@ export default function SidebarItem({
   imgSrc,
   to,
   itemtext,
-  className = "",
+  className = " ",
 }: sidebarItemProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,14 +23,14 @@ export default function SidebarItem({
   const { matches } = useMatchMedia("(max-width: 768px)");
   const [hovered, setHovered] = useState(false);
 
-  const selected = contains ? "selected " : "";
 
   return (
     <section
       aria-current={contains ? "page" : "false"}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={"sidebar-item " + selected + className}
+      className={styles.sidebarItem + ` ${className}`}
+      data-selected={contains}
       onClick={() => {
         if (to === "starred" || to === "settings") {
           toast.error("for decoration purposes only");
@@ -39,7 +40,7 @@ export default function SidebarItem({
       <img src={imgSrc} alt={`${to} navigation icon`} />
       {matches && <p>{itemtext}</p>}
       {!matches && hovered && (
-        <span className="tooltip">
+        <span className={styles.tooltip}>
           <p>{itemtext}</p>
         </span>
       )}

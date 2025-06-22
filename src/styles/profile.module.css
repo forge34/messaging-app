@@ -1,0 +1,64 @@
+.profileSection {
+  margin: auto auto;
+  transform: translateY(-10%);
+  width: clamp(20%, 500px, 45%);
+  border-radius: 12px;
+  color: var(--text-primary);
+  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  position: relative;
+  font-size: var(--font-size-body);
+}
+.profileSection img {
+  position: absolute;
+  border-radius: 50%;
+  top: -100%;
+  left: 25%;
+  width: 50%;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.infoRow {
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+}
+.infoRow :nth-child(2) {
+  margin-left: auto;
+  font-weight: lighter;
+  color: var(--text-muted);
+}
+
+.btnEdit {
+  background-color: var(--color-primary);
+  padding: 0.5rem 2rem;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  border-style: none;
+  align-self: self-start;
+  transition: filter 0.3s ease-in 0s;
+  font-size: var(--font-size-input);
+  align-self: center;
+  margin-bottom: 1rem;
+}
+.btnEdit:hover {
+  filter: brightness(120%);
+}
+
+@media screen and (max-width: 768px) {
+  .profileSection {
+    width: 90%;
+    margin-inline: 1rem;
+  }
+  .profileSection img {
+    top: -70%;
+    left: 25%;
+  }
+}

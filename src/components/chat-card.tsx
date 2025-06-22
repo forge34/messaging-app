@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/chat-card.css";
+import styles from "../styles/chat-card.module.css";
+
 import { formatDistanceToNow } from "date-fns";
 import { useActiveLink } from "../utils/hooks/use-active-link";
+
 interface ChatCardProps {
   conversationTitle: string;
   conversationLastMsg: string;
@@ -22,17 +24,22 @@ export default function ChatCard({
 
   return (
     <div
-      className={`chat-card ${selected}`}
+      className={`${styles.chatCard}`}
+      data-selected={!!selected}
       onClick={() => {
         navigate(`${conversationId}`);
       }}
     >
       <img width={48} height={48} src={conversationImg} alt="user avatar" />
-      <div className="card-info">
+      <div className={styles.cardInfo}>
         <h3>{conversationTitle}</h3>
-        <p className="last-msg">{conversationLastMsg?.substring?.(0, 30)}</p>
+        <p className={styles.lastMsg}>
+          {conversationLastMsg?.substring?.(0, 30)}
+        </p>
       </div>
-      <p className="msg-time">{formatDistanceToNow(conversationLastSent)}</p>
+      <p className={styles.msgTime}>
+        {formatDistanceToNow(conversationLastSent)}
+      </p>
     </div>
   );
 }

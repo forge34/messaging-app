@@ -13,6 +13,7 @@ import { socket } from "../utils/socket";
 import cuid2 from "@paralleldrive/cuid2";
 import { queryClient } from "../router";
 import closeBtnPath from "../assets/close-btn.svg";
+import styles from "../styles/conversation.module.css"
 
 export interface sentMessages
   extends Pick<MessageSchema, "author" | "body" | "id"> {
@@ -36,10 +37,10 @@ export default function Conversation() {
   }, [data.messages]);
 
   return (
-    <div className="conversation-box">
-      <div className="top-bar">
+    <div className={styles.conversationBox}>
+      <div className={styles.topBar}>
         <input
-          className="close-btn"
+          className={styles.closeBtn}
           type="image"
           src={closeBtnPath}
           onClick={() => {
@@ -50,7 +51,7 @@ export default function Conversation() {
         <img src={videoUcon} width={40} height={40} />
         <img src={callIcon} width={40} height={40} />
       </div>
-      <div className="message-container">
+      <div className={styles.messageContainer}>
         {data?.messages.map((message: MessageSchema) => {
           const ownMessage = message.author.id === user.id;
           return (
@@ -111,7 +112,7 @@ function MessageInput({
   }
 
   return (
-    <form className="message-input-container" onSubmit={handleSubmit}>
+    <form className={styles.messageInputContainer} onSubmit={handleSubmit}>
       <input type="submit" hidden />
       <input
         value={value}
@@ -119,7 +120,7 @@ function MessageInput({
           setValue(e.target.value);
         }}
         name="content"
-        className="message-input"
+        className={styles.messageInput}
         type="text"
         placeholder="Enter message ..."
         autoComplete="off"
@@ -134,3 +135,4 @@ function MessageInput({
     </form>
   );
 }
+

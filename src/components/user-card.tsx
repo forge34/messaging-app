@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import "../styles/user-card.css";
 import { ConversationSchema } from "../utils/schema";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../router";
+import styles from "../styles/user-card.module.css"
 
 interface UserCardProps {
   imgSrc: string;
@@ -49,11 +49,11 @@ export default function UserCard(props: UserCardProps) {
   }
 
   return (
-    <div className="user-card">
+    <div className={styles.userCard}>
       <img src={props.imgSrc} width={64} height={64} alt="user avatar" />
       <div>
         <h1 className="username">{props.username}</h1>
-        <button onClick={goToConversation} className="user-card-btn">
+        <button onClick={goToConversation} className={styles.userCardCtn}>
           {props.conversationId  ? "open conversation" : "start conversation"}
         </button>
       </div>

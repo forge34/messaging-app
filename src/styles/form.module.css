@@ -1,0 +1,41 @@
+.formContainer {
+  background-color: var(--color-background-lighter);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  padding: 1em 1.75em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  border-radius: 6px;
+  color: white;
+  font-size: 1.2em;
+}
+
+.formContainer h1 {
+  font-size: var(--font-size-header);
+}
+.formContainer a {
+  color: var(--color-primary-light);
+  filter: brightness(110%);
+  font-size: var(--font-size-small);
+}
+
+.formContainer p {
+  font-size: var(--font-size-small);
+}
+
+.btnSubmit {
+  margin: 1em 0;
+  background-color: var(--color-primary);
+  color: white;
+  align-self: center;
+  font-size: var(--font-size-body);
+  border-style: none;
+  border-radius: 7px;
+  padding: 0.5em 1em;
+  transition: filter 0.3s ease-out 50ms;
+}
+.btnSubmit:hover {
+  filter: brightness(120%);
+}
