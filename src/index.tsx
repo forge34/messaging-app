@@ -18,15 +18,15 @@ import {
   deleteMessage,
   getCurrentUser,
 } from "./utils/queries";
-import { Puff } from "react-loader-spinner";
 import { useDropdown } from "./utils/message-dropdown-context";
 import MessageDropdown from "./components/message-dropdown.tsx";
 import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
+import { MessageSchema } from "./utils/schema.ts";
 
 function App() {
-  const { isLoading, isSuccess, data: user } = useQuery(getCurrentUser());
+  const { isSuccess, data: user } = useQuery(getCurrentUser());
   const context = useDropdown();
   const deleteMutation = useMutation({
     mutationFn: deleteMessage,
@@ -51,19 +51,13 @@ function App() {
   const message = context?.dropdownState.message;
 
   useEffect(() => {
-    function onMessage({
-      author,
-      content,
-    }: {
-      author: string;
-      content: string;
-    }) {
+    function onMessage(message: MessageSchema) {
       toast(
         <div className="notification">
           <img src={infoIcon} width={32} height={32} />
           <span>
-            <h3>{author}</h3>
-            <p>{content}</p>
+            <h3>{message.author.name}</h3>
+            <p>{message.body}</p>
           </span>
         </div>,
         {
@@ -78,7 +72,8 @@ function App() {
     }
 
     if (isSuccess) {
-      if (!socket.connect()) socket.connect();
+      if (!socket.connected) socket.connect();
+
       socket.on("message:create", onMessage);
     }
 
@@ -86,17 +81,6 @@ function App() {
       socket.off("message:create", onMessage);
     };
   }, [isSuccess]);
-
-  if (isLoading) {
-    return (
-      <Puff
-        width={181}
-        height={181}
-        color="#4968d0"
-        wrapperClass="spinner"
-      ></Puff>
-    );
-  }
 
   return (
     <>
