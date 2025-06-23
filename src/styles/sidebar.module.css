@@ -5,6 +5,9 @@
   align-items: center;
   grid-row: 1/-1;
   grid-column: 1/2;
+  border-style: solid;
+  border-color: var(--color-border);
+  border-width: 0 1px 0 0;
 }
 .sidebar h1 {
   margin-top: 0.7rem;
@@ -36,7 +39,8 @@
   margin-inline: auto;
 }
 .sidebarItem img {
-  filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg) brightness(99%) contrast(94%);
+  filter: invert(95%) sepia(19%) saturate(12%) hue-rotate(153deg)
+    brightness(99%) contrast(94%);
   max-width: 100%;
   height: auto;
 }
@@ -45,11 +49,10 @@
   width: max-content;
   font-size: 0.7em;
 }
-.sidebarItem[data-selected="true"] , .sidebarItem:hover {
+.sidebarItem[data-selected="true"],
+.sidebarItem:hover {
   background-color: var(--color-primary);
 }
-
-
 
 .tooltip {
   position: absolute;
@@ -61,4 +64,3 @@
   border-radius: 0.5rem;
   z-index: 100;
 }
-

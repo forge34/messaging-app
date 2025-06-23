@@ -20,7 +20,9 @@
   flex-direction: row;
   margin-block: 1rem;
   margin-inline: 1rem;
+  box-shadow: var(--shadow);
 }
+
 
 .bookmarkContainer img {
   border-radius: 50%;

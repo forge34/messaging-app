@@ -10,8 +10,11 @@
 
 .topBar {
   display: flex;
-  border-radius: 0 0 7px 7px;
+  border-radius: 0 0 0 7px;
   background-color: var(--color-background-lighter);
+  border-style: solid;
+  border-color: var(--color-surface);
+  border-width: 0.05rem 0;
 }
 .topBar > * {
   margin: auto 0;
@@ -48,6 +51,9 @@
   height: 4ch;
   padding: 0.25rem;
   margin-bottom: 0.2rem;
+  border-style: solid;
+  border-color: var(--color-surface);
+  border-width: 0.05rem 0;
 }
 .messageInputContainer form {
   width: 100%;
@@ -85,6 +91,12 @@
   background-image: url("/src/assets/close-btn.svg");
   filter: invert(36%) sepia(92%) saturate(646%) hue-rotate(194deg)
     brightness(110%) contrast(88%);
-  margin-right: 0.5rem;
+  margin-inline: 0.5rem;
   cursor: pointer;
+
+  transition: transform 100ms ease-in;
+
+  &:hover { 
+  transform: scale(1.1);
+  }
 }

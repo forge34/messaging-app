@@ -5,7 +5,7 @@
   padding: 0.1rem;
   background-color: var(--color-background-lighter);
   border-radius: 0.25rem;
-  transform: translate(-90%, -100%);
+  transform: translate(-75%, -100%);
   width: max-content;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow);

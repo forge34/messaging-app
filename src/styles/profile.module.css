@@ -2,7 +2,7 @@
   margin: auto auto;
   transform: translateY(-10%);
   width: clamp(20%, 500px, 45%);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   color: var(--text-primary);
   background-color: var(--color-surface);
   display: flex;
@@ -10,6 +10,10 @@
   height: fit-content;
   position: relative;
   font-size: var(--font-size-body);
+  border-style: solid;
+  border-color: var(--color-border);
+  border-width: 2px;
+  box-shadow: var(--shadow);
 }
 .profileSection img {
   position: absolute;

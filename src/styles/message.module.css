@@ -6,11 +6,16 @@ div:has(> .message) {
 
 .message {
   border-radius: 12px;
-  margin: 0.5rem 0.25rem;
+  margin: 0.75rem 0.25rem;
   padding: 1em;
   display: flex;
   flex-direction: column;
   background-color: var(--color-background-lighter);
+  border-style: solid;
+  border-color: var(--color-surface);
+  border-width: 0 0.05rem;
+  box-shadow: var(--shadow-sm);
+  min-width: 4rem;
 }
 .message img:not(:last-child) {
   position: absolute;
@@ -22,7 +27,6 @@ div:has(> .message) {
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-
 
 div:has(> .message[data-own="true"]) {
   .message {
@@ -36,7 +40,8 @@ div:has(> .message[data-own="true"]) {
   display: flex;
   flex-direction: row;
   top: -0.5rem;
-  left: 85%;
+  right: 0.5rem;
+  transform: translateX(-10%);
 }
 
 .hoverMenu img {
@@ -49,7 +54,7 @@ div:has(> .message[data-own="true"]) {
   }
 }
 
-.hoverMenu img:first-child { 
+.hoverMenu img:first-child {
   margin-top: 0.25em;
   margin-right: 0.25em;
-} 
+}

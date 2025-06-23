@@ -11,6 +11,13 @@
 .chatSection h1 {
   font-size: var(--font-size-header);
 }
+
+.chatSidebar {
+  border-style: solid;
+  border-color: var(--color-border);
+  border-width: 0 1px 0 0;
+}
+
 .chatSection .chatSidebar {
   grid-column: 1/2;
   padding: 0.5rem;
@@ -26,4 +33,3 @@
     border-radius: 0;
   }
 }
-
