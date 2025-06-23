@@ -32,7 +32,7 @@ export default function SidebarItem({
       className={styles.sidebarItem + ` ${className}`}
       data-selected={contains}
       onClick={() => {
-        if (to === "starred" || to === "settings") {
+        if ( to === "settings") {
           toast.error("for decoration purposes only");
         } else navigate(`${to}`);
       }}

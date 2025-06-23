@@ -12,8 +12,8 @@
 }
 :root {
   --color-background: hsl(216, 13%, 10%);
-  --color-surface: hsl(216, 14%, 15%);
-  --color-background-lighter: hsl(216, 14%, 15%);
+  --color-surface: hsl(216, 14%, 16%);
+  --color-background-lighter: hsl(216, 14%, 12%);
   --color-primary: hsl(226, 60%, 48%);
   --color-surface-alt: hsl(216, 14%, 23%);
   --color-primary-dark: hsl(226, 59%, 33%);
@@ -21,7 +21,7 @@
   --color-accent: hsl(0, 65%, 50%);
   --color-danger: hsl(3, 64%, 56%);
   --color-muted: hsl(210, 10%, 40%);
-  --color-border: hsl(210, 10%, 25%);
+  --color-border: hsl(210, 10%, 18%);
   --shadow:
     0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15);
 
@@ -185,7 +185,7 @@ form {
   background-color: rgba(213, 57, 57, 0.9490196078);
 }
 
-.dropdown-delete span{
+.dropdown-delete span {
   font-weight: 700;
   color: var(--color-danger);
 }
@@ -193,5 +193,9 @@ form {
 .dropdown-delete img {
   filter: brightness(0) saturate(100%) invert(41%) sepia(28%) saturate(1341%)
     hue-rotate(314deg) brightness(95%) contrast(102%)
-    drop-shadow(0 0 2px var(--color-danger));
+}
+
+.bookmark-icon img {
+  filter: brightness(0) saturate(100%) invert(85%) sepia(47%) saturate(2975%)
+    hue-rotate(1deg) brightness(105%) contrast(103%);
 }

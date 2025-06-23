@@ -1,6 +1,6 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
-import { ConversationSchema, UserSchema } from "./schema";
+import { ConversationSchema, MessageSchema, UserSchema } from "./schema";
 import { safeFetch } from "./fetch-wrapper";
 
 const getCurrentUser = () =>
@@ -60,6 +60,25 @@ const deleteMessage = async (id: string) => {
     method: "delete",
   });
 };
+
+const getBookmarks = () =>
+  queryOptions({
+    queryKey: ["bookmarks"],
+    queryFn: async (): Promise<MessageSchema[]> =>
+      await safeFetch(`${import.meta.env.VITE_API}/users/bookmarks`),
+  });
+
+const bookmarksLoader = (queryClient: QueryClient) => async () => {
+  const query = getBookmarks();
+
+  return queryClient.ensureQueryData(query);
+};
+
+const bookmarkMessage = async (id: string) => {
+  await safeFetch(`${import.meta.env.VITE_API}/message/${id}/bookmark`, {
+    method: "post",
+  });
+};
 export {
   userLoader,
   getUsers,
@@ -69,4 +88,7 @@ export {
   conversationIdLoader,
   getCurrentUser,
   deleteMessage,
+  getBookmarks,
+  bookmarksLoader,
+  bookmarkMessage,
 };

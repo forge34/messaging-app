@@ -13,7 +13,11 @@ import { queryClient } from "./router";
 import toast from "react-hot-toast";
 import infoIcon from "./assets/info.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteMessage, getCurrentUser } from "./utils/queries";
+import {
+  bookmarkMessage,
+  deleteMessage,
+  getCurrentUser,
+} from "./utils/queries";
 import { Puff } from "react-loader-spinner";
 import { useDropdown } from "./utils/message-dropdown-context";
 import MessageDropdown from "./components/message-dropdown.tsx";
@@ -24,12 +28,22 @@ import bookmarkIcon from "./assets/star.svg";
 function App() {
   const { isLoading, isSuccess, data: user } = useQuery(getCurrentUser());
   const context = useDropdown();
-  const mutation = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: deleteMessage,
     retry: false,
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: ["conversations", context!.dropdownState!.conversationId],
+      });
+    },
+  });
+
+  const bookmarkMutation = useMutation({
+    mutationFn: bookmarkMessage,
+    retry: false,
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarks"],
       });
     },
   });
@@ -92,7 +106,7 @@ function App() {
           itemtext="All messages"
           to="conversations"
         />
-        <SidebarItem imgSrc={starIcon} itemtext="Starred" to="starred" />
+        <SidebarItem imgSrc={starIcon} itemtext="Bookmarked" to="bookmarks" />
         <SidebarItem imgSrc={profileIcon} itemtext="Profle" to="profile" />
         <SidebarItem imgSrc={usersIcon} itemtext="people" to="people" />
         <SidebarItem
@@ -105,8 +119,17 @@ function App() {
       </Sidebar>
       <Outlet />
       <MessageDropdown>
-        <MessageDropdownBtn text="Bookmark" iconSrc={bookmarkIcon} />
         <MessageDropdownBtn text="Message info" iconSrc={infoIcon} />
+        <MessageDropdownBtn
+          text="Bookmark"
+          iconSrc={bookmarkIcon}
+          extraClass="bookmark-icon"
+          onClick={async () => {
+            await bookmarkMutation.mutateAsync(message!.id);
+            context?.closeDropdown();
+          }}
+        />
+
         {message?.author.id === user?.id && (
           <MessageDropdownBtn
             text="Delete"
@@ -114,7 +137,7 @@ function App() {
             extraClass="dropdown-delete"
             onClick={async () => {
               console.log("clicked");
-              await mutation.mutateAsync(message!.id);
+              await deleteMutation.mutateAsync(message!.id);
               context?.closeDropdown();
             }}
           />

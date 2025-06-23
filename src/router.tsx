@@ -5,6 +5,7 @@ import Login from "./pages/login";
 import People from "./pages/people";
 import { QueryClient } from "@tanstack/react-query";
 import {
+    bookmarksLoader,
   conversationIdLoader,
   conversationLoader,
   userLoader,
@@ -14,6 +15,7 @@ import { Error } from "./components/error";
 import ChatSection from "./pages/chat-section";
 import Profile from "./pages/profile";
 import Logout from "./pages/logout";
+import Bookmarks from "./pages/bookmarks";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,8 +54,9 @@ const routes: RouteObject[] = [
         ],
       },
       {
-        path: "starred",
-        element: <h1>Soon</h1>,
+        path: "bookmarks",
+        element: <Bookmarks/>,
+        loader: bookmarksLoader(queryClient)
       },
       {
         path: "profile",

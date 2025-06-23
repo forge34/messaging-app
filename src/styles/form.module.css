@@ -1,5 +1,5 @@
 .formContainer {
-  background-color: var(--color-background-lighter);
+  background-color: var(--color-surface);
   display: flex;
   flex-direction: column;
   position: absolute;
