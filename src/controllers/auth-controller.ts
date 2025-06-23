@@ -119,7 +119,7 @@ class Auth {
                 { id: currentUser.id },
                 process.env.SECRET,
                 {
-                  expiresIn: "1h",
+                  expiresIn: "3d",
                 },
               );
 
