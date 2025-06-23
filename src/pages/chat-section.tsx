@@ -79,6 +79,7 @@ export default function ChatSection() {
 
 function Conversations({ data }: { data: ConversationSchema[] }) {
   return data?.map((conversation: ConversationSchema) => {
+    if (conversation.messages.length === 0) return null;
     const lastMsg = conversation?.messages[conversation.messages.length - 1];
     return (
       <ChatCard
