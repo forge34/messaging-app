@@ -107,6 +107,7 @@ function MessageInput({
       content,
       messageId: message.id,
     });
+
     setValue("");
   }
 

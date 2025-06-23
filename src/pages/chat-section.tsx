@@ -38,6 +38,7 @@ export default function ChatSection() {
   );
   const activeConversation = /\/conversations\/.+/.test(location.pathname);
 
+ 
   useEffect(() => {
     if (searchTerm !== "") {
       const filtered = sortedConversation.filter((conversation) =>
@@ -83,12 +84,12 @@ function Conversations({ data }: { data: ConversationSchema[] }) {
     const lastMsg = conversation?.messages[conversation.messages.length - 1];
     return (
       <ChatCard
-        conversationImg={conversation.conversationImg as string}
-        conversationTitle={conversation.title}
-        conversationLastMsg={lastMsg?.body}
+        imgUrl={conversation.conversationImg as string}
+        title={conversation.title}
+        lastMsg={lastMsg}
         conversationId={conversation.id}
         key={conversation.id}
-        conversationLastSent={lastMsg?.createdAt}
+        lastSent={lastMsg?.createdAt}
       ></ChatCard>
     );
   });
