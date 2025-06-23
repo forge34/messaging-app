@@ -12,7 +12,7 @@ export interface UserSchema {
 export interface MessageSchema {
   id: string;
   body: string;
-  createdAt: Date;
+  createdAt: string;
   authorId: string;
   conversationId: string;
   author: UserSchema;

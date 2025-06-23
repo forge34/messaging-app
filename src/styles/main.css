@@ -26,16 +26,17 @@
     0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15);
 
   --text-primary: hsl(0, 0%, 94%);
-  --text-muted: hsl(210, 10%, 65%);
+  --text-muted: hsl(210, 10%, 85%);
   --text-danger: hsl(3, 64%, 49%);
 
-  --font-extraBig: 2.5rem;
+  --font-size-xl: 2.5rem;
   --font-size-title: 2rem;
   --font-size-header: 1.5rem;
   --font-size-body: 1rem;
   --font-size-small: 0.875rem;
   --font-size-input: 1.25rem;
   --font-size-label: 0.9375rem;
+  --font-size-xm:0.75rem;
 }
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -173,7 +174,7 @@ form {
 }
 
 .error-code {
-  font-size: var(--font-extraBig);
+  font-size: var(--font-size-xl);
   color: var(--text-danger);
   margin-inline: auto;
 }
@@ -192,10 +193,17 @@ form {
 
 .dropdown-delete img {
   filter: brightness(0) saturate(100%) invert(41%) sepia(28%) saturate(1341%)
-    hue-rotate(314deg) brightness(95%) contrast(102%)
+    hue-rotate(314deg) brightness(95%) contrast(102%);
 }
 
 .bookmark-icon img {
   filter: brightness(0) saturate(100%) invert(85%) sepia(47%) saturate(2975%)
     hue-rotate(1deg) brightness(105%) contrast(103%);
+}
+
+.timestamp {
+  margin-top: 0.25rem;
+  align-self: flex-end;
+  font-size: var(--font-size-xm);
+  color: var(--text-muted);
 }

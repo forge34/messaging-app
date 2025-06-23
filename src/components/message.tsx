@@ -5,6 +5,7 @@ import MoreHorizontal from "../assets/more-horizontal.svg";
 import Copy from "../assets/copy.svg";
 import toast from "react-hot-toast";
 import { useDropdown } from "../utils/message-dropdown-context";
+import { getTime } from "../utils/functions";
 
 export interface MessageProps {
   message: MessageSchema;
@@ -54,6 +55,7 @@ export default function Message({
           alt="user avatar"
         />
         <p>{message.body}</p>
+        <p className="timestamp">{ getTime( message.createdAt )}</p>
       </div>{" "}
       {hovering && (
         <div className={styles.hoverMenu}>

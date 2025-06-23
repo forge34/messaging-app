@@ -9,6 +9,7 @@ div:has(> .message) {
   margin: 0.5rem 0.25rem;
   padding: 1em;
   display: flex;
+  flex-direction: column;
   background-color: var(--color-background-lighter);
 }
 .message img:not(:last-child) {
@@ -51,4 +52,4 @@ div:has(> .message[data-own="true"]) {
 .hoverMenu img:first-child { 
   margin-top: 0.25em;
   margin-right: 0.25em;
-}
+} 
