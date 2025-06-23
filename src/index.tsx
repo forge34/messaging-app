@@ -61,11 +61,11 @@ function App() {
           </span>
         </div>,
         {
-          duration: 1500,
+          className: "notification",
           style: {
-            backgroundColor: "#313338",
-            color: "white",
+            backgroundColor: "var(--color-surface)",
           },
+          duration: 1500,
         },
       );
       queryClient.invalidateQueries();

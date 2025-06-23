@@ -1,8 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getConversationById, getCurrentUser } from "../utils/queries";
-import videoUcon from "../assets/video.svg";
-import callIcon from "../assets/phone.svg";
 import send from "../assets/send.svg";
 import { FormEvent, useEffect, useState } from "react";
 import { MessageSchema } from "../utils/schema";
@@ -48,8 +46,6 @@ export default function Conversation() {
           }}
         />
         <h1>{data.users.find((u) => u.id !== user.id)?.name}</h1>
-        <img src={videoUcon} width={40} height={40} />
-        <img src={callIcon} width={40} height={40} />
       </div>
       <div className={styles.messageContainer}>
         {data?.messages.map((message: MessageSchema) => {

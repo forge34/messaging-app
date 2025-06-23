@@ -44,6 +44,7 @@ function Login() {
         });
       } else {
         toast.success("Login sucess", {
+          
           style: {
             backgroundColor: "#313338",
             color: "white",

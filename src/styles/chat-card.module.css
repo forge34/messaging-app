@@ -8,7 +8,7 @@
 
 .chatCard[data-selected="true"],
 .chatCard:hover {
-  background-color: #515961;
+  background-color: var(--color-surface-alt);
 }
 .chatCard img {
   margin-right: 0.5rem;

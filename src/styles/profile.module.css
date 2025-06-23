@@ -18,9 +18,8 @@
 .profileSection img {
   position: absolute;
   border-radius: 50%;
-  top: -100%;
-  left: 25%;
-  width: 50%;
+  top: -16rem;
+  left: 8rem;
 }
 
 .profileInfo {
@@ -62,7 +61,6 @@
     margin-inline: 1rem;
   }
   .profileSection img {
-    top: -70%;
-    left: 25%;
+    margin-top: -4rem;
   }
 }
