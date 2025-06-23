@@ -7,7 +7,7 @@ import { useActiveLink } from "../utils/hooks/use-active-link";
 interface ChatCardProps {
   conversationTitle: string;
   conversationLastMsg: string;
-  conversationLastSent: Date;
+  conversationLastSent: string;
   conversationId: string;
   conversationImg: string;
 }
@@ -15,7 +15,7 @@ interface ChatCardProps {
 export default function ChatCard({
   conversationLastMsg,
   conversationImg,
-  conversationLastSent = new Date(),
+  conversationLastSent ,
   conversationTitle,
   conversationId,
 }: ChatCardProps) {

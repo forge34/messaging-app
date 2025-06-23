@@ -89,7 +89,7 @@ function MessageInput({
       id: cuid2.createId(),
       body: content,
       author: user,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       authorId: user.id,
       conversationId: id,
       Conversation: data,
