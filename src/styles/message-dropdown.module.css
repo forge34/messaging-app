@@ -9,6 +9,7 @@
   width: max-content;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow);
+  z-index: 15;
 }
 
 .dropdownBtn {
