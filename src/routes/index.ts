@@ -27,6 +27,7 @@ router.delete("/messages/:messageid", MessagesController.deleteMessage);
 router.post("/message/:messageid/bookmark",MessagesController.bookmarkMessage)
 
 router.get("/users", UserController.getMany);
+router.get("/users/bookmarks" , UserController.getBookmarks)
 router.get("/users/me", UserController.getCurrent);
 router.post("/users/:userid/block", UserController.blockUser);
 

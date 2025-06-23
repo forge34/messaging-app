@@ -1,10 +1,8 @@
-import {  User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "../config/prisma-client";
 import expressAsyncHandler from "express-async-handler";
-
-
 
 class UserController {
   static getCurrent = [
@@ -14,6 +12,35 @@ class UserController {
     }),
   ];
 
+  static getBookmarks = [
+    passport.authenticate("jwt", { session: false, failWithError: true }),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const { id } = req.user as User;
+
+      const user = await prisma.user.findFirst({
+        include: {
+          bookmarks: {
+            include: {
+              author: true,
+              conversation: true,
+            },
+          },
+        },
+        where: {
+          id: id,
+        },
+      });
+
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const { bookmarks } = user;
+
+      res.status(200).json(bookmarks);
+    }),
+  ];
   static getMany = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     async (req: Request, res: Response) => {
