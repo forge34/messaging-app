@@ -6,7 +6,7 @@ import UserController from "../controllers/user-controller";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (_: Request, res: Response) => {
   res.json("index");
 });
 
@@ -24,6 +24,7 @@ router.get(
 router.get("/conversation/:conversationid", ConversationController.getById);
 
 router.delete("/messages/:messageid", MessagesController.deleteMessage);
+router.post("/message/:messageid/bookmark",MessagesController.bookmarkMessage)
 
 router.get("/users", UserController.getMany);
 router.get("/users/me", UserController.getCurrent);

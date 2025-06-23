@@ -14,17 +14,18 @@ datasource db {
 }
 
 model User {
-  pk            Int            @id @default(autoincrement())
-  id            String         @unique @default(cuid())
-  name          String         @unique
-  blocked       User[]         @relation("blocked")
-  password      String
-  messages      Message[]
+  pk       Int       @id @default(autoincrement())
+  id       String    @unique @default(cuid())
+  name     String    @unique
+  blocked  User[]    @relation("blocked")
+  password String
+  messages Message[] @relation("UserMessages")
+
+  bookmarks     Message[]      @relation("UserBookmarks")
   conversations Conversation[]
-  bio String @default("")
+  bio           String         @default("")
   imgUrl        String
-  User          User?          @relation(name: "blocked", fields: [userPk], references: [id])
-  userPk        String?
+  blockedBy     User[]         @relation("blocked")
 }
 
 model Message {
@@ -33,8 +34,9 @@ model Message {
   createdAt      DateTime      @default(now())
   authorId       String
   conversationId String?
-  author         User          @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author         User          @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookmarkedBy   User[]        @relation("UserBookmarks")
 }
 
 model Conversation {
@@ -45,7 +47,6 @@ model Conversation {
   conversationImg String?
   type            ConversationType @default(PRIVATE)
 }
-
 
 enum ConversationType {
   PRIVATE

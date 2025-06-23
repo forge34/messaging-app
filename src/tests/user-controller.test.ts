@@ -10,12 +10,9 @@ const SECRET = process.env.SECRET!;
 let userId: string;
 let token: string;
 
-beforeEach(async () => {});
-
 describe("GET /users/", async () => {
   let otherUser: User;
   beforeEach(async () => {
-    await prisma.user.deleteMany();
 
     const hashedPassword = await bcrypt.hash("password123", 10);
     const user = await prisma.user.create({
