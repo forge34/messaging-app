@@ -9,44 +9,27 @@ import logOutIcon from "./assets/log-out.svg";
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
-import { queryClient } from "./router";
 import infoIcon from "./assets/info.svg";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  bookmarkMessage,
-  deleteMessage,
-  getCurrentUser,
-} from "./utils/queries";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "./utils/queries";
 import { useDropdown } from "./utils/message-dropdown-context";
 import MessageDropdown from "./components/message-dropdown.tsx";
 import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
 import { onMessageCreate } from "./utils/socket-handlers.tsx";
+import {
+  useBookmarkMessage,
+  useDeleteMessage,
+} from "./utils/hooks/message-hooks.tsx";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
   const context = useDropdown();
-  const deleteMutation = useMutation({
-    mutationFn: deleteMessage,
-    retry: false,
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ["conversations", context!.dropdownState!.conversationId],
-      });
-    },
-  });
-
-  const bookmarkMutation = useMutation({
-    mutationFn: bookmarkMessage,
-    retry: false,
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ["bookmarks"],
-      });
-    },
-  });
-
+  const deleteMutation = useDeleteMessage(
+    context!.dropdownState.conversationId,
+  );
+  const bookmarkMutation = useBookmarkMessage();
   const dropwonMessage = context?.dropdownState.message;
 
   useEffect(() => {

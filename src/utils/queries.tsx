@@ -55,11 +55,7 @@ const userLoader = (queryClient: QueryClient) => async () => {
   return queryClient.ensureQueryData(query);
 };
 
-const deleteMessage = async (id: string) => {
-  await safeFetch(`${import.meta.env.VITE_API}/messages/${id}`, {
-    method: "delete",
-  });
-};
+
 
 const getBookmarks = () =>
   queryOptions({
@@ -74,11 +70,8 @@ const bookmarksLoader = (queryClient: QueryClient) => async () => {
   return queryClient.ensureQueryData(query);
 };
 
-const bookmarkMessage = async (id: string) => {
-  await safeFetch(`${import.meta.env.VITE_API}/message/${id}/bookmark`, {
-    method: "post",
-  });
-};
+
+
 export {
   userLoader,
   getUsers,
@@ -87,8 +80,6 @@ export {
   getConversationById,
   conversationIdLoader,
   getCurrentUser,
-  deleteMessage,
   getBookmarks,
   bookmarksLoader,
-  bookmarkMessage,
 };
