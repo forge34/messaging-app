@@ -100,10 +100,11 @@
 @media screen and (max-width: 768px) {
   .conversationBox {
     display: block;
+    overflow: scroll;
   }
 
   .topBar {
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -111,12 +112,12 @@
   }
 
   .messageContainer {
-    margin-block: 1rem 3rem;
+    margin-block: 2rem 5.5rem;
   }
 
   .messageInputContainer {
-    position: sticky;
+    position: fixed;
+    width: 100%;
     bottom: 4.5rem;
-    left: 0;
   }
 }
