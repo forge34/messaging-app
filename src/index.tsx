@@ -22,7 +22,7 @@ import MessageDropdown from "./components/message-dropdown.tsx";
 import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
-import { onMessage } from "./utils/socket-handlers.tsx";
+import { onMessageCreate } from "./utils/socket-handlers.tsx";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
@@ -53,11 +53,11 @@ function App() {
     if (isSuccess) {
       if (!socket.connected) socket.connect();
 
-      socket.on("message:create", onMessage);
+      socket.on("message:create", onMessageCreate);
     }
 
     return () => {
-      socket.off("message:create", onMessage);
+      socket.off("message:create", onMessageCreate);
     };
   }, [isSuccess]);
 
