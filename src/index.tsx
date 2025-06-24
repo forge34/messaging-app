@@ -10,7 +10,6 @@ import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { socket } from "./utils/socket";
 import { queryClient } from "./router";
-import toast from "react-hot-toast";
 import infoIcon from "./assets/info.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -23,7 +22,7 @@ import MessageDropdown from "./components/message-dropdown.tsx";
 import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
-import { MessageSchema } from "./utils/schema.ts";
+import { onMessage } from "./utils/socket-handlers.tsx";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
@@ -48,29 +47,9 @@ function App() {
     },
   });
 
-  const message = context?.dropdownState.message;
+  const dropwonMessage = context?.dropdownState.message;
 
   useEffect(() => {
-    function onMessage(message: MessageSchema) {
-      toast(
-        <div className="notification">
-          <img src={infoIcon} width={32} height={32} />
-          <span>
-            <h3>{message.author.name}</h3>
-            <p>{message.body}</p>
-          </span>
-        </div>,
-        {
-          className: "notification",
-          style: {
-            backgroundColor: "var(--color-surface)",
-          },
-          duration: 1500,
-        },
-      );
-      queryClient.invalidateQueries();
-    }
-
     if (isSuccess) {
       if (!socket.connected) socket.connect();
 
@@ -109,19 +88,19 @@ function App() {
           iconSrc={bookmarkIcon}
           extraClass="bookmark-icon"
           onClick={async () => {
-            await bookmarkMutation.mutateAsync(message!.id);
+            await bookmarkMutation.mutateAsync(dropwonMessage!.id);
             context?.closeDropdown();
           }}
         />
 
-        {message?.author.id === user?.id && (
+        {dropwonMessage?.author.id === user?.id && (
           <MessageDropdownBtn
             text="Delete"
             iconSrc={deleteIcon}
             extraClass="dropdown-delete"
             onClick={async () => {
               console.log("clicked");
-              await deleteMutation.mutateAsync(message!.id);
+              await deleteMutation.mutateAsync(dropwonMessage!.id);
               context?.closeDropdown();
             }}
           />

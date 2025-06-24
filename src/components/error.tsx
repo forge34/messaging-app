@@ -1,5 +1,5 @@
 import { useNavigate, useRouteError } from "react-router-dom";
-import { RouteError } from "../utils/fetch-wrapper";
+import { RouteError } from "../utils/functions.ts";
 
 export function Error() {
   const error = useRouteError() as RouteError;
