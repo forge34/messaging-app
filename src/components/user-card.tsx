@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { ConversationSchema } from "../utils/schema";
-import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../router";
-import styles from "../styles/user-card.module.css"
+import styles from "../styles/user-card.module.css";
+import { useCreateConvertion } from "../utils/hooks/use-create-conversation";
 
 interface UserCardProps {
   imgSrc: string;
@@ -14,31 +12,7 @@ interface UserCardProps {
 
 export default function UserCard(props: UserCardProps) {
   const navigate = useNavigate();
-  const mutation = useMutation({
-    mutationFn: async ({ otherId }: { otherId: string }) => {
-      const res = await fetch(`${import.meta.env.VITE_API}/conversation`, {
-        method: "POST",
-        mode: "cors",
-        credentials: "include",
-        body: JSON.stringify({ otherId: otherId }),
-        headers: { "content-Type": "Application/json" },
-      });
-
-      if (res.status === 401) {
-        navigate("/login");
-      }
-
-      return res.json();
-    },
-    onSuccess: async ({
-      conversation,
-    }: {
-      conversation: ConversationSchema;
-    }) => {
-      await queryClient.invalidateQueries();
-      navigate(`/conversations/${conversation.id}`);
-    },
-  });
+  const mutation = useCreateConvertion();
 
   async function goToConversation() {
     if (props.conversationId) {
@@ -54,7 +28,7 @@ export default function UserCard(props: UserCardProps) {
       <div>
         <h1 className="username">{props.username}</h1>
         <button onClick={goToConversation} className={styles.userCardCtn}>
-          {props.conversationId  ? "open conversation" : "start conversation"}
+          {props.conversationId ? "open conversation" : "start conversation"}
         </button>
       </div>
     </div>

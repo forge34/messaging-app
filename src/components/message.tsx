@@ -11,14 +11,12 @@ export interface MessageProps {
   message: MessageSchema;
   conversationId: string;
   ownMessage: boolean;
-  status?: "pending" | "sent";
 }
 
 export default function Message({
   message,
   ownMessage,
   conversationId,
-  // status = "pending",
 }: MessageProps) {
   const [hovering, setHovering] = useState(false);
   const context = useDropdown();
