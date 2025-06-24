@@ -1,7 +1,7 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
 import { ConversationSchema, MessageSchema, UserSchema } from "./schema";
-import { safeFetch } from "./fetch-wrapper";
+import { safeFetch } from "./functions.ts";
 
 const getCurrentUser = () =>
   queryOptions({
