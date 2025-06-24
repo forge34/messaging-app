@@ -7,8 +7,6 @@ import { getTime } from "../utils/functions";
 function Bookmarks() {
   const { data: bookmarks } = useQuery(getBookmarks());
 
-  console.log(bookmarks);
-
   return (
     <div className={styles.container}>
       <h3>Bookmarked messages </h3>

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
+import { filter } from "motion/react-client";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {
@@ -38,7 +39,6 @@ export default function ChatSection() {
   );
   const activeConversation = /\/conversations\/.+/.test(location.pathname);
 
- 
   useEffect(() => {
     if (searchTerm !== "") {
       const filtered = sortedConversation.filter((conversation) =>
@@ -62,16 +62,14 @@ export default function ChatSection() {
       );
     }
   }
+
+  const result = filter.length > 0 ? filteredResults : sortedConversation;
   return (
     <div className={styles.chatSection}>
       <div className={styles.chatSidebar}>
         <h1>Chats</h1>
         <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        {filteredResults.length > 0 ? (
-          <Conversations data={filteredResults} />
-        ) : (
-          <Conversations data={sortedConversation} />
-        )}
+          <Conversations data={result} />
       </div>
       <Outlet />
     </div>
