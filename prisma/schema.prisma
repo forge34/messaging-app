@@ -37,6 +37,7 @@ model Message {
   author         User          @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   bookmarkedBy   User[]        @relation("UserBookmarks")
+  status MessageStatus @default(PENDING)
 }
 
 model Conversation {
@@ -47,6 +48,12 @@ model Conversation {
   conversationImg String?
   type            ConversationType @default(PRIVATE)
 }
+
+enum MessageStatus {
+    PENDING
+    DELIVERED
+    READ
+  }
 
 enum ConversationType {
   PRIVATE

@@ -17,8 +17,10 @@ export const handleMessageCreate =
         body: content,
         conversationId: conversationId,
         authorId: user.id,
+        status: "DELIVERED",
       },
     });
+
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
