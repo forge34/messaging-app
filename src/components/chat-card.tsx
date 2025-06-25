@@ -3,9 +3,7 @@ import styles from "../styles/chat-card.module.css";
 
 import { formatDistanceToNow } from "date-fns";
 import { useActiveLink } from "../utils/hooks/use-active-link";
-import { MessageSchema } from "../utils/schema";
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "../utils/queries";
+import { MessageSchema, UserSchema } from "../utils/schema";
 
 interface ChatCardProps {
   title: string;
@@ -13,6 +11,7 @@ interface ChatCardProps {
   lastSent: string;
   conversationId: string;
   imgUrl: string;
+  user: UserSchema;
 }
 
 export default function ChatCard({
@@ -21,12 +20,11 @@ export default function ChatCard({
   lastSent,
   title,
   conversationId,
+  user,
 }: ChatCardProps) {
   const navigate = useNavigate();
   const { selected } = useActiveLink({ link: conversationId });
-  const { data: user } = useQuery(getCurrentUser());
-
-  const addYou = lastMsg.author.id === user!.id ? "you : " : "";
+  const addYou = lastMsg.author.id === user.id ? "you : " : "";
   return (
     <div
       className={`${styles.chatCard}`}

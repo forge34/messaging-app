@@ -1,7 +1,7 @@
 import ChatCard from "../components/chat-card";
 import SearchInput from "../components/search-input";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getUserConversations } from "../utils/queries";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { getCurrentUser, getUserConversations } from "../utils/queries";
 import { ConversationSchema } from "../utils/schema";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -9,6 +9,7 @@ import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
 import { filter } from "motion/react-client";
+import { Puff } from "react-loader-spinner";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {
@@ -69,7 +70,7 @@ export default function ChatSection() {
       <div className={styles.chatSidebar}>
         <h1>Chats</h1>
         <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <Conversations data={result} />
+        <Conversations data={result} />
       </div>
       <Outlet />
     </div>
@@ -77,8 +78,13 @@ export default function ChatSection() {
 }
 
 function Conversations({ data }: { data: ConversationSchema[] }) {
+  const { data: user } = useQuery(getCurrentUser());
+
+  if (!user) return null;
+
   return data?.map((conversation: ConversationSchema) => {
     if (conversation.messages.length === 0) return null;
+
     const lastMsg = conversation?.messages[conversation.messages.length - 1];
     return (
       <ChatCard
@@ -88,6 +94,7 @@ function Conversations({ data }: { data: ConversationSchema[] }) {
         conversationId={conversation.id}
         key={conversation.id}
         lastSent={lastMsg?.createdAt}
+        user={user!}
       ></ChatCard>
     );
   });
