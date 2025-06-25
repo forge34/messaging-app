@@ -27,6 +27,8 @@ export default function ChatCard({
   const navigate = useNavigate();
   const { selected } = useActiveLink({ link: conversationId });
   const addYou = lastMsg.author.id === user.id ? "you : " : "";
+  const trimmedMsg = lastMsg?.body.substring?.(0, 30)
+  const addElips = trimmedMsg.length >= 30 ? "...":""
   return (
     <div
       className={`${styles.chatCard}`}
@@ -40,7 +42,7 @@ export default function ChatCard({
       <div className={styles.cardInfo}>
         <h3>{title}</h3>
         <p className={styles.lastMsg}>
-          {addYou + lastMsg?.body.substring?.(0, 30)}
+          {addYou + trimmedMsg + addElips}
         </p>
       </div>
       <p className={styles.msgTime}>{formatDistanceToNow(lastSent)}</p>

@@ -11,8 +11,8 @@ const FormSchema = z
     username: z.string().min(1, { message: "Username can not be empty" }),
     password: z
       .string()
-      .min(5, { message: "Password should be at least 5 characters" }),
-    confirmPassword: z.string().min(5, "Passwords do not match"),
+      .min(8, { message: "Password should be at least 8 characters" }),
+    confirmPassword: z.string().min(8, "Passwords do not match"),
   })
   .refine((values) => {
     return values.password === values.confirmPassword;

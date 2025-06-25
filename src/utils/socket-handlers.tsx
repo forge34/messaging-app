@@ -23,6 +23,18 @@ export function onMessageConfirm(
   id: string,
   tempId: string,
 ) {
+  queryClient.setQueryData(["conversations"], (old?: ConversationSchema[]) => {
+    if (!old) return [];
+
+    return old.map((c) => {
+      if (c.id !== id) return c;
+
+      return {
+        ...c,
+        messages: [...c.messages, message], 
+      };
+    });
+  });
   queryClient.setQueryData(["conversations", id], (old: ConversationSchema) => {
     console.log(old);
     if (!old.messages) return [];

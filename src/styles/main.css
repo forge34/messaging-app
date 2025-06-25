@@ -49,10 +49,13 @@
 }
 
 body,
-body > #root {
+body {
+  background-color: var(--color-background);
+}
+
+#root {
   height: 100dvh;
   width: 100dvw;
-  /*background-color: var(--color-background);*/
 }
 
 p,
