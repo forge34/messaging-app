@@ -9,7 +9,7 @@ import closeBtnPath from "../assets/close-btn.svg";
 import styles from "../styles/conversation.module.css";
 import MessageInput from "../components/message-input";
 import { socket } from "../utils/socket";
-import { onMessageConfirm } from "../utils/socket-handlers";
+import { onMessageConfirm, onMessageDelete } from "../utils/socket-handlers";
 
 export default function Conversation() {
   const { id = "" } = useParams();
@@ -26,11 +26,12 @@ export default function Conversation() {
   }, [data.messages]);
 
   useEffect(() => {
-    const handler = onMessageConfirm(id);
-    socket.on("message:confirm", handler);
+    socket.on("message:delete:confirm", onMessageDelete);
+    socket.on("message:create:confirm", onMessageConfirm);
 
     return () => {
-      socket.off("message:confirm", handler);
+      socket.off("message:create:confirm", onMessageConfirm);
+      socket.off("message:delete:confirm", onMessageDelete);
     };
   }, [id]);
 

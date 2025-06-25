@@ -39,3 +39,8 @@ export function onMessageConfirm(id: string) {
     );
   };
 }
+export async function onMessageDelete(conversationId: string) {
+  await queryClient.invalidateQueries({
+    queryKey: ["conversations", conversationId],
+  });
+}

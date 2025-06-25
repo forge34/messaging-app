@@ -18,17 +18,11 @@ import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
 import { onMessageCreate } from "./utils/socket-handlers.tsx";
-import {
-  useBookmarkMessage,
-  useDeleteMessage,
-} from "./utils/hooks/message-hooks.tsx";
+import { useBookmarkMessage } from "./utils/hooks/message-hooks.tsx";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
   const context = useDropdown();
-  const deleteMutation = useDeleteMessage(
-    context!.dropdownState.conversationId,
-  );
   const bookmarkMutation = useBookmarkMessage();
   const dropwonMessage = context?.dropdownState.message;
 
@@ -82,8 +76,12 @@ function App() {
             iconSrc={deleteIcon}
             extraClass="dropdown-delete"
             onClick={async () => {
-              console.log("clicked");
-              await deleteMutation.mutateAsync(dropwonMessage!.id);
+              // await deleteMutation.mutateAsync(dropwonMessage!.id);
+              socket.emit(
+                "message:delete",
+                dropwonMessage,
+                context!.dropdownState.conversationId,
+              );
               context?.closeDropdown();
             }}
           />
