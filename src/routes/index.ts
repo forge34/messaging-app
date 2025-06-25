@@ -15,7 +15,6 @@ router.post("/login", Auth.login);
 router.post("/logout", Auth.logout);
 
 router.post("/conversation", ConversationController.create);
-router.post("/conversation/:conversationid", MessagesController.createMessage);
 router.delete("/conversation/:conversationid", ConversationController.delete);
 router.get(
   "/conversation/currentUser",
@@ -23,7 +22,6 @@ router.get(
 );
 router.get("/conversation/:conversationid", ConversationController.getById);
 
-router.delete("/messages/:messageid", MessagesController.deleteMessage);
 router.post("/message/:messageid/bookmark",MessagesController.bookmarkMessage)
 
 router.get("/users", UserController.getMany);
