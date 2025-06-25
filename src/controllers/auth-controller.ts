@@ -69,7 +69,7 @@ class Auth {
             }
           });
         } else {
-          res.status(400).json(errors.mapped());
+          res.status(400).json({ errors: errors.array() });
         }
       },
     ),

@@ -54,7 +54,6 @@ class ConversationController {
     passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { id: userid } = req.user as User;
-      const st = Date.now();
       const conversations = await prisma.conversation.findMany({
         where: {
           users: {
@@ -84,7 +83,6 @@ class ConversationController {
           conversationImg: otherUser.imgUrl,
         };
       });
-      console.log("Time taken : ", Date.now() - st, "ms");
       res.status(200).json(filteredConversations);
     }),
   ];

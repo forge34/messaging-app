@@ -78,7 +78,9 @@ class PassportConfig {
           },
           include: {
             messages: true,
-            blocked: true,
+            blocked: {},
+            bookmarks: true,
+            blockedBy: true,
           },
         });
 

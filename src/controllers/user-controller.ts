@@ -8,7 +8,8 @@ class UserController {
   static getCurrent = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
-      res.status(200).json(req.user as User);
+      const user = req.user as User
+      res.status(200).json(user);
     }),
   ];
 
