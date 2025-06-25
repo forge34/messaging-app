@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../styles/chat-card.module.css";
 
 import { formatDistanceToNow } from "date-fns";
-import { useActiveLink } from "../utils/hooks/use-active-link";
+import { useActiveLink } from "../hooks/use-active-link";
 import { MessageSchema, UserSchema } from "../utils/schema";
 
 interface ChatCardProps {

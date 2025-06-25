@@ -6,7 +6,7 @@ import { ConversationSchema } from "../utils/schema";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { last } from "../utils/functions";
-import { useMatchMedia } from "../utils/hooks/use-match-media";
+import { useMatchMedia } from "../hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
 import { filter } from "motion/react-client";
 

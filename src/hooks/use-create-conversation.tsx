@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { createConversation } from "../mutations/conversations";
-import { queryClient } from "../../router";
+import { queryClient } from "../router";
 import {  useNavigate } from "react-router-dom";
-import { ConversationSchema } from "../schema";
+import { ConversationSchema } from "../utils/schema";
 
 function useCreateConvertion() {
   const navigate = useNavigate();

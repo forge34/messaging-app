@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/user-card.module.css";
-import { useCreateConvertion } from "../utils/hooks/use-create-conversation";
+import { useCreateConvertion } from "../hooks/use-create-conversation";
 
 interface UserCardProps {
   imgSrc: string;

@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMatchMedia } from "../utils/hooks/use-match-media";
+import { useMatchMedia } from "../hooks/use-match-media";
 import { useState } from "react";
 import styles from "../styles/sidebar.module.css";
 

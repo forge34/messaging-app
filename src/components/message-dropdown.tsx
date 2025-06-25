@@ -2,7 +2,7 @@ import { useDropdown } from "../utils/message-dropdown-context";
 import { MessageSchema } from "../utils/schema";
 import styles from "../styles/message-dropdown.module.css";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import useClickOutside from "../utils/hooks/use-click-outside";
+import useClickOutside from "../hooks/use-click-outside";
 import { motion } from "motion/react";
 
 export interface MessageDropdownState {

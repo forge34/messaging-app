@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { RouteError, safeFetch } from "../functions";
+import { RouteError, safeFetch } from "../utils/functions";
 import toast from "react-hot-toast";
 
 const signup = async ({

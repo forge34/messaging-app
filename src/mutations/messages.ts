@@ -1,6 +1,6 @@
-import { safeFetch } from "../functions";
+import { safeFetch } from "../utils/functions";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../../router";
+import { queryClient } from "../router";
 import toast from "react-hot-toast";
 
 const bookmarkMessage = async (id: string) => {

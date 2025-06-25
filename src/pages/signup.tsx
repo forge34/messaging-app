@@ -4,7 +4,7 @@ import styles from "../styles/form.module.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { useState } from "react";
-import { useSignup } from "../utils/mutations/auth.tsx";
+import { useSignup } from "../mutations/auth.tsx";
 
 const FormSchema = z
   .object({
