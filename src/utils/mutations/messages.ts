@@ -6,10 +6,4 @@ const bookmarkMessage = async (id: string) => {
   });
 };
 
-const deleteMessage = async (id: string) => {
-  await safeFetch(`${import.meta.env.VITE_API}/messages/${id}`, {
-    method: "delete",
-  });
-};
-
-export { deleteMessage, bookmarkMessage };
+export {  bookmarkMessage };

@@ -1,17 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { bookmarkMessage, deleteMessage } from "../mutations/messages";
+import { bookmarkMessage } from "../mutations/messages";
 import { queryClient } from "../../router";
-
-const useDeleteMessage = (conversationId: string) =>
-  useMutation({
-    mutationFn: deleteMessage,
-    retry: false,
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: ["conversations", conversationId],
-      });
-    },
-  });
 
 const useBookmarkMessage = () =>
   useMutation({
@@ -24,4 +13,4 @@ const useBookmarkMessage = () =>
     },
   });
 
-export { useDeleteMessage, useBookmarkMessage };
+export { useBookmarkMessage };

@@ -58,7 +58,6 @@ function App() {
             iconSrc={deleteIcon}
             extraClass="dropdown-delete"
             onClick={async () => {
-              // await deleteMutation.mutateAsync(dropwonMessage!.id);
               socket.emit(
                 "message:delete",
                 dropwonMessage,

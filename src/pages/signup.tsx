@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextInput from "../components/text-input";
 import styles from "../styles/form.module.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
 import { useState } from "react";
+import { useSignup } from "../utils/mutations/auth.tsx";
 
 const FormSchema = z
   .object({
@@ -18,29 +19,16 @@ const FormSchema = z
   }, "Passwords do not match!");
 
 function Signup() {
-  const navigate = useNavigate();
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPasswrd] = useState("");
+  const signupFn = useSignup();
 
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
     async onValidSubmit(e) {
       e.preventDefault();
 
-      await fetch(`${import.meta.env.VITE_API}/signup`, {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({
-          username,
-          password,
-          confirmPassword,
-        }),
-        credentials: "include",
-        headers: { "content-Type": "Application/json" },
-      });
-
-      navigate("/login");
+      signupFn.mutateAsync({ username, password, confirmPassword });
     },
   });
 

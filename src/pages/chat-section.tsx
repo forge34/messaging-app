@@ -9,7 +9,6 @@ import { last } from "../utils/functions";
 import { useMatchMedia } from "../utils/hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
 import { filter } from "motion/react-client";
-import { Puff } from "react-loader-spinner";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {

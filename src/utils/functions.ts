@@ -24,6 +24,7 @@ export function getTime(dateString: string) {
 export type RouteError = {
   status: number;
   message: string;
+  errors?: unknown[];
 };
 
 export async function safeFetch(url: string, init?: RequestInit) {
@@ -33,17 +34,18 @@ export async function safeFetch(url: string, init?: RequestInit) {
       mode: "cors",
       ...init,
     });
-
+    const json = await res.json().catch(() => null);
     if (!res.ok) {
-      const message = (await res.json()).message;
-
+      const message = json?.message || res.statusText;
+      const errors = Array.isArray(json?.errors) ? json.errors : undefined;
       throw {
         status: res.status,
         message: message || res.statusText,
+        errors,
       } satisfies RouteError;
     }
 
-    return await res.json();
+    return json;
   } catch (error) {
     if (error instanceof TypeError) {
       throw {
