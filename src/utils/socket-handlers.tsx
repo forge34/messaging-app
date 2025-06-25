@@ -23,21 +23,19 @@ export function onMessageCreate(message: MessageSchema) {
   queryClient.invalidateQueries();
 }
 
-export function onMessageConfirm(id: string) {
-  return (message: MessageSchema) => {
-    console.log("confirmed");
-    queryClient.setQueryData(
-      ["conversations", id],
-      (old: ConversationSchema) => {
-        console.log(old);
-        if (!old.messages) return [];
-        const newMessages = old.messages.map((m) =>
-          m.id === "tempId" ? message : m,
-        );
-        return { ...old, messages: newMessages };
-      },
+export function onMessageConfirm(
+  message: MessageSchema,
+  id: string,
+  tempId: string,
+) {
+  queryClient.setQueryData(["conversations", id], (old: ConversationSchema) => {
+    console.log(old);
+    if (!old.messages) return [];
+    const newMessages = old.messages.map((m) =>
+      m.id === tempId ? message : m,
     );
-  };
+    return { ...old, messages: newMessages };
+  });
 }
 export async function onMessageDelete(conversationId: string) {
   await queryClient.invalidateQueries({

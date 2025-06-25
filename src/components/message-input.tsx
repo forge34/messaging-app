@@ -25,9 +25,9 @@ function MessageInput({
 
     const content = value.trim();
     if (!content) return;
-
+    const tempId = `temp-${Date.now()}`;
     const message: MessageSchema = {
-      id: "tempId",
+      id: tempId,
       body: content,
       author: user,
       createdAt: new Date().toISOString(),
@@ -44,7 +44,7 @@ function MessageInput({
       },
     );
 
-    socket.emit("message:create", message, id);
+    socket.emit("message:create", message, id, tempId);
 
     setValue("");
   }
