@@ -40,24 +40,6 @@ function App() {
 
   return (
     <>
-      <Sidebar>
-        <SidebarItem
-          imgSrc={messageIcon}
-          itemtext="All messages"
-          to="conversations"
-        />
-        <SidebarItem imgSrc={starIcon} itemtext="Bookmarked" to="bookmarks" />
-        <SidebarItem imgSrc={profileIcon} itemtext="Profle" to="profile" />
-        <SidebarItem imgSrc={usersIcon} itemtext="people" to="people" />
-        <SidebarItem
-          imgSrc={logOutIcon}
-          itemtext="Logout"
-          to="logout"
-          className="logout-icon"
-        />
-        <SidebarItem imgSrc={settingsIcon} itemtext="Settings" to="settings" />
-      </Sidebar>
-      <Outlet />
       <MessageDropdown>
         <MessageDropdownBtn text="Message info" iconSrc={infoIcon} />
         <MessageDropdownBtn
@@ -87,6 +69,25 @@ function App() {
           />
         )}
       </MessageDropdown>
+
+      <Sidebar>
+        <SidebarItem
+          imgSrc={messageIcon}
+          itemtext="All messages"
+          to="conversations"
+        />
+        <SidebarItem imgSrc={starIcon} itemtext="Bookmarked" to="bookmarks" />
+        <SidebarItem imgSrc={profileIcon} itemtext="Profle" to="profile" />
+        <SidebarItem imgSrc={usersIcon} itemtext="people" to="people" />
+        <SidebarItem
+          imgSrc={logOutIcon}
+          itemtext="Logout"
+          to="logout"
+          className="logout-icon"
+        />
+        <SidebarItem imgSrc={settingsIcon} itemtext="Settings" to="settings" />
+      </Sidebar>
+      <Outlet />
     </>
   );
 }

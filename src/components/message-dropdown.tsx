@@ -47,15 +47,12 @@ function MessageDropdown({ children }: { children?: React.ReactNode }) {
     const { innerWidth } = window;
     const rect = dropdown.getBoundingClientRect();
     let left = dropdownState.position.x;
-    let top = dropdownState.position.y;
-    console.log(rect)
+    const top = dropdownState.position.y + 10;
 
     if (left + rect.width >= innerWidth + rect.width / 2) {
-      left -= 20;
-    }
-
-    if (top - rect.height < 150) {
-      top += rect.height + 20;
+      left -= rect.width;
+    } else {
+      left += 20;
     }
 
     setAdjustedPostion({
