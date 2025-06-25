@@ -1,9 +1,9 @@
 import { createServer } from "http";
 import { app, corsOptions } from "./app";
-import { prisma } from "./config/prisma-client";
 import { Server } from "socket.io";
 import { socketJwtVerify } from "./sockets";
-import { User } from "@prisma/client";
+import {  User } from "@prisma/client";
+import { handleMessageCreate } from "./sockets/handlers";
 
 const port = process.env.PORT || 3000;
 const server = createServer(app);
@@ -21,39 +21,8 @@ io.on("connection", (socket) => {
   socket.join(`user:${user.id}`);
   socket.on("disconnect", () => {});
 
-  socket.on(
-    "message:create",
-    async ({
-      conversationId,
-      content,
-    }: {
-      conversationId: string;
-      content: string;
-    }) => {
-      if (!content?.trim()) {
-        return;
-      }
-      await prisma.message.create({
-        data: {
-          body: content,
-          conversationId: conversationId,
-          authorId: user.id,
-        },
-      });
-      const conversation = await prisma.conversation.findUnique({
-        where: { id: conversationId },
-        include: {
-          users: true,
-        },
-      });
-      const otherUser = conversation?.users.find((u) => u.id !== user.id);
-
-      socket.to(`user:${otherUser.id}`).emit("message:create", {
-        author: user.name,
-        content: content,
-      });
-    },
-  );
+  const create = handleMessageCreate(user, socket);
+  socket.on("message:create", create);
 });
 
 if (process.env.NODE_ENV !== "test") {
