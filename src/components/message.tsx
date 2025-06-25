@@ -8,6 +8,7 @@ import { useDropdown } from "../utils/message-dropdown-context";
 import { getTime } from "../utils/functions";
 import doubleTick from "../assets/delivered.svg";
 import pending from "../assets/pending.svg";
+import { motion } from "motion/react";
 
 export interface MessageProps {
   message: MessageSchema;
@@ -37,9 +38,15 @@ export default function Message({
       },
     });
   }
-  console.log(message);
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: "spring",
+        bounce:0.25,
+        duration:0.5
+      }}
       style={{ paddingTop: "0.5em" }}
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
@@ -50,10 +57,7 @@ export default function Message({
         key={message.id}
         data-own={ownMessage}
       >
-        <img
-          src={message.author.imgUrl}
-                    alt="user avatar"
-        />
+        <img src={message.author.imgUrl} alt="user avatar" />
         <p>{message.body}</p>
         <div className={styles.messageStatus}>
           <p className="timestamp">{getTime(message.createdAt)}</p>
@@ -64,7 +68,7 @@ export default function Message({
       </div>{" "}
       {hovering && (
         <div className={styles.hoverMenu}>
-          <img src={Copy}  onClick={copy} />
+          <img src={Copy} onClick={copy} />
           <img
             ref={menuRef}
             src={MoreHorizontal}
@@ -79,6 +83,6 @@ export default function Message({
           />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

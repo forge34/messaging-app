@@ -66,6 +66,7 @@ div:has(> .message[data-own="true"]) {
 .messageStatus {
   display: flex;
   flex-direction: row;
+  align-self: self-end;
 
   img {
     height: 0.75rem;

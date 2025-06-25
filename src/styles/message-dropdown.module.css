@@ -24,13 +24,12 @@
 }
 
 .dropdownBtn span {
-margin-right: 1.5rem;
-} 
+  margin-right: 1.5rem;
+}
 
 .dropdownBtn:hover {
   background-color: var(--color-surface-alt);
 }
-
 
 .dropdownBtn img {
   filter: invert(100%);
