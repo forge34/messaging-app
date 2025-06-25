@@ -14,17 +14,32 @@ export const io = new Server(server, {
 
 io.engine.use(socketJwtVerify);
 
+const onlineId: {
+  userId: string;
+  socketId: string;
+}[] = [];
+
 io.on("connection", (socket) => {
   const req = socket.request as any;
   const user = req.user as User;
 
-  socket.join(`user:${user.id}`);
-  socket.on("disconnect", () => {});
+  if (!onlineId.find((u) => u.userId === user.id))
+    onlineId.push({ userId: user.id, socketId: socket.id });
 
+  socket.join(`user:${user.id}`);
+
+  io.emit("users:join", onlineId);
   const create = handleMessageCreate(user, socket);
   const deleteH = handleMessageDelete(socket);
   socket.on("message:create", create);
   socket.on("message:delete", deleteH);
+  socket.on("disconnect", () => {
+    const index = onlineId.findIndex((u) => u.socketId === socket.id);
+
+    if (index !== -1) onlineId.splice(index, 1);
+
+    io.emit("users:join", onlineId);
+  });
 });
 
 if (process.env.NODE_ENV !== "test") {
