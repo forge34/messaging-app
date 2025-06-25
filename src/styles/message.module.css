@@ -33,6 +33,10 @@ div:has(> .message) {
 div:has(> .message[data-own="true"]) {
   .message {
     background-color: var(--color-primary);
+
+    & > img {
+      left: 93%;
+    }
   }
   margin-left: auto;
 }

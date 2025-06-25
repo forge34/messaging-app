@@ -6,7 +6,6 @@
   grid-template-columns: minmax(min-content, max-content) auto;
   background-color: var(--color-background-lighter);
   color: var(--text-primary);
-  border-radius: 1rem;
 }
 .chatSection h1 {
   font-size: var(--font-size-header);

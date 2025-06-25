@@ -9,6 +9,7 @@ import { last } from "../utils/functions";
 import { useMatchMedia } from "../hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
 import { filter } from "motion/react-client";
+import { useUserStore } from "../store/use-user-store";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {
@@ -79,12 +80,17 @@ export default function ChatSection() {
 function Conversations({ data }: { data: ConversationSchema[] }) {
   const { data: user } = useQuery(getCurrentUser());
 
+  const { onlineUsers } = useUserStore();
   if (!user) return null;
 
   return data?.map((conversation: ConversationSchema) => {
     if (conversation.messages.length === 0) return null;
-
     const lastMsg = conversation?.messages[conversation.messages.length - 1];
+
+    const otherUser = conversation.users.find((u) => u.id !== user.id);
+
+    const isOnline = onlineUsers.some((u) => otherUser?.id === u.userId);
+    console.log(isOnline, onlineUsers, otherUser);
     return (
       <ChatCard
         imgUrl={conversation.conversationImg as string}
@@ -94,6 +100,7 @@ function Conversations({ data }: { data: ConversationSchema[] }) {
         key={conversation.id}
         lastSent={lastMsg?.createdAt}
         user={user!}
+        isOnline={isOnline}
       ></ChatCard>
     );
   });

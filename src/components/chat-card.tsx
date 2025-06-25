@@ -12,6 +12,7 @@ interface ChatCardProps {
   conversationId: string;
   imgUrl: string;
   user: UserSchema;
+  isOnline:boolean
 }
 
 export default function ChatCard({
@@ -21,6 +22,7 @@ export default function ChatCard({
   title,
   conversationId,
   user,
+  isOnline
 }: ChatCardProps) {
   const navigate = useNavigate();
   const { selected } = useActiveLink({ link: conversationId });
@@ -33,7 +35,8 @@ export default function ChatCard({
         navigate(`${conversationId}`);
       }}
     >
-      <img width={48} height={48} src={imgUrl} alt="user avatar" />
+      <img  src={imgUrl} alt="user avatar" />
+      { isOnline && <span></span> }
       <div className={styles.cardInfo}>
         <h3>{title}</h3>
         <p className={styles.lastMsg}>

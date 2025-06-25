@@ -12,10 +12,20 @@
 }
 .chatCard img {
   margin-right: 0.5rem;
+  width: 4rem;
+  height: 4rem;
 }
 .chatCard h5 {
   font-weight: 700;
   margin-left: auto;
+}
+
+.chatCard span {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: hsl(140, 70%, 45%);
+  border-radius: 50%;
 }
 
 .cardInfo {

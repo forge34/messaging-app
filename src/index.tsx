@@ -19,24 +19,32 @@ import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
 import { onMessageCreate } from "./utils/socket-handlers.tsx";
 import { useBookmarkMessage } from "./mutations/messages.ts";
+import { OnlineUser, useUserStore } from "./store/use-user-store.ts";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
   const context = useDropdown();
   const bookmarkMutation = useBookmarkMessage();
   const dropwonMessage = context?.dropdownState.message;
+  const { updateOnlineUsers } = useUserStore();
 
   useEffect(() => {
+    function onUserJoin(users: OnlineUser[]) {
+      updateOnlineUsers(users);
+    }
+
     if (isSuccess) {
       if (!socket.connected) socket.connect();
 
+      socket.on("users:join", onUserJoin);
       socket.on("message:create", onMessageCreate);
     }
 
     return () => {
       socket.off("message:create", onMessageCreate);
+      socket.off("users:join", onUserJoin);
     };
-  }, [isSuccess]);
+  }, [isSuccess, updateOnlineUsers]);
 
   return (
     <>
