@@ -10,7 +10,15 @@ import { MessageDropdownProvider } from "./utils/message-dropdown-context.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Toaster></Toaster>
+      <Toaster
+        toastOptions={{
+          className: "notifcation",
+          style: {
+            backgroundColor: "var(--color-surface-alt)",
+            color: "var(--text-primary)",
+          },
+        }}
+      ></Toaster>
       <MessageDropdownProvider>
         <RouterProvider router={router} />
       </MessageDropdownProvider>

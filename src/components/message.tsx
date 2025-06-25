@@ -40,12 +40,14 @@ export default function Message({
   }
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      layout
+      initial={{ opacity: 0, y: 10 ,}}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: 10 }}
       transition={{
         type: "spring",
-        bounce:0.25,
-        duration:0.5
+        bounce: 0.25,
+        duration: 0.5,
       }}
       style={{ paddingTop: "0.5em" }}
       onMouseOver={() => setHovering(true)}
@@ -65,7 +67,7 @@ export default function Message({
             <img src={status === "PENDING" ? pending : doubleTick} />
           )}
         </div>
-      </div>{" "}
+      </div>
       {hovering && (
         <div className={styles.hoverMenu}>
           <img src={Copy} onClick={copy} />
