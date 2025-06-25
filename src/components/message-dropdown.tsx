@@ -49,7 +49,7 @@ function MessageDropdown({ children }: { children?: React.ReactNode }) {
     let left = dropdownState.position.x;
     const top = dropdownState.position.y + 10;
 
-    if (left + rect.width >= innerWidth + rect.width / 2) {
+    if (left + rect.width >= innerWidth - rect.width) {
       left -= rect.width;
     } else {
       left += 20;

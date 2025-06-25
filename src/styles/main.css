@@ -52,8 +52,9 @@ body,
 body > #root {
   height: 100dvh;
   width: 100dvw;
-  background-color: var(--color-background);
+  /*background-color: var(--color-background);*/
 }
+
 p,
 h1,
 h2,

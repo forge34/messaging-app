@@ -1,3 +1,18 @@
+body:has(.formContainer)::before {
+  content: "";
+  position: fixed;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background-image: url("../assets/bg1.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: blur(3px);
+  z-index: -1;
+}
+
 .formContainer {
   background-color: var(--color-surface);
   display: flex;

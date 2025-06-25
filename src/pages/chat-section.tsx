@@ -10,6 +10,7 @@ import { useMatchMedia } from "../hooks/use-match-media";
 import styles from "../styles/chat-section.module.css";
 import { filter } from "motion/react-client";
 import { useUserStore } from "../store/use-user-store";
+import roboIcon from "../assets/robo.svg";
 
 function useSortedConversations(data: ConversationSchema[]) {
   const sortedConversation = useMemo(() => {
@@ -64,6 +65,8 @@ export default function ChatSection() {
     }
   }
 
+  const notShowIcon = !matches && !activeConversation;
+
   const result = filter.length > 0 ? filteredResults : sortedConversation;
   return (
     <div className={styles.chatSection}>
@@ -72,7 +75,16 @@ export default function ChatSection() {
         <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Conversations data={result} />
       </div>
-      <Outlet />
+      {!notShowIcon ? (
+        <Outlet />
+      ) : (
+        <div className={styles.notSelectedImg}>
+          <div>
+            <img src={roboIcon} />
+          </div>
+          <h3>Select a conversation to start chatting!</h3>
+        </div>
+      )}
     </div>
   );
 }
@@ -90,7 +102,6 @@ function Conversations({ data }: { data: ConversationSchema[] }) {
     const otherUser = conversation.users.find((u) => u.id !== user.id);
 
     const isOnline = onlineUsers.some((u) => otherUser?.id === u.userId);
-    console.log(isOnline, onlineUsers, otherUser);
     return (
       <ChatCard
         imgUrl={conversation.conversationImg as string}

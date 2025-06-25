@@ -3,7 +3,6 @@
   grid-column: 2/-1;
   color: var(--text-primary);
   background-color: var(--color-background-lighter);
-  border-radius: 1rem;
   padding: 1rem;
 }
 .peopleSection h1 {
