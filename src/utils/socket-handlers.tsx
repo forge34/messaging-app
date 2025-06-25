@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { queryClient } from "../router";
 import infoIcon from "../assets/info.svg";
-import { MessageSchema } from "./schema";
+import { ConversationSchema, MessageSchema } from "./schema";
 
 export function onMessageCreate(message: MessageSchema) {
   toast(
@@ -21,4 +21,21 @@ export function onMessageCreate(message: MessageSchema) {
     },
   );
   queryClient.invalidateQueries();
+}
+
+export function onMessageConfirm(id: string) {
+  return (message: MessageSchema) => {
+    console.log("confirmed");
+    queryClient.setQueryData(
+      ["conversations", id],
+      (old: ConversationSchema) => {
+        console.log(old);
+        if (!old.messages) return [];
+        const newMessages = old.messages.map((m) =>
+          m.id === "tempId" ? message : m,
+        );
+        return { ...old, messages: newMessages };
+      },
+    );
+  };
 }

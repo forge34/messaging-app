@@ -1,4 +1,9 @@
-import { ConversationSchema, UserSchema, MessageSchema } from "../utils/schema";
+import {
+  ConversationSchema,
+  UserSchema,
+  MessageSchema,
+  MessageStatus,
+} from "../utils/schema";
 import { queryClient } from "../router";
 import { socket } from "../utils/socket";
 import send from "../assets/send.svg";
@@ -29,6 +34,7 @@ function MessageInput({
       authorId: user.id,
       conversationId: id,
       Conversation: data,
+      status: MessageStatus.PENDING,
     };
 
     queryClient.setQueryData(

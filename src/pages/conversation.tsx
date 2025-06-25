@@ -8,6 +8,8 @@ import Message from "../components/message";
 import closeBtnPath from "../assets/close-btn.svg";
 import styles from "../styles/conversation.module.css";
 import MessageInput from "../components/message-input";
+import { socket } from "../utils/socket";
+import { onMessageConfirm } from "../utils/socket-handlers";
 
 export default function Conversation() {
   const { id = "" } = useParams();
@@ -22,6 +24,15 @@ export default function Conversation() {
     );
     LastMessage?.scrollIntoView?.();
   }, [data.messages]);
+
+  useEffect(() => {
+    const handler = onMessageConfirm(id);
+    socket.on("message:confirm", handler);
+
+    return () => {
+      socket.off("message:confirm", handler);
+    };
+  }, [id]);
 
   return (
     <div className={styles.conversationBox}>
@@ -45,6 +56,7 @@ export default function Conversation() {
               message={message}
               ownMessage={ownMessage}
               key={message.id}
+              status={message.status}
             ></Message>
           );
         })}

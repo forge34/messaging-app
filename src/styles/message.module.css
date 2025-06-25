@@ -58,3 +58,17 @@ div:has(> .message[data-own="true"]) {
   margin-top: 0.25em;
   margin-right: 0.25em;
 }
+
+.messageStatus {
+  display: flex;
+  flex-direction: row;
+
+  img {
+    height: 0.75rem;
+    width: 0.75rem;
+    filter: invert(100%);
+    transform: rotate(-15deg);
+    margin-top: 0.25rem;
+    margin-left: 0.25rem;
+  }
+}

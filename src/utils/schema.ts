@@ -17,6 +17,7 @@ export interface MessageSchema {
   conversationId: string;
   author: UserSchema;
   Conversation: ConversationSchema;
+  status: MessageStatus;
 }
 
 export interface ConversationSchema {
@@ -26,6 +27,12 @@ export interface ConversationSchema {
   users: UserSchema[];
   type: ConversationType;
   conversationImg: string | null;
+}
+
+export enum MessageStatus {
+  PENDING = "PENDING",
+  DELIVERED = "DELIVERED",
+  READ = "READ",
 }
 
 export enum ConversationType {

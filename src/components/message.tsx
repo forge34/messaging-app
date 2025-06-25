@@ -1,22 +1,26 @@
 import { useRef, useState } from "react";
-import { MessageSchema } from "../utils/schema";
+import { MessageSchema, MessageStatus } from "../utils/schema";
 import styles from "../styles/message.module.css";
 import MoreHorizontal from "../assets/more-horizontal.svg";
 import Copy from "../assets/copy.svg";
 import toast from "react-hot-toast";
 import { useDropdown } from "../utils/message-dropdown-context";
 import { getTime } from "../utils/functions";
+import doubleTick from "../assets/delivered.svg";
+import pending from "../assets/pending.svg";
 
 export interface MessageProps {
   message: MessageSchema;
   conversationId: string;
   ownMessage: boolean;
+  status: MessageStatus;
 }
 
 export default function Message({
   message,
   ownMessage,
   conversationId,
+  status,
 }: MessageProps) {
   const [hovering, setHovering] = useState(false);
   const context = useDropdown();
@@ -33,7 +37,7 @@ export default function Message({
       },
     });
   }
-
+  console.log(message);
   return (
     <div
       style={{ paddingTop: "0.5em" }}
@@ -53,7 +57,12 @@ export default function Message({
           alt="user avatar"
         />
         <p>{message.body}</p>
-        <p className="timestamp">{ getTime( message.createdAt )}</p>
+        <div className={styles.messageStatus}>
+          <p className="timestamp">{getTime(message.createdAt)}</p>
+          {ownMessage && (
+            <img src={status === "PENDING" ? pending : doubleTick} />
+          )}
+        </div>
       </div>{" "}
       {hovering && (
         <div className={styles.hoverMenu}>
