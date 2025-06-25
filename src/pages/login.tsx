@@ -2,10 +2,9 @@ import TextInput from "../components/text-input";
 import styles from "../styles/form.module.css";
 import { z } from "zod";
 import { useZorm, Zorm } from "react-zorm";
-import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { queryClient } from "../router";
+import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useLogin } from "../mutations/auth";
 
 const FormSchema = z.object({
   username: z.string().min(1, { message: "Username can not be empty" }),
@@ -15,44 +14,15 @@ const FormSchema = z.object({
 });
 
 function Login() {
-  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const loginFn = useLogin();
 
   const zodForm: Zorm<typeof FormSchema> = useZorm("signup", FormSchema, {
     async onValidSubmit(e) {
       e.preventDefault();
 
-      const res = await fetch(`${import.meta.env.VITE_API}/login`, {
-        method: "POST",
-        mode: "cors",
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-        credentials: "include",
-        headers: { "content-Type": "Application/json" },
-      });
-
-      if (res.status === 401) {
-        const err = await res.json();
-        toast.error(err.message, {
-          style: {
-            backgroundColor: "#313338",
-            color: "white",
-          },
-        });
-      } else {
-        toast.success("Login sucess", {
-          
-          style: {
-            backgroundColor: "#313338",
-            color: "white",
-          },
-        });
-        await queryClient.invalidateQueries({});
-        navigate("/");
-      }
+      (await loginFn).mutate({ username, password });
     },
   });
 
