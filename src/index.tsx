@@ -18,7 +18,7 @@ import MessageDropdownBtn from "./components/message-dropdown-btn.tsx";
 import deleteIcon from "./assets/trash.svg";
 import bookmarkIcon from "./assets/star.svg";
 import { onMessageCreate } from "./utils/socket-handlers.tsx";
-import { useBookmarkMessage } from "./utils/hooks/message-hooks.tsx";
+import { useBookmarkMessage } from "./utils/mutations/messages.ts";
 
 function App() {
   const { isSuccess, data: user } = useQuery(getCurrentUser());
