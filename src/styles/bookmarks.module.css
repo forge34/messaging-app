@@ -24,8 +24,9 @@
 }
 
 
-.bookmarkContainer img {
+.bookmarkContainer > img {
   border-radius: 50%;
+  width: 4rem;
 }
 
 .bookmarkContent {

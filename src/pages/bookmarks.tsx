@@ -13,7 +13,7 @@ function Bookmarks() {
       {bookmarks?.map((bookmark) => {
         return (
           <div className={styles.bookmarkContainer} key={bookmark.id}>
-            <img src={bookmark.author.imgUrl} width={64} height={64} />
+            <img src={bookmark.author.imgUrl}  />
             <div className={styles.bookmarkContent}>
               <span>
                 {bookmark.author.name}

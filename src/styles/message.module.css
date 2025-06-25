@@ -20,6 +20,8 @@ div:has(> .message) {
 .message img:not(:last-child) {
   position: absolute;
   top: 0.75rem;
+  height: 2rem;
+  width: 2rem;
 
   left: 0.5rem;
 
@@ -47,6 +49,9 @@ div:has(> .message[data-own="true"]) {
 .hoverMenu img {
   filter: invert(100%);
   opacity: 70%;
+  height: 1rem;
+  width: 1rem;
+  margin-top: 0.5rem;
 
   &:hover {
     opacity: 100%;
@@ -55,7 +60,6 @@ div:has(> .message[data-own="true"]) {
 }
 
 .hoverMenu img:first-child {
-  margin-top: 0.25em;
   margin-right: 0.25em;
 }
 

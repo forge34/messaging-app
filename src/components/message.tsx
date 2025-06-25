@@ -52,9 +52,7 @@ export default function Message({
       >
         <img
           src={message.author.imgUrl}
-          width={32}
-          height={32}
-          alt="user avatar"
+                    alt="user avatar"
         />
         <p>{message.body}</p>
         <div className={styles.messageStatus}>
@@ -66,7 +64,7 @@ export default function Message({
       </div>{" "}
       {hovering && (
         <div className={styles.hoverMenu}>
-          <img src={Copy} width={16} height={16} onClick={copy} />
+          <img src={Copy}  onClick={copy} />
           <img
             ref={menuRef}
             src={MoreHorizontal}
