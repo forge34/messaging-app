@@ -2,9 +2,9 @@
 
 Messaging App is a real-time chat application built as part of [The Odin Project](https://www.theodinproject.com/) curriculum. This project demonstrates a full-stack messaging application where users can create accounts, log in, and exchange messages between users instantly using modern web technologies.
 
+
 The frontend is built with React and Vite.
-<br>
-The backend is built with Node.js/Express. <br>
+The backend is built with Node.js/Express.
 Real-time communication using WebSockets (Socket.io).
 
 ## Table of Contents
@@ -15,7 +15,7 @@ Real-time communication using WebSockets (Socket.io).
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
 ### Links
-- [Live demo](https://forge-messaging-app.netlify.app/) (Dead now)
+- ~~[Live demo](https://forge-messaging-app.netlify.app/)~~ (currently offline)
 - [Backend API repository](https://github.com/forge34/messaging-app-backend)
 
 ## Features
@@ -26,7 +26,7 @@ Real-time communication using WebSockets (Socket.io).
 - Fully usable on mobile, tablet, and desktop devices.
 
 ### Tools & Frameworks used
-- **Frontend:** React, Vite, React Query, React Testing Library
+- **Frontend:** React, Vite, React Query, React Testing Library , Vitest
 - **Backend:** Express.js, Socket.io (see backend repo)
 - **Other:** TypeScript for type safety
 
