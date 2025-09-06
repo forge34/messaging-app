@@ -1,3 +1,10 @@
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&style=flat-square)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5-purple?logo=vite&style=flat-square)](https://vitejs.dev/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22-green?logo=node.js&style=flat-square)](https://nodejs.org/)
+[![License](https://img.shields.io/github/license/forge34/messaging-app-frontend?style=flat-square)](./LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/forge34/messaging-app-frontend?style=flat-square)](https://github.com/forge34/messaging-app-frontend/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/forge34/messaging-app-frontend?style=flat-square)](https://github.com/forge34/messaging-app-frontend/issues)
+
 # Messaging App
 
 Messaging App is a real-time chat application built as part of [The Odin Project](https://www.theodinproject.com/) curriculum. This project demonstrates a full-stack messaging application where users can create accounts, log in, and exchange messages between users instantly using modern web technologies.
