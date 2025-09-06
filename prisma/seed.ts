@@ -1,83 +1,102 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { faker } from "@faker-js/faker";
-
+import { AvatarGenerator } from "random-avatar-generator";
 const prisma = new PrismaClient();
+const generator = new AvatarGenerator();
 
 async function main() {
-  const password = "password123";
-  const hashedPassword = await bcrypt.hash(password, 10);
-  console.log("🧹 Clearing existing data...");
-  await prisma.message.deleteMany();
-  await prisma.conversation.deleteMany();
-  await prisma.user.deleteMany();
+  const hashedPassword = await bcrypt.hash("password", 10);
 
-  console.log(`🔐 All users will use password: ${password}\n`);
-
-  // 1. Create Mohamed
-  const mohamed = await prisma.user.create({
+  const forge = await prisma.user.create({
     data: {
-      name: "Mohamed Abdeltawab",
+      name: "forge",
       password: hashedPassword,
-      imgUrl: faker.image.avatar(),
+      imgUrl: generator.generateRandomAvatar(),
     },
   });
-  console.log(`👤 ${mohamed.name} (main user)`);
 
-  // 2. Create 4 other users
-  const otherUsers = await Promise.all(
-    Array.from({ length: 4 }).map(async () => {
-      const first = faker.person.firstName();
-      const last = faker.person.lastName();
-      const fullName = `${first} ${last}`;
-
-      const user = await prisma.user.create({
+  const userNames = ["Alice", "Bob", "Charlie", "Diana", "Ethan"];
+  const users = await Promise.all(
+    userNames.map((name) =>
+      prisma.user.create({
         data: {
-          name: fullName,
+          name,
           password: hashedPassword,
-          imgUrl: faker.image.avatar(),
+          imgUrl: generator.generateRandomAvatar(),
         },
-      });
-
-      console.log(`👤 ${fullName}`);
-      return user;
-    }),
+      }),
+    ),
   );
 
-  // 3. Create 1:1 conversations between Mohamed and each other user
-  for (const otherUser of otherUsers) {
+  const baseTime = new Date();
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const messages = [
+      {
+        body: `Hi ${user.name}, how are you doing?`,
+        authorId: forge.id,
+      },
+      {
+        body: `Hey forge! I'm doing well. Just been working on some projects.`,
+        authorId: user.id,
+      },
+      {
+        body: `That's great to hear. What kind of projects?`,
+        authorId: forge.id,
+      },
+      {
+        body: `Mostly web development stuff. Trying out some new libraries.`,
+        authorId: user.id,
+      },
+      {
+        body: `Nice. I'm working on a messaging app right now. Learning a lot.`,
+        authorId: forge.id,
+      },
+      {
+        body: `That sounds fun. Are you using React?`,
+        authorId: user.id,
+      },
+      {
+        body: `Yeah, React + Zustand + Prisma. It’s been smooth so far.`,
+        authorId: forge.id,
+      },
+    ];
+
     const conversation = await prisma.conversation.create({
       data: {
-        type: "PRIVATE",
         users: {
-          connect: [{ id: mohamed.id }, { id: otherUser.id }],
+          connect: [{ id: forge.id }, { id: user.id }],
         },
-        conversationImg: faker.image.avatar(),
+        type: "PRIVATE",
       },
     });
 
-    // 4. Add 50 alternating messages that make sense
-    const messages = Array.from({ length: 50 }).map((_, i) => {
-      const senderId = i % 2 === 0 ? mohamed.id : otherUser.id;
-      const body = faker.lorem.sentences({ min: 1, max: 2 });
+    // Create messages with timestamps
+    for (let j = 0; j < messages.length; j++) {
+      const msg = messages[j];
+      await prisma.message.create({
+        data: {
+          body: msg.body,
+          authorId: msg.authorId,
+          conversationId: conversation.id,
+          createdAt: new Date(baseTime.getTime() + i * 10_000 + j * 60_000),
+          status: j < 5 ? "DELIVERED" : "READ",
+        },
+      });
+    }
 
-      return {
-        body,
-        authorId: senderId,
-        conversationId: conversation.id,
-        createdAt: faker.date.recent({ days: 7 }),
-      };
-    });
-
-    await prisma.message.createMany({ data: messages });
-    console.log(`💬 Conversation created: Mohamed ↔ ${otherUser.name}`);
+    console.log(`Seeded conversation with ${user.name}`);
   }
-
-  console.log("\n✅ Seeding complete");
 }
 
 main()
-  .catch((e) => {
-    console.error("❌ Seed error:", e);
+  .then(async () => {
+    console.log("Seeding complete.");
+    await prisma.$disconnect();
   })
-  .finally(() => prisma.$disconnect());
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
