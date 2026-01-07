@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  pk       Int       @id @default(autoincrement())
+  id       String    @unique @default(cuid())
+  name     String    @unique
+  blocked  User[]    @relation("blocked")
+  password String
+  messages Message[] @relation("UserMessages")
+
+  bookmarks     Message[]      @relation("UserBookmarks")
+  conversations Conversation[]
+  bio           String         @default("")
+  imgUrl        String
+  blockedBy     User[]         @relation("blocked")
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  body           String
+  createdAt      DateTime      @default(now())
+  authorId       String
+  conversationId String?
+  author         User          @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookmarkedBy   User[]        @relation("UserBookmarks")
+  status MessageStatus @default(PENDING)
+}
+
+model Conversation {
+  id              String           @id @default(cuid())
+  title           String?
+  messages        Message[]
+  users           User[]
+  conversationImg String?
+  type            ConversationType @default(PRIVATE)
+}
+
+enum MessageStatus {
+    PENDING
+    DELIVERED
+    READ
+  }
+
+enum ConversationType {
+  PRIVATE
+  GROUP
+}

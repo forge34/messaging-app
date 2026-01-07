@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16.9
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  server:
+    build:
+        .
+    depends_on:
+      - db
+
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  db:
+    driver: local
