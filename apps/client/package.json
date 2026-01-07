@@ -1,5 +1,5 @@
 {
-  "name": "messaging-app-frontend",
+  "name": "@messaging-app/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
