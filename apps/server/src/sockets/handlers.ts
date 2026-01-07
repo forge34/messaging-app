@@ -1,4 +1,4 @@
-import { Message, User } from "@prisma/client";
+import { Message, User } from "../../generated/prisma/client";
 import { Socket } from "socket.io";
 import { prisma } from "../config/prisma-client";
 import { io } from "../server";

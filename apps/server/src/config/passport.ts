@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "../../generated/prisma/client";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcryptjs";

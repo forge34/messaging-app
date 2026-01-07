@@ -2,7 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { type User } from "@prisma/client";
+import { type User } from "../../generated/prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma-client";

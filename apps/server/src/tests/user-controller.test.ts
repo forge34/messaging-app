@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { app } from "../app";
 import { prisma } from "../config/prisma-client";
-import { User } from "@prisma/client";
+import { User } from "../../generated/prisma/client";
 
 const SECRET = process.env.SECRET!;
 let userId: string;
@@ -13,7 +13,6 @@ let token: string;
 describe("GET /users/", async () => {
   let otherUser: User;
   beforeEach(async () => {
-
     const hashedPassword = await bcrypt.hash("password123", 10);
     const user = await prisma.user.create({
       data: {

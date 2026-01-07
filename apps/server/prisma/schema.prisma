@@ -1,16 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -37,7 +31,7 @@ model Message {
   author         User          @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   bookmarkedBy   User[]        @relation("UserBookmarks")
-  status MessageStatus @default(PENDING)
+  status         MessageStatus @default(PENDING)
 }
 
 model Conversation {
@@ -50,10 +44,10 @@ model Conversation {
 }
 
 enum MessageStatus {
-    PENDING
-    DELIVERED
-    READ
-  }
+  PENDING
+  DELIVERED
+  READ
+}
 
 enum ConversationType {
   PRIVATE

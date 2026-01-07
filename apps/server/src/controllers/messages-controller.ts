@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "../../generated/prisma/client";
 import {  Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import passport from "passport";

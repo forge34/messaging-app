@@ -3,7 +3,11 @@ packages:
   - apps/*
 
 onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
+  - "@prisma/client"
+  - "@prisma/engines"
   - esbuild
   - prisma
+
+catalogs:
+  prisma:
+    prisma: latest
