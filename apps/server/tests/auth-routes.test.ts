@@ -1,10 +1,9 @@
-import { app } from "../app";
-import { prisma } from "../config/prisma-client";
+import { app } from "../src/app";
+import { prisma } from "@chat/db";
 import request from "supertest";
 import bcrypt from "bcryptjs";
 
 describe("POST /login", () => {
-  
   it("should login a valid user and return JWT cookie", async () => {
     const hashedPassword = await bcrypt.hash("password123", 10);
     await prisma.user.create({
@@ -54,7 +53,7 @@ describe("POST /login", () => {
     });
 
     expect(res.status).toBe(401);
-    console.log(res.body)
+    console.log(res.body);
     expect(res.body.message).toBe("Authentication failed");
   });
 

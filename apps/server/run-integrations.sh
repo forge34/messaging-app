@@ -27,5 +27,5 @@ until docker exec $POSTGRES_CONTAINER_NAME pg_isready -U $POSTGRES_USER; do
   sleep 1
 done
 
-pnpx prisma db push
+pnpm --filter @chat/db db:push
 pnpx vitest --run --coverage

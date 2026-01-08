@@ -1,8 +1,8 @@
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import request from "supertest";
-import { app } from "../app";
+import { app } from "../src/app";
 
 const SECRET = process.env.SECRET!;
 let userId: string;
