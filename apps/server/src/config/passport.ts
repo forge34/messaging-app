@@ -1,10 +1,10 @@
-import { User } from "../../generated/prisma/client";
+import { User } from "@chat/db";
 import passport from "passport";
 import passportLocal from "passport-local";
 import bcrypt from "bcryptjs";
 import { Request } from "express";
 import passportJwt from "passport-jwt";
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 
 const localVerify: passportLocal.VerifyFunction = async (
   username,

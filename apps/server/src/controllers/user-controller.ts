@@ -1,7 +1,7 @@
-import { User } from "../../generated/prisma/client";
+import { User } from "@chat/db";
 import { Request, Response } from "express";
 import passport from "passport";
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 import expressAsyncHandler from "express-async-handler";
 
 class UserController {

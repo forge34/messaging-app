@@ -2,10 +2,10 @@ import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import passport from "passport";
-import { type User } from "../../generated/prisma/client";
+import { type User } from "@chat/db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server";
 

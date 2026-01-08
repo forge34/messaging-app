@@ -1,9 +1,9 @@
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
-import { User } from "../../generated/prisma/client";
+import { User } from "@chat/db";
 import { Request, Response } from "express";
 import passport from "passport";
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 
 class ConversationController {
   static create = [

@@ -2,7 +2,7 @@ import { createServer } from "http";
 import { app, corsOptions } from "./app";
 import { Server } from "socket.io";
 import { socketJwtVerify } from "./sockets";
-import { User } from "../generated/prisma/client";
+import { type User } from "@chat/db";
 import { handleMessageCreate, handleMessageDelete } from "./sockets/handlers";
 
 const port = process.env.PORT || 3000;

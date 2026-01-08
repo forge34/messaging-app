@@ -1,6 +1,6 @@
-import { Message, User } from "../../generated/prisma/client";
+import { Message, User } from "@chat/db";
 import { Socket } from "socket.io";
-import { prisma } from "../config/prisma-client";
+import { prisma } from "@chat/db";
 import { io } from "../server";
 
 export const handleMessageCreate =
