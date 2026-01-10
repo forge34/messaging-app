@@ -1,9 +1,9 @@
 import { createServer } from "http";
-import { app, corsOptions } from "./app";
+import { app, corsOptions } from "./app.js";
 import { Server } from "socket.io";
-import { socketJwtVerify } from "./sockets";
+import { socketJwtVerify } from "./sockets/index.js";
 import { type User } from "@chat/db";
-import { handleMessageCreate, handleMessageDelete } from "./sockets/handlers";
+import { handleMessageCreate, handleMessageDelete } from "./sockets/handlers.js";
 
 const port = process.env.PORT || 3000;
 const server = createServer(app);

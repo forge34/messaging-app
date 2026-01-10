@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db";
 import { AvatarGenerator } from "random-avatar-generator";
-import { io } from "../server";
+import { io } from "../server.js";
 
 const generator = new AvatarGenerator();
 

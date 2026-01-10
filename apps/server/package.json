@@ -2,18 +2,18 @@
   "name": "@chat/client",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "NODE_ENV=test && ./run-integrations.sh",
     "start": "node dist/server.js",
-    "build": "tsc && npx prisma db push --accept-data-loss",
-    "dev": " nodemon src/server.ts"
+    "build": "tsc -p tsconfig.prod.json",
+    "dev": "tsc --watch -p tsconfig.dev.json && nodemon dist/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@chat/db": "workspace:*",
+    "@chat/shared": "workspace:*",
     "@faker-js/faker": "^10.2.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
@@ -60,7 +60,6 @@
     "nodemon": "^3.1.11",
     "npm": "^11.7.0",
     "supertest": "^7.2.2",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
   },

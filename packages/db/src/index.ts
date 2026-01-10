@@ -1,4 +1,3 @@
-import { prisma } from "./client";
-export { prisma };
+export { prisma } from "./client.js";
 
-export * from "./generated/prisma/client";
+export * from "./generated/prisma/client.js";

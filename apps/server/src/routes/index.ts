@@ -1,8 +1,8 @@
-import express, { Request, Response } from "express";
-import Auth from "../controllers/auth-controller";
-import MessagesController from "../controllers/messages-controller";
-import ConversationController from "../controllers/conversation-controller";
-import UserController from "../controllers/user-controller";
+import express, { Request, Response  } from "express";
+import Auth from "../controllers/auth-controller.js";
+import MessagesController from "../controllers/messages-controller.js";
+import ConversationController from "../controllers/conversation-controller.js";
+import UserController from "../controllers/user-controller.js";
 
 const router = express.Router();
 
@@ -22,10 +22,10 @@ router.get(
 );
 router.get("/conversation/:conversationid", ConversationController.getById);
 
-router.post("/message/:messageid/bookmark",MessagesController.bookmarkMessage)
+router.post("/message/:messageid/bookmark", MessagesController.bookmarkMessage);
 
 router.get("/users", UserController.getMany);
-router.get("/users/bookmarks" , UserController.getBookmarks)
+router.get("/users/bookmarks", UserController.getBookmarks);
 router.get("/users/me", UserController.getCurrent);
 router.post("/users/:userid/block", UserController.blockUser);
 

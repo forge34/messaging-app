@@ -3,8 +3,8 @@ import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-import router from "./routes/index";
-import { PassportConfig } from "./config/passport";
+import router from "./routes/index.js";
+import { PassportConfig } from "./config/passport.js";
 import passport from "passport";
 
 import compression from "compression";
