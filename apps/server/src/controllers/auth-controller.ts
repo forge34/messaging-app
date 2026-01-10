@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
-import { SignupRequest } from "@chat/shared";
+import { LoginRequest, SignupRequest } from "@chat/shared";
 
 const generator = new AvatarGenerator();
 
@@ -49,59 +49,35 @@ class Auth {
   });
 
   static login = [
-    body("username")
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage("username is too short")
-      .escape(),
-    body("password")
-      .trim()
-      .isLength({ min: 8 })
-      .withMessage("Password should be at least 8 characters")
-      .escape(),
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
-        const errors = validationResult(req);
+        const data = LoginRequest.parse(req.body);
 
-        if (errors.isEmpty()) {
-          next();
-        } else {
-          res.status(401).json({ errors: errors.array() });
-        }
-      },
-    ),
-    expressAsyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
-        passport.authenticate(
-          "local",
-          { session: false, failWithError: true },
-          (err: any, user: any) => {
-            if (err) {
-              return next(err);
-            }
-
-            if (!user) {
-              const error = {
-                code: 401,
-                message: "Authentication failed",
-              };
-              next(error);
-            } else {
-              const currentUser = user as User;
-              const token = jwt.sign(
-                { id: currentUser.id },
-                process.env.SECRET,
-                {
-                  expiresIn: "3d",
-                },
-              );
-
-              res.cookie("jwt", token, cookieOptions);
-
-              res.status(200).json("Login sucess");
-            }
+        const user = await prisma.user.findUnique({
+          where: {
+            name: data.username,
           },
-        )(req, res, next);
+        });
+
+        if (!user) {
+          res.status(401).json({ message: "Invalid credentials" });
+          return;
+        }
+
+        const matches = await bcrypt.compare(data.password, user.password);
+
+        if (!matches) {
+          res.status(401).json({ message: "Invalid credentials" });
+          return;
+        }
+
+        const token = jwt.sign({ id: user.id }, process.env.SECRET, {
+          expiresIn: "3d",
+        });
+
+        res.cookie("jwt", token, cookieOptions);
+
+        res.status(200).json({ message: "Login sucess" });
       },
     ),
   ];

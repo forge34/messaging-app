@@ -24,7 +24,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-PassportConfig.configLocal();
 PassportConfig.configJwt();
 app.use(passport.initialize());
 

@@ -1,34 +1,7 @@
-import { User } from "@chat/db";
 import passport from "passport";
-import passportLocal from "passport-local";
-import bcrypt from "bcryptjs";
 import { Request } from "express";
 import passportJwt from "passport-jwt";
 import { prisma } from "@chat/db";
-
-const localVerify: passportLocal.VerifyFunction = async (
-  username,
-  password,
-  done,
-) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      name: username,
-    },
-  });
-
-  if (!user) {
-    return done(null, false, { message: "user not found" });
-  }
-
-  const match = await bcrypt.compare(password, user.password);
-
-  if (match) {
-    return done(null, user);
-  } else if (!match) {
-    return done(null, false);
-  }
-};
 
 const cookieExtractor = (req: Request) => {
   let jwt = null;
@@ -45,29 +18,6 @@ const jwtOptions: passportJwt.StrategyOptionsWithSecret = {
 };
 
 class PassportConfig {
-  static configLocal() {
-    const localStrategy = new passportLocal.Strategy(localVerify);
-
-    passport.serializeUser((user: User, done) => {
-      done(null, user.id);
-    });
-
-    passport.deserializeUser(async (id, done) => {
-      const user = await prisma.user.findFirst({
-        where: {
-          id: id,
-        },
-        include: {
-          messages: true,
-          blocked: true,
-        },
-      });
-
-      done(null, user);
-    });
-    passport.use(localStrategy);
-  }
-
   static configJwt() {
     const jwtStrategy = new passportJwt.Strategy(
       jwtOptions,
