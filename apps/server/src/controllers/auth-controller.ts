@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
+import { SignupRequest } from "@chat/shared";
 
 const generator = new AvatarGenerator();
 
@@ -20,60 +21,32 @@ const cookieOptions: CookieOptions = {
 };
 
 class Auth {
-  static signup = [
-    body("username")
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage("username is too short")
-      .custom(async (value) => {
-        const exists = await prisma.user.findFirst({ where: { name: value } });
+  static signup = expressAsyncHandler(async (req: Request, res: Response) => {
+    const data = SignupRequest.parse(req.body);
 
-        if (exists) {
-          return Promise.reject();
-        }
-      })
-      .withMessage("Username already exists")
-      .escape(),
-    body("password")
-      .trim()
-      .isLength({ min: 8 })
-      .withMessage("Password should be at least 8 characters")
-      .escape(),
-    body("confirmPassword")
-      .trim()
-      .isLength({ min: 8 })
-      .withMessage("Password should be at least 8 characters")
-      .custom((value, { req }) => {
-        return value === req.body.password;
-      })
-      .withMessage("Passwords don't match")
-      .escape(),
-
-    expressAsyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
-        const errors = validationResult(req);
-        if (errors.isEmpty()) {
-          bcrypt.hash(req.body.password, 10, async (err, hash) => {
-            if (!err) {
-              await prisma.user.create({
-                data: {
-                  name: req.body.username,
-                  password: hash,
-                  imgUrl: generator.generateRandomAvatar(),
-                },
-              });
-              res.status(200).json("created user");
-            } else if (err) {
-              console.log(err);
-              next(err);
-            }
-          });
-        } else {
-          res.status(400).json({ errors: errors.array() });
-        }
+    const exists = await prisma.user.findUnique({
+      where: {
+        name: data.username,
       },
-    ),
-  ];
+    });
+
+    if (exists) {
+      res.status(409).json({ message: "Username already exists" });
+      return;
+    }
+
+    const hash = await bcrypt.hash(data.password, 10);
+
+    await prisma.user.create({
+      data: {
+        name: data.username,
+        password: hash,
+        imgUrl: generator.generateRandomAvatar(),
+      },
+    });
+
+    res.status(200).json({ message: "User account creation sucess", data });
+  });
 
   static login = [
     body("username")
