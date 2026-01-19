@@ -35,21 +35,15 @@ model Message {
 }
 
 model Conversation {
-  id              String           @id @default(cuid())
+  id              String    @id @default(cuid())
   title           String?
   messages        Message[]
   users           User[]
   conversationImg String?
-  type            ConversationType @default(PRIVATE)
 }
 
 enum MessageStatus {
   PENDING
   DELIVERED
   READ
-}
-
-enum ConversationType {
-  PRIVATE
-  GROUP
 }
