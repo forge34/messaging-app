@@ -8,6 +8,7 @@ import { PassportConfig } from "./config/passport.js";
 import passport from "passport";
 
 import compression from "compression";
+import { ZodError } from "zod";
 
 const app: Express = express();
 
@@ -30,10 +31,16 @@ app.use(passport.initialize());
 app.use("/", router);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ZodError) {
+    const errors = err.flatten();
+    return res
+      .status(401)
+      .json({ messages: errors.formErrors, fields: errors.fieldErrors });
+  }
   if (err.name === "AuthenticationError") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  res.status(err.code || 500).json({ message: err.message });
+  res.status(500).json({ message: err.message });
 });
 
 export { app };
