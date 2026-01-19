@@ -1,4 +1,4 @@
-import { z, ZodType } from "zod";
+import { z, ZodType, ZodTypeAny } from "zod";
 import { LoginRequest, SignupRequest } from "./schemas/auth-schema.js";
 import {
   createConversationSchema,
@@ -6,80 +6,81 @@ import {
   getConversationByIdSchema,
 } from "./schemas/conversation-schema.js";
 
-interface ApiResponseSchema<T = any> {
-  message: string;
-  data?: T | null;
-}
+const createResponseSchema = <T extends ZodTypeAny>(dataSchema: T) => {
+  return z.object({
+    message: z.string().min(1),
+    data: dataSchema.nullable().optional(),
+  });
+};
 
 export interface ApiRoute {
   url: string;
-  request: ZodType;
-  response: ApiResponseSchema;
+  request: ZodType<any>;
+  response: ReturnType<typeof createResponseSchema>;
 }
-
 const RequestSchemaPlaceholder = z.object({});
 
 const ApiRoutes = {
   signup: {
     url: "/signup",
     request: SignupRequest,
-    response: { message: "Account created successfully" },
+    response: createResponseSchema(z.null()),
   },
   login: {
     url: "/login",
     request: LoginRequest,
-    response: { message: "Login successful" },
+    response: createResponseSchema(z.null()),
   },
   logout: {
     url: "/logout",
     request: RequestSchemaPlaceholder,
-    response: { message: "Logout successful" },
+    response: createResponseSchema(z.null()),
   },
   createConversation: {
     url: "/conversation",
     request: createConversationSchema,
-    response: { message: "Conversation created successfully" },
+    response: createResponseSchema(z.null()),
   },
   deleteConversation: {
     url: "/conversation/:conversationid",
     request: deleteConversationSchema,
-    response: { message: "Conversation deleted successfully" },
+    response: createResponseSchema(z.null()),
   },
   getCurrentUserConversations: {
     url: "/conversation/currentUser",
     request: z.object({}),
-    response: { message: "Fetched current user conversations" },
+    response: createResponseSchema(z.null()),
   },
   getConversationById: {
     url: "/conversation/:conversationid",
     request: getConversationByIdSchema,
-    response: { message: "Fetched conversation by ID" },
+    response: createResponseSchema(z.null()),
   },
   bookmarkMessage: {
     url: "/message/:messageid/bookmark",
     request: RequestSchemaPlaceholder,
-    response: { message: "Message bookmarked successfully" },
+    response: createResponseSchema(z.null()),
   },
   getUsers: {
     url: "/users",
     request: RequestSchemaPlaceholder,
-    response: { message: "Fetched users successfully" },
+    response: createResponseSchema(z.null()),
   },
   getUserBookmarks: {
     url: "/users/bookmarks",
     request: RequestSchemaPlaceholder,
-    response: { message: "Fetched user bookmarks successfully" },
+    response: createResponseSchema(z.null()),
   },
   getCurrentUser: {
     url: "/users/me",
     request: RequestSchemaPlaceholder,
-    response: { message: "Fetched current user info" },
+    response: createResponseSchema(z.null()),
   },
   blockUser: {
     url: "/users/:userid/block",
     request: RequestSchemaPlaceholder,
-    response: { message: "User blocked successfully" },
+    response: createResponseSchema(z.null()),
   },
-} as const;
+} as const satisfies Record<string, ApiRoute>;
 
 export default ApiRoutes;

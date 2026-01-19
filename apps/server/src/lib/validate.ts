@@ -6,11 +6,15 @@ interface TypedRequest<T> extends Request {
   body: T;
 }
 
+interface TypedResponse<T, TData> extends Response {
+  json: ({ message, data }: { message: string; data?: TData | null }) => this;
+}
+
 export function createHandler<T extends ApiRoute>(
   route: T,
   handler: (
     req: TypedRequest<z.infer<T["request"]>>,
-    res: Response,
+    res: TypedResponse<z.infer<T["response"]>, z.infer<T["response"]>["data"]>,
   ) => Promise<void>,
 ) {
   return async function (
@@ -22,5 +26,7 @@ export function createHandler<T extends ApiRoute>(
     req.body = data as typeof data;
 
     await handler(req, res);
+
+    res.status(200).json(route.response);
   };
 }

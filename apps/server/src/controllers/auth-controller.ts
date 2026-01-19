@@ -44,9 +44,8 @@ class Auth {
       },
     });
 
-    res.status(200).json({ message: "User account creation sucess", data });
+    res.status(200).json({ message: "User account created successfully" });
   });
-
 
   static login = createHandler(ApiRoutes.login, async (req, res) => {
     const data = req.body;
