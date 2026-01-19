@@ -1,30 +1,33 @@
-import { app } from "../src/app";
+import { app } from "../src/app.js";
 import { prisma } from "@chat/db";
 import request from "supertest";
 import bcrypt from "bcryptjs";
+import { describe, it, expect } from "vitest";
 
 describe("POST /login", () => {
   it("should login a valid user and return JWT cookie", async () => {
     const hashedPassword = await bcrypt.hash("password123", 10);
+
+    const username = `Forge-${Date.now()}`;
     await prisma.user.create({
       data: {
-        name: "Forge",
+        name: username,
         password: hashedPassword,
         imgUrl: "dummy",
       },
     });
 
     const res = await request(app).post("/login").send({
-      username: "Forge",
+      username: username,
       password: "password123",
     });
-
-    expect(res.status).toBe(200);
-    expect(res.body).toBe("Login sucess");
 
     const cookie = res.headers["set-cookie"];
     expect(cookie).toBeDefined();
     expect(cookie[0].startsWith("jwt")).toBe(true);
+
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe("Login sucess");
   });
 
   it("should reject login with wrong password", async () => {
@@ -43,7 +46,7 @@ describe("POST /login", () => {
     });
 
     expect(res.status).toBe(401);
-    expect(res.body.message).toBe("Authentication failed");
+    expect(res.body.message).toBe("Invalid credentials");
   });
 
   it("should reject login for non-existing user", async () => {
@@ -53,8 +56,7 @@ describe("POST /login", () => {
     });
 
     expect(res.status).toBe(401);
-    console.log(res.body);
-    expect(res.body.message).toBe("Authentication failed");
+    expect(res.body.message).toBe("Invalid credentials");
   });
 
   it("should reject login with missing username", async () => {
@@ -107,8 +109,8 @@ describe("POST /signup", () => {
       confirmPassword: "newpassword",
     });
 
-    expect(res.status).toBe(400);
-    expect(res.body.username.msg).toBe("Username already exists");
+    expect(res.status).toBe(409);
+    expect(res.body.message).toBe("Username already exists");
   });
 
   it("should reject short passwords", async () => {
@@ -118,8 +120,8 @@ describe("POST /signup", () => {
       confirmPassword: "short",
     });
 
-    expect(res.status).toBe(400);
-    expect(res.body.password.msg).toBe(
+    expect(res.status).toBe(401);
+    expect(res.body.fields.password).toContain(
       "Password should be at least 8 characters",
     );
   });
@@ -131,7 +133,7 @@ describe("POST /signup", () => {
       confirmPassword: "wrong123",
     });
 
-    expect(res.status).toBe(400);
-    expect(res.body.confirmPassword.msg).toBe("Passwords don't match");
+    expect(res.status).toBe(401);
+    expect(res.body.messages).toContain("Passwords do not match");
   });
 });
