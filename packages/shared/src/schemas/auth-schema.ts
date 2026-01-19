@@ -13,11 +13,16 @@ export const SignupRequest = z
     password: z
       .string()
       .min(8, { message: "Password should be at least 8 characters" }),
-    confirmPassword: z.string().min(8, "Passwords do not match"),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password should be at least 8 characters" }),
   })
-  .refine((values) => {
-    return values.password === values.confirmPassword;
-  });
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    { message: "Passwords do not match" },
+  );
 
 export type LoginRequest = z.infer<typeof LoginRequest>;
 export type SignupRequest = z.infer<typeof SignupRequest>;
