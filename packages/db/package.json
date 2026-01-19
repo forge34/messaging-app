@@ -10,6 +10,7 @@
     "db:push": "pnpm prisma db push",
     "db:reset": "pnpm prisma db push --force-reset",
     "db:generate": "pnpm prisma generate  && pnpm build",
+    "db:migrate" : "pnpm prisma migrate dev",
     "watch": "tsc -w"
   },
   "keywords": [],
