@@ -26,7 +26,5 @@ export function createHandler<T extends ApiRoute>(
     req.body = data as typeof data;
 
     await handler(req, res);
-
-    res.status(200).json(route.response);
   };
 }
