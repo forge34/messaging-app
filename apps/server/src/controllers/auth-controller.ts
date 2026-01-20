@@ -1,5 +1,4 @@
-import expressAsyncHandler from "express-async-handler";
-import { CookieOptions, Request, Response } from "express";
+import { CookieOptions } from "express";
 import passport from "passport";
 import { type User } from "@chat/db";
 import jwt from "jsonwebtoken";
@@ -7,8 +6,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
-import { ApiRoutes } from "@chat/shared";
 import { createHandler } from "../lib/validate.js";
+import { Routes } from "@chat/shared";
 
 const generator = new AvatarGenerator();
 
@@ -21,7 +20,7 @@ const cookieOptions: CookieOptions = {
 };
 
 class Auth {
-  static signup = createHandler(ApiRoutes.signup, async (req, res) => {
+  static signup = createHandler(Routes.signup, async (req, res) => {
     const data = req.body;
     const exists = await prisma.user.findUnique({
       where: {
@@ -43,11 +42,10 @@ class Auth {
         imgUrl: generator.generateRandomAvatar(),
       },
     });
-
     res.status(200).json({ message: "User account created successfully" });
   });
 
-  static login = createHandler(ApiRoutes.login, async (req, res) => {
+  static login = createHandler(Routes.login, async (req, res) => {
     const data = req.body;
 
     const user = await prisma.user.findUnique({
@@ -68,7 +66,7 @@ class Auth {
       return;
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.SECRET || "", {
       expiresIn: "3d",
     });
 
@@ -79,11 +77,11 @@ class Auth {
 
   static logout = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
+    createHandler(Routes.logout, async (req, res) => {
       const { id: userId } = req.user as User;
       res.cookie("jwt", "", cookieOptions);
       io.in(`user:${userId}`).disconnectSockets(true);
-      res.status(200).json("logout sucess");
+      res.status(200).json({ message: "logout sucess" });
     }),
   ];
 }

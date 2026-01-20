@@ -1,29 +1,29 @@
-import { type ApiRoute } from "@chat/shared";
+import { Route } from "@chat/shared";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
-interface TypedRequest<T> extends Request {
+type TypedRequest<T> = Omit<Request, "body"> & {
   body: T;
+};
+
+interface TypedResponse<T> extends Response {
+  json: (body: T) => this;
 }
 
-interface TypedResponse<TData> extends Response {
-  json: ({ message, data }: { message: string; data?: TData | null }) => this;
-}
-
-export function createHandler<T extends ApiRoute>(
+export function createHandler<T extends Route>(
   route: T,
   handler: (
-    req: TypedRequest<z.infer<T["request"]>>,
-    res: TypedResponse<z.infer<T["response"]>["data"]>,
+    req: TypedRequest<z.infer<T["requestBody"]>>,
+    res: TypedResponse<z.infer<T["responseSchema"]>>,
   ) => Promise<void>,
 ) {
   return async function (
-    req: TypedRequest<z.infer<typeof route.request>>,
-    res: Response,
-    next: NextFunction,
+    req: TypedRequest<z.infer<T["requestBody"]>>,
+    res: TypedResponse<z.infer<T["responseSchema"]>>,
+    _: NextFunction,
   ) {
-    const data = route.request.parse(req.body);
-    req.body = data;
+    const data = route.requestBody.parse(req.body);
+    req.body = data as typeof req.body;
 
     await handler(req, res);
   };
