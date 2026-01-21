@@ -1,9 +1,7 @@
 {
-  "extends": ["../../tsconfig.json"],
+  "extends": ["../../tsconfig.json", "@tsconfig/node24/tsconfig.json"],
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2022",
+    "strict": false,
     "outDir": "dist",
   },
   "include": ["src", "tests"],
