@@ -1,15 +1,31 @@
 import z from "zod";
-import { createRoute } from "./routeConfig";
-import { LoginRequest } from "../schemas/auth-schema";
+import { createRoute } from "./routeConfig.js";
+import { LoginRequest, SignupRequest } from "../schemas/auth-schema.js";
 
 export const Routes = {
   login: createRoute({
     path: "/user",
-    method: "GET",
+    method: "POST",
     params: z.null(),
     queries: z.null(),
     requestBody: LoginRequest,
-    responseData: z.object({ name: z.string() }),
+    responseData: z.null(),
+  }),
+  signup: createRoute({
+    path: "/signup",
+    method: "POST",
+    params: z.null(),
+    queries: z.null(),
+    requestBody: SignupRequest,
+    responseData: z.null(),
+  }),
+
+  logout: createRoute({
+    path: "/logout",
+    method: "POST",
+    params: z.null(),
+    queries: z.null(),
+    requestBody: SignupRequest,
+    responseData: z.null(),
   }),
 } as const;
-
