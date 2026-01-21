@@ -8,7 +8,7 @@ class MessagesController {
   static bookmarkMessage = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
-      const messageId = req.params.messageid;
+      const messageId = String( req.params.messageid );
       const user = req.user as User;
 
       const message = await prisma.message.findFirst({

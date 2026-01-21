@@ -38,7 +38,7 @@ class ConversationController {
   static delete = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
-      const conversationId = req.params.conversationid;
+      const conversationId = String(req.params.conversationid);
 
       await prisma.conversation.delete({
         where: {
@@ -90,7 +90,7 @@ class ConversationController {
   static getById = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     expressAsyncHandler(async (req: Request, res: Response) => {
-      const conversationid = req.params.conversationid;
+      const conversationid = String(req.params.conversationid);
 
       const conversation = await prisma.conversation.findFirst({
         where: {
