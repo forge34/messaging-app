@@ -7,3 +7,5 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 export { prisma };
+export * from "./generated/prisma/client.js";
+export type * from "./generated/prisma/client.js";

@@ -1,9 +1,9 @@
 import { CookieOptions } from "express";
 import passport from "passport";
-import { type User } from "@chat/db";
+import { type User } from "@chat/db/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
 import { createHandler } from "../lib/validate.js";

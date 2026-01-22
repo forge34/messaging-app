@@ -1,8 +1,16 @@
 {
-  "extends": ["../../tsconfig.json", "@tsconfig/node24/tsconfig.json"],
+  "extends": ["../../tsconfig.json"],
   "compilerOptions": {
-    "strict": false,
-    "outDir": "dist",
+    "target": "esnext",
+    "module": "nodenext",
+    "outDir": "./dist",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@chat/db/client": ["../../packages/db/dist/client.d.ts"],
+      "@chat/db/browser": ["../../packages/db/dist/browser.d.ts"]
+    }
   },
   "include": ["src", "tests"],
   "exclude": ["node_modules"]

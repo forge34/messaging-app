@@ -1,8 +1,8 @@
-import { User } from "@chat/db";
+import { User } from "@chat/db/client";
 import {  Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import passport from "passport";
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 
 class MessagesController {
   static bookmarkMessage = [

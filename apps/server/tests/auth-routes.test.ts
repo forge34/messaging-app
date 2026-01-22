@@ -1,5 +1,5 @@
 import { app } from "../src/app.js";
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 import request from "supertest";
 import bcrypt from "bcryptjs";
 import { describe, it, expect } from "vitest";

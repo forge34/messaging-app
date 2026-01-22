@@ -2,9 +2,9 @@ import request from "supertest";
 import { describe, it, expect, beforeEach } from "vitest";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { app } from "../src/app";
-import { prisma } from "@chat/db";
-import { User } from "@chat/db";
+import { app } from "../src/app.js";
+import { prisma } from "@chat/db/client";
+import { type User } from "@chat/db/client";
 
 const SECRET = process.env.SECRET!;
 let userId: string;

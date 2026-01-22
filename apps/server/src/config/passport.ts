@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Request } from "express";
 import passportJwt from "passport-jwt";
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 
 const cookieExtractor = (req: Request) => {
   let jwt = null;

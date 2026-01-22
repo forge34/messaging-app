@@ -1,8 +1,9 @@
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import request from "supertest";
-import { app } from "../src/app";
+import { app } from "../src/app.js";
+import { describe, beforeEach, it, expect } from "vitest";
 
 const SECRET = process.env.SECRET!;
 let userId: string;
@@ -11,7 +12,6 @@ let message;
 
 describe("POST /message/:messageid/bookmark", () => {
   beforeEach(async () => {
-
     const hashedPassword = await bcrypt.hash("password123", 10);
     const user = await prisma.user.create({
       data: {

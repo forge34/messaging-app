@@ -1,6 +1,6 @@
-import { Message, User } from "@chat/db";
+import { Message, User } from "@chat/db/client";
 import { Socket } from "socket.io";
-import { prisma } from "@chat/db";
+import { prisma } from "@chat/db/client";
 import { io } from "../server.js";
 
 export const handleMessageCreate =
