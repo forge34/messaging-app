@@ -1,8 +1,8 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
-  
-  moduleFormat = "esm"
+
+  moduleFormat        = "esm"
   importFileExtension = "js"
 }
 
@@ -38,11 +38,10 @@ model Message {
 }
 
 model Conversation {
-  id              String    @id @default(cuid())
-  title           String?
-  messages        Message[]
-  users           User[]
-  conversationImg String?
+  id       String    @id @default(cuid())
+  title    String?
+  messages Message[]
+  users    User[]
 }
 
 enum MessageStatus {
