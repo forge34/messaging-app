@@ -9,7 +9,6 @@ generator client {
 generator zod {
   provider = "prisma-zod-generator"
   output   = "../src/generated/"
-  // optional config = "./zod-generator.config.json" (relative to schema file)
 }
 
 datasource db {
@@ -45,7 +44,6 @@ model Message {
 
 model Conversation {
   id       String    @id @default(cuid())
-  title    String?
   messages Message[]
   users    User[]
 }
