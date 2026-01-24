@@ -6,6 +6,12 @@ generator client {
   importFileExtension = "js"
 }
 
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../src/generated/"
+  // optional config = "./zod-generator.config.json" (relative to schema file)
+}
+
 datasource db {
   provider = "postgresql"
 }

@@ -19,6 +19,10 @@
     "./browser": {
       "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas.d.ts",
+      "import": "./dist/schemas.js"
     }
   },
   "keywords": [],
@@ -28,7 +32,9 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
-    "pg": "^8.17.1"
+    "pg": "^8.17.1",
+    "prisma-zod-generator": "^2.1.2",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
