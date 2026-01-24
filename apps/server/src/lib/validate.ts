@@ -1,30 +1,39 @@
 import { Route } from "@chat/shared";
-import { NextFunction, Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import { z } from "zod";
 
-type TypedRequest<T> = Omit<Request, "body"> & {
-  body: T;
+type TypedRequest<TParams, T, TReqBody, TQueries> = Request<
+  TParams,
+  T,
+  TReqBody,
+  TQueries
+>;
+
+type TypedResponse<T> = Response & {
+  json: (body: T) => Response;
 };
 
-interface TypedResponse<T> extends Response {
-  json: (body: T) => this;
-}
+type InferReq<T extends Route> = TypedRequest<
+  z.infer<T["params"]>,
+  unknown,
+  z.infer<T["requestBody"]>,
+  z.infer<T["queries"]>
+>;
+
+type InferRes<T extends Route> = TypedResponse<z.infer<T["responseSchema"]>>;
 
 export function createHandler<T extends Route>(
   route: T,
-  handler: (
-    req: TypedRequest<z.infer<T["requestBody"]>>,
-    res: TypedResponse<z.infer<T["responseSchema"]>>,
-  ) => Promise<void>,
-) {
-  return async function (
-    req: TypedRequest<z.infer<T["requestBody"]>>,
-    res: TypedResponse<z.infer<T["responseSchema"]>>,
-    _: NextFunction,
-  ) {
-    const data = route.requestBody.parse(req.body);
-    req.body = data as typeof req.body;
+  handler: (req: InferReq<T>, res: InferRes<T>) => Promise<void>,
+): RequestHandler {
+  return async function (req: Request, res: Response) {
+    const body = route.requestBody.parse(req.body);
+    const params = route.params.parse(req.params);
+    const query = route.queries.parse(req.query);
 
-    await handler(req, res);
+    await handler(
+      { ...req, body, params, query } as unknown as InferReq<T>,
+      res,
+    );
   };
 }
