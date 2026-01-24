@@ -5,10 +5,10 @@
     "moduleResolution": "bundler",
     "target": "es2022",
     "outDir": "dist",
-    // "rootDir": "src",
+    "rootDir": "src",
     "declaration": true,
     "emitDeclarationOnly": false
   },
-  "include": ["src/**/*" , "./eslint.config.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
