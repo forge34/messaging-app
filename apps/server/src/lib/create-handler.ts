@@ -9,10 +9,6 @@ type TypedRequest<TParams, T, TReqBody, TQueries> = Request<
   TQueries
 >;
 
-type TypedResponse<T> = Response & {
-  json: (body: T) => Response;
-};
-
 type InferReq<T extends Route> = TypedRequest<
   z.infer<T["params"]>,
   unknown,
@@ -20,20 +16,26 @@ type InferReq<T extends Route> = TypedRequest<
   z.infer<T["queries"]>
 >;
 
-type InferRes<T extends Route> = TypedResponse<z.infer<T["responseSchema"]>>;
-
 export function createHandler<T extends Route>(
   route: T,
-  handler: (req: InferReq<T>, res: InferRes<T>) => Promise<void>,
+  handler: (
+    req: InferReq<T>,
+    res: Response
+  ) => Promise<z.infer<T["responseSchema"]> | undefined>,
 ): RequestHandler {
   return async function (req: Request, res: Response) {
     const body = route.requestBody.parse(req.body);
     const params = route.params.parse(req.params);
     const query = route.queries.parse(req.query);
 
-    await handler(
-      { ...req, body, params, query } as unknown as InferReq<T>,
-      res,
+    const result = route.responseSchema.parse(
+      await handler({ ...req, body, params, query } as unknown as InferReq<T>,res),
     );
+
+    if (result) {
+      const data = route.responseData.parse(result.data);
+
+      res.status(result.code).json({ message: result.message, data: data });
+    }
   };
 }
