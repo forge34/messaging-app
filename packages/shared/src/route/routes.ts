@@ -2,10 +2,10 @@ import z from "zod";
 import { createRoute } from "./routeConfig.js";
 import { LoginRequest, SignupRequest } from "../schemas/auth-schema.js";
 import {
-  CreateConversationResponseSchema,
-  GetCurrentUserConversationResponseSchema,
-  PublicExtendedConversationSchema,
-} from "../schemas/conversationSchema.js";
+  PublicConversationSchema,
+  PublicMessageSchema,
+  PublicUserSchema,
+} from "../schemas/publicSchemas.js";
 
 const EmptyParamQueries = {
   params: z.object({}),
@@ -41,7 +41,11 @@ export const Routes = {
     requestBody: z.object({
       otherId: z.string().nonempty(),
     }),
-    responseData: CreateConversationResponseSchema,
+    responseData: PublicConversationSchema.pick({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+    }),
   }),
   deleteConversation: createRoute({
     ...EmptyParamQueries,
@@ -56,7 +60,7 @@ export const Routes = {
     path: "/conversation/currentUser",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: GetCurrentUserConversationResponseSchema,
+    responseData: z.array(PublicConversationSchema),
   }),
   getConversationById: createRoute({
     ...EmptyParamQueries,
@@ -66,13 +70,47 @@ export const Routes = {
       id: z.string().nonempty(),
     }),
     requestBody: z.undefined(),
-    responseData: PublicExtendedConversationSchema,
+    responseData: PublicConversationSchema,
   }),
   bookmarkMessage: createRoute({
     ...EmptyParamQueries,
     path: "/message/:id/bookmark",
     method: "POST",
     params: z.object({ id: z.string().nonempty() }),
+    requestBody: z.undefined(),
+    responseData: z.undefined(),
+  }),
+  getCurrentUser: createRoute({
+    ...EmptyParamQueries,
+    path: "/user/me",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: PublicUserSchema,
+  }),
+
+  getBookmarks: createRoute({
+    ...EmptyParamQueries,
+    path: "/user/bookmarks",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: z.array(PublicMessageSchema),
+  }),
+
+  getUsers: createRoute({
+    ...EmptyParamQueries,
+    path: "/user",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: z.array(PublicUserSchema),
+  }),
+
+  blockUser: createRoute({
+    ...EmptyParamQueries,
+    path: "/user/:id/block",
+    method: "POST",
+    params: z.object({
+      id: z.string().nonempty(),
+    }),
     requestBody: z.undefined(),
     responseData: z.undefined(),
   }),
