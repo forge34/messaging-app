@@ -60,12 +60,20 @@ export const Routes = {
   }),
   getConversationById: createRoute({
     ...EmptyParamQueries,
-    path: "/conversation:id",
+    path: "/conversation/:id",
     method: "GET",
     params: z.object({
       id: z.string().nonempty(),
     }),
     requestBody: z.undefined(),
     responseData: PublicExtendedConversationSchema,
+  }),
+  bookmarkMessage: createRoute({
+    ...EmptyParamQueries,
+    path: "/message/:id/bookmark",
+    method: "POST",
+    params: z.object({ id: z.string().nonempty() }),
+    requestBody: z.undefined(),
+    responseData: z.undefined(),
   }),
 } as const;

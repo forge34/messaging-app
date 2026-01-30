@@ -1,14 +1,14 @@
 import { User } from "@chat/db/client";
-import {  Request, Response } from "express";
-import expressAsyncHandler from "express-async-handler";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
+import { createHandler } from "../lib/create-handler.js";
+import { Routes } from "@chat/shared";
 
 class MessagesController {
   static bookmarkMessage = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const messageId = String( req.params.messageid );
+    createHandler(Routes.bookmarkMessage, async (req, res) => {
+      const messageId = String(req.params.id);
       const user = req.user as User;
 
       const message = await prisma.message.findFirst({
@@ -30,9 +30,10 @@ class MessagesController {
           },
         });
 
-        res.status(200).json({ message: "message bookmarked" });
+        return { code: 200, message: "message bookmarked" };
       } else {
         res.status(404).json({ message: "message not found" });
+        return;
       }
     }),
   ];

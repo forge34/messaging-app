@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db/client";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
-import { createHandler } from "../lib/validate.js";
+import { createHandler } from "../lib/create-handler.js";
 import { Routes } from "@chat/shared";
 
 const generator = new AvatarGenerator();

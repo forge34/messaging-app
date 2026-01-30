@@ -1,7 +1,7 @@
 import { User } from "@chat/db/client";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
-import { createHandler } from "../lib/validate.js";
+import { createHandler } from "../lib/create-handler.js";
 import { Routes } from "@chat/shared";
 
 class ConversationController {

@@ -22,7 +22,7 @@ router.get(
 );
 router.get("/conversation/:id", ConversationController.getById);
 
-router.post("/message/:messageid/bookmark", MessagesController.bookmarkMessage);
+router.post("/message/:id/bookmark", MessagesController.bookmarkMessage);
 
 router.get("/users", UserController.getMany);
 router.get("/users/bookmarks", UserController.getBookmarks);
