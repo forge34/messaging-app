@@ -1,17 +1,13 @@
-import expressAsyncHandler from "express-async-handler";
-import { body, validationResult } from "express-validator";
 import { User } from "@chat/db/client";
-import { Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
+import { createHandler } from "../lib/validate.js";
+import { Routes } from "@chat/shared";
 
 class ConversationController {
   static create = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    body("title").trim().optional().isLength({ min: 1 }).escape(),
-    body("otherId").trim().isLength({ min: 1 }).escape(),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const errors = validationResult(req);
+    createHandler(Routes.createConversation, async (req) => {
       const otherUser = await prisma.user.findUnique({
         where: {
           id: req.body.otherId,
@@ -19,26 +15,21 @@ class ConversationController {
       });
       const currentUser = req.user as User;
 
-      if (errors.isEmpty()) {
-        const conversation = await prisma.conversation.create({
-          data: {
-            title: req.body.title || "",
-            users: {
-              connect: [{ id: currentUser.id }, { id: otherUser.id }],
-            },
+      const conversation = await prisma.conversation.create({
+        data: {
+          users: {
+            connect: [{ id: currentUser.id }, { id: otherUser.id }],
           },
-        });
-        res.status(200).json({ msg: "conversation created", conversation });
-      } else {
-        res.status(401).json({ errors: errors.array() });
-      }
+        },
+      });
+      return { code: 200, message: "conversation created", data: conversation };
     }),
   ];
 
   static delete = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const conversationId = String(req.params.conversationid);
+    createHandler(Routes.deleteConversation, async (req) => {
+      const conversationId = String(req.params.id);
 
       await prisma.conversation.delete({
         where: {
@@ -46,69 +37,82 @@ class ConversationController {
         },
       });
 
-      res.status(200).json("conversation deleted");
+      return { code: 200, message: "conversation deleted" };
     }),
   ];
 
   static getCurrentUserConversations = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
+    createHandler(Routes.getCurrentUserConversations, async (req) => {
       const { id: userid } = req.user as User;
       const conversations = await prisma.conversation.findMany({
         where: {
-          users: {
-            some: {
-              id: userid,
-            },
-          },
+          users: { some: { id: userid } },
         },
-        include: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
           messages: {
-            include: {
-              author: true,
+            select: {
+              id: true,
+              body: true,
+              authorId: true,
+              conversationId: true,
+              author: { select: { id: true, name: true, imgUrl: true } },
             },
           },
-          users: true,
+          users: {
+            select: { id: true, name: true, imgUrl: true },
+          },
         },
       });
 
       const filteredConversations = conversations.map((conversation) => {
-        const otherUser = conversation.users.filter((value) => {
-          return value.id !== userid;
-        })[0];
-
+        const otherUser = conversation.users.find((user) => user.id !== userid);
         return {
           ...conversation,
-          title: otherUser.name,
-          conversationImg: otherUser.imgUrl,
+          title: otherUser?.name ?? "Conversation",
         };
       });
-      res.status(200).json(filteredConversations);
+      return { code: 200, message: "success", data: filteredConversations };
     }),
   ];
 
   static getById = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const conversationid = String(req.params.conversationid);
+    createHandler(Routes.getConversationById, async (req) => {
+      const conversationid = String(req.params.id);
+      const { id: userid } = req.user as User;
 
       const conversation = await prisma.conversation.findFirst({
         where: {
           id: conversationid,
         },
-        include: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
           messages: {
-            orderBy: {
-              createdAt: "asc",
-            },
-            include: {
-              author: true,
+            select: {
+              id: true,
+              body: true,
+              authorId: true,
+              conversationId: true,
+              author: { select: { id: true, name: true, imgUrl: true } },
             },
           },
-          users: true,
+          users: {
+            select: { id: true, name: true, imgUrl: true },
+          },
         },
       });
-      res.status(200).json(conversation);
+      const otherUser = conversation.users.find((user) => user.id !== userid);
+      return {
+        code: 200,
+        message: "success",
+        data: { ...conversation, title: otherUser.name ?? "Conversation" },
+      };
     }),
   ];
 }

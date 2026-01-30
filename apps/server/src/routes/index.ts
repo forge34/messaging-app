@@ -15,12 +15,12 @@ router.post("/login", Auth.login);
 router.post("/logout", Auth.logout);
 
 router.post("/conversation", ConversationController.create);
-router.delete("/conversation/:conversationid", ConversationController.delete);
+router.delete("/conversation/:id", ConversationController.delete);
 router.get(
   "/conversation/currentUser",
   ConversationController.getCurrentUserConversations,
 );
-router.get("/conversation/:conversationid", ConversationController.getById);
+router.get("/conversation/:id", ConversationController.getById);
 
 router.post("/message/:messageid/bookmark", MessagesController.bookmarkMessage);
 
