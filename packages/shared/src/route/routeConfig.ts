@@ -26,6 +26,7 @@ export const createRoute = <
   config: RouteConfig<B, R, P, Q>,
 ) => {
   const responseSchema = z.object({
+    code: z.number(),
     message: z.string(),
     data: config.responseData.optional(),
   });

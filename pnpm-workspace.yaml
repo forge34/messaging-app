@@ -2,12 +2,15 @@ packages:
   - packages/*
   - apps/*
 
-onlyBuiltDependencies:
-  - "@prisma/client"
-  - "@prisma/engines"
-  - esbuild
-  - prisma
-
 catalogs:
   prisma:
     prisma: latest
+
+ignoredBuiltDependencies:
+  - prisma-zod-generator
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - esbuild
+  - prisma
