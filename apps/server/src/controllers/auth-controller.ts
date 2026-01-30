@@ -29,7 +29,7 @@ class Auth {
     });
 
     if (exists) {
-      res.status(409).json({ message: "Username already exists" });
+      res.status(409).json({ code: 409, message: "Username already exists" });
       return;
     }
 
@@ -42,7 +42,7 @@ class Auth {
         imgUrl: generator.generateRandomAvatar(),
       },
     });
-    res.status(200).json({ message: "User account created successfully" });
+    return { code: 200, message: "User account created successfully" };
   });
 
   static login = createHandler(Routes.login, async (req, res) => {
@@ -55,14 +55,14 @@ class Auth {
     });
 
     if (!user) {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ code: 401, message: "Invalid credentials" });
       return;
     }
 
     const matches = await bcrypt.compare(data.password, user.password);
 
     if (!matches) {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ code: 401, message: "Invalid credentials" });
       return;
     }
 
@@ -72,7 +72,7 @@ class Auth {
 
     res.cookie("jwt", token, cookieOptions);
 
-    res.status(200).json({ message: "Login sucess" });
+    return { code: 200, message: "Login sucess" };
   });
 
   static logout = [
@@ -81,7 +81,7 @@ class Auth {
       const { id: userId } = req.user as User;
       res.cookie("jwt", "", cookieOptions);
       io.in(`user:${userId}`).disconnectSockets(true);
-      res.status(200).json({ message: "logout sucess" });
+      return { code: 200, message: "logout sucess" };
     }),
   ];
 }
