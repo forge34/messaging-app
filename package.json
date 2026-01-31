@@ -4,14 +4,20 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev:packages": "pnpm --parallel run watch"
+    "dev:packages": "pnpm --parallel run watch",
+    "dev:server": "pnpm --filter ./apps/server  dev",
+    "dev:client": "pnpm --filter ./apps/client dev",
+    "db:generate": "pnpm --filter ./packages/db db:generate",
+    "db:migrate": "pnpm --filter ./packages/db db:migrate",
+    "dev": "pnpm --parallel run dev",
+    "build": "pnpm -r run build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "eslint": "^9.39.2",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   }
 }
