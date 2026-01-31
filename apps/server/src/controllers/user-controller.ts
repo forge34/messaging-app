@@ -1,34 +1,45 @@
 import { User } from "@chat/db/client";
-import { Request, Response } from "express";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
-import expressAsyncHandler from "express-async-handler";
+import { createHandler } from "../lib/create-handler.js";
+import { Routes } from "@chat/shared";
 
 class UserController {
   static getCurrent = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const user = req.user as User
-      res.status(200).json(user);
+    createHandler(Routes.getCurrentUser, async (req) => {
+      const { id, name, imgUrl, bio } = req.user as User;
+      return { code: 200, message: "Sucess", data: { id, name, imgUrl, bio } };
     }),
   ];
 
   static getBookmarks = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const { id } = req.user as User;
+    createHandler(Routes.getBookmarks, async (req, res) => {
+      const { id: userid } = req.user as User;
 
       const user = await prisma.user.findFirst({
-        include: {
+        select: {
+          id: true,
+          imgUrl: true,
+          name: true,
+          bio: true,
           bookmarks: {
             include: {
-              author: true,
-              conversation: true,
+              author: {
+                select: {
+                  id: true,
+                  imgUrl: true,
+                  name: true,
+                  bio: true,
+                },
+              },
             },
           },
         },
+
         where: {
-          id: id,
+          id: userid,
         },
       });
 
@@ -37,20 +48,35 @@ class UserController {
         return;
       }
 
-      const { bookmarks } = user;
-
-      res.status(200).json(bookmarks);
+      const bookmarks = user.bookmarks.map(
+        ({ author, id, body, createdAt, status, conversationId, authorId }) => {
+          const isMine = author.id === userid;
+          return {
+            id,
+            body,
+            author,
+            createdAt,
+            isMine,
+            isBookmarked: true,
+            status,
+            conversationId,
+            authorId,
+          };
+        },
+      );
+      return { code: 200, message: "Success", data: bookmarks };
     }),
   ];
   static getMany = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    async (req: Request, res: Response) => {
+    createHandler(Routes.getUsers, async (req) => {
       const currentUser = req.user as User;
       const users = await prisma.user.findMany({
         select: {
           id: true,
           imgUrl: true,
           name: true,
+          bio: true,
         },
       });
 
@@ -71,19 +97,19 @@ class UserController {
         return {
           ...u,
           isCurrent: u.id === currentUser.id,
-          conversationId: conversation?.id ?? null,
+          hasConversation: !!conversation?.id,
         };
       });
 
-      res.status(200).json(mappedUsers);
-    },
+      return { code: 200, message: "Success ", data: mappedUsers };
+    }),
   ];
 
   static blockUser = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
-    expressAsyncHandler(async (req: Request, res: Response) => {
+    createHandler(Routes.blockUser, async (req) => {
       const user = req.user as User;
-      const blockedId = req.params.userid as string;
+      const blockedId = req.params.id;
 
       await prisma.user.update({
         where: { id: user.id },
@@ -94,7 +120,7 @@ class UserController {
         },
       });
 
-      res.status(200).json("successfully blocked user");
+      return { code: 200, message: "successfully blocked user" };
     }),
   ];
 }

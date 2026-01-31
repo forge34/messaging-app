@@ -93,7 +93,7 @@ export const Routes = {
     path: "/user/bookmarks",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(PublicMessageSchema),
+    responseData: z.array(PublicMessageSchema.omit({ bookmarkedBy: true })),
   }),
 
   getUsers: createRoute({
@@ -101,7 +101,12 @@ export const Routes = {
     path: "/user",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(PublicUserSchema),
+    responseData: z.array(
+      PublicUserSchema.extend({
+        isCurrent: z.boolean(),
+        hasConversation: z.boolean(),
+      }),
+    ),
   }),
 
   blockUser: createRoute({
