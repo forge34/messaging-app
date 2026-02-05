@@ -15,7 +15,7 @@ declare module "@tanstack/react-router" {
 }
 
 // Render the app
-
+import "./index.css"
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
