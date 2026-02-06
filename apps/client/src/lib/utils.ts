@@ -2,6 +2,7 @@ import type { Route } from "@chat/shared";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
+import { type ApiErrorResponse, ApiError } from "./error";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,24 +19,22 @@ export async function apiFetch<T extends Route>(
   route: T,
   options: FetchOptions<T>,
 ) {
-  try {
-    const { body, headers } = options;
-    const bodyData = route.requestBody.parse(body);
+  const { body, headers } = options;
+  const bodyData = route.requestBody.parse(body);
 
-    const res = await fetch(ApiURL + route.path, {
-      ...headers,
-      method: route.method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bodyData),
-    });
+  const fetchUrl = new URL(route.path, ApiURL);
+  const res = await fetch(fetchUrl, {
+    ...headers,
+    method: route.method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyData),
+  });
 
-    if (res.status >= 400) {
-      throw new Error(`Fetch error}`);
-    }
-
+  if (res.ok) {
+    const parsedJson: unknown = await res.json();
     const parsedRes = route.responseSchema
       .omit({ code: true })
-      .parse(await res.json());
+      .parse(parsedJson);
 
     const data = parsedRes.data
       ? route.responseData.parse(parsedRes.data)
@@ -45,8 +44,23 @@ export async function apiFetch<T extends Route>(
       message: parsedRes.message,
       data,
     };
-  } catch (e) {
-    console.error(e);
-    throw e;
   }
+  let errorData: ApiErrorResponse = {};
+
+  try {
+    const rawJson: unknown = await res.json();
+
+    if (typeof rawJson === "object" && rawJson !== null) {
+      const candidate = rawJson as ApiErrorResponse;
+      errorData = {
+        message: candidate.message,
+        messages: candidate.messages,
+        fields: candidate.fields,
+      };
+    }
+  } catch {
+    errorData = { message: res.statusText };
+  }
+
+  throw new ApiError(errorData);
 }

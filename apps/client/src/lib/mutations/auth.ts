@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiFetch } from "../utils";
 import { Routes } from "@chat/shared";
 import { toast } from "sonner";
+import { ApiError } from "../error";
 
 export function useLogin() {
   return useMutation({
@@ -15,6 +16,13 @@ export function useLogin() {
     },
     onSuccess: (data) => {
       toast.success(data.message);
+    },
+    onError: (err) => {
+      if (err instanceof ApiError) {
+        toast.error(err.data.messages ?? err.data.message, {
+          className: "!bg-destructive !text-white",
+        });
+      }
     },
   });
 }
@@ -35,6 +43,13 @@ export function useSignup() {
     },
     onSuccess: (data) => {
       toast.success(data.message);
+    },
+    onError: (err) => {
+      if (err instanceof ApiError) {
+        toast.error(err.data.messages ?? err.data.message, {
+          className: "!bg-destructive !text-white",
+        });
+      }
     },
   });
 }
