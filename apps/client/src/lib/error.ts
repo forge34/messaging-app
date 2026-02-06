@@ -2,6 +2,7 @@ export interface ApiErrorResponse {
   message?: string;
   messages?: string[];
   fields?: Record<string, string[]>;
+  status?: number;
 }
 
 export class ApiError extends Error {

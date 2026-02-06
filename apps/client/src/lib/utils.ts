@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 interface FetchOptions<T extends Route> {
-  body: z.infer<T["requestBody"]>;
+  body?: z.infer<T["requestBody"]>;
   headers: RequestInit;
 }
 
@@ -56,10 +56,11 @@ export async function apiFetch<T extends Route>(
         message: candidate.message,
         messages: candidate.messages,
         fields: candidate.fields,
+        status : res.status
       };
     }
   } catch {
-    errorData = { message: res.statusText };
+    errorData = { message: res.statusText  , status : res.status};
   }
 
   throw new ApiError(errorData);
