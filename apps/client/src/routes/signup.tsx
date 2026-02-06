@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
-import { LoginRequest } from "@chat/shared";
+import { SignupRequest } from "@chat/shared";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -11,34 +11,36 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
-import { useLogin } from "@/lib/mutations/auth";
+import { useSignup } from "@/lib/mutations/auth";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/signup")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const mutation = useLogin();
+  const mutatation = useSignup();
   const form = useForm({
     defaultValues: {
       username: "",
       password: "",
+      confirmPassword: "",
     },
     validators: {
-      onChange: LoginRequest,
+      onChange: SignupRequest,
     },
     onSubmit: ({ value }) => {
-      mutation.mutate({ username: value.username, password: value.password });
+      const { username, password, confirmPassword } = value;
+      mutatation.mutate({ username, password, confirmPassword });
     },
   });
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-background gap-6 py-16 px-24 items-center">
-      <Card className="">
+      <Card>
         <CardHeader className="space-y-2 pb-4">
-          <CardTitle className="text-2xl font-semibold">Login</CardTitle>
+          <CardTitle className="text-2xl font-semibold">Sign Up</CardTitle>
           <CardDescription className="text-sm">
-            Login to your account
+            Create a new account
           </CardDescription>
         </CardHeader>
 
@@ -96,16 +98,31 @@ function RouteComponent() {
               )}
             />
 
-            <div className="flex justify-end">
-              <button
-                type="button"
-                className="text-xs text-muted-foreground hover:text-foreground transition"
-              >
-                Forgot password?
-              </button>
-            </div>
+            <form.Field
+              name="confirmPassword"
+              children={(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Input
+                    type="password"
+                    name={field.name}
+                    value={field.state.value}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
+                    placeholder="Confirm Password"
+                    className="h-12"
+                  />
+                  {!field.state.meta.isValid && (
+                    <em className="text-xs text-destructive">
+                      {field.state.meta.errors[0]?.message}
+                    </em>
+                  )}
+                </div>
+              )}
+            />
 
-            <Button className="h-10 text-sm font-medium">Login</Button>
+            <Button className="h-10 text-sm font-medium">Sign Up</Button>
 
             <div className="relative flex items-center py-2">
               <div className="grow border-t border-border" />
@@ -117,18 +134,19 @@ function RouteComponent() {
 
             <Button type="button" variant="outline" className="h-10 text-sm">
               <SiGoogle />
-              Sign in with Google
+              Sign up with Google
             </Button>
 
             <p className="text-center text-xs text-muted-foreground">
-              Don’t have an account?{" "}
-              <Link to="/signup" className="text-accent hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link to="/login" className="text-accent hover:underline">
+                Login
               </Link>
             </p>
           </CardContent>
         </form>
       </Card>
+
       <div className="hidden md:flex flex-col justify-center items-center p-10 relative overflow-hidden">
         <div className="w-full max-w-md">
           <div className="relative h-96 flex items-center justify-center">
