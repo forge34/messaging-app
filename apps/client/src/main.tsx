@@ -8,9 +8,13 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
+const queryClient = new QueryClient();
 // Create a new router instance
 const router = createRouter({
   routeTree,
+  context: {
+    queryClient,
+  },
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
 });
 
@@ -24,7 +28,6 @@ declare module "@tanstack/react-router" {
 // Render the app
 import "./index.css";
 const rootElement = document.getElementById("root");
-const queryClient = new QueryClient();
 if (!rootElement) {
   throw new Error("Root element not found");
 }
