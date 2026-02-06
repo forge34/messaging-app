@@ -82,7 +82,7 @@ export const Routes = {
   }),
   getCurrentUser: createRoute({
     ...EmptyParamQueries,
-    path: "/user/me",
+    path: "/users/me",
     method: "GET",
     requestBody: z.undefined(),
     responseData: PublicUserSchema,
@@ -90,7 +90,7 @@ export const Routes = {
 
   getBookmarks: createRoute({
     ...EmptyParamQueries,
-    path: "/user/bookmarks",
+    path: "/users/bookmarks",
     method: "GET",
     requestBody: z.undefined(),
     responseData: z.array(PublicMessageSchema.omit({ bookmarkedBy: true })),
@@ -98,7 +98,7 @@ export const Routes = {
 
   getUsers: createRoute({
     ...EmptyParamQueries,
-    path: "/user",
+    path: "/users",
     method: "GET",
     requestBody: z.undefined(),
     responseData: z.array(
@@ -111,7 +111,7 @@ export const Routes = {
 
   blockUser: createRoute({
     ...EmptyParamQueries,
-    path: "/user/:id/block",
+    path: "/users/:id/block",
     method: "POST",
     params: z.object({
       id: z.string().nonempty(),
