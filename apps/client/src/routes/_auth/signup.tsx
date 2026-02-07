@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
 import { useSignup } from "@/lib/mutations/auth";
 
-export const Route = createFileRoute("/signup")({
+export const Route = createFileRoute("/_auth/signup")({
   component: RouteComponent,
 });
 
@@ -35,10 +35,10 @@ function RouteComponent() {
   });
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-background gap-6 py-16 px-24 items-center">
-      <Card>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-1  gap-6 items-center">
+      <Card className="w-1/2 mx-auto">
         <CardHeader className="space-y-2 pb-4">
-          <CardTitle className="text-2xl font-semibold">Sign Up</CardTitle>
+          <CardTitle className="text-2xl font-semibold mx-auto">Create an account</CardTitle>
           <CardDescription className="text-sm">
             Create a new account
           </CardDescription>
@@ -146,54 +146,6 @@ function RouteComponent() {
           </CardContent>
         </form>
       </Card>
-
-      <div className="hidden md:flex flex-col justify-center items-center p-10 relative overflow-hidden">
-        <div className="w-full max-w-md">
-          <div className="relative h-96 flex items-center justify-center">
-            <div className="absolute w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute w-52 h-52 bg-accent/20 rounded-full blur-2xl" />
-
-            <div className="relative z-10 space-y-4 w-full">
-              <div className="ml-auto w-48 bg-primary text-primary-foreground p-4 rounded-3xl rounded-tr-md shadow-lg">
-                <p className="text-sm">Hey! How are you?</p>
-              </div>
-
-              <div className="w-48 bg-secondary text-foreground p-4 rounded-3xl rounded-tl-md shadow-md">
-                <p className="text-sm">Great! Ready to chat?</p>
-              </div>
-
-              <div className="ml-auto w-56 bg-primary text-primary-foreground p-4 rounded-3xl rounded-tr-md shadow-lg">
-                <p className="text-sm">
-                  Let’s build something amazing together
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 space-y-4">
-            <div className="flex items-start gap-3">
-              <span className="mt-2 h-2 w-2 rounded-full bg-primary" />
-              <p className="text-sm font-medium text-foreground">
-                Real-time messaging
-              </p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="mt-2 h-2 w-2 rounded-full bg-primary" />
-              <p className="text-sm font-medium text-foreground">
-                Connect with anyone
-              </p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="mt-2 h-2 w-2 rounded-full bg-primary" />
-              <p className="text-sm font-medium text-foreground">
-                Secure & private
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
