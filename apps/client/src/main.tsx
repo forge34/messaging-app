@@ -1,21 +1,23 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  ErrorComponent,
-  RouterProvider,
-  createRouter,
-} from "@tanstack/react-router";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
+import "./index.css";
+import { ErrorComponent } from "./components/error-component";
 const queryClient = new QueryClient();
-// Create a new router instance
+
+
+
 const router = createRouter({
   routeTree,
   context: {
     queryClient,
   },
-  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
+  defaultErrorComponent: ({ error }) => (
+    <ErrorComponent error={error}></ErrorComponent>
+  ),
 });
 
 // Register the router instance for type safety
@@ -26,7 +28,6 @@ declare module "@tanstack/react-router" {
 }
 
 // Render the app
-import "./index.css";
 const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Root element not found");

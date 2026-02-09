@@ -30,8 +30,8 @@ export async function apiFetch<T extends Route>(
     body: JSON.stringify(bodyData),
   });
 
+  const parsedJson: unknown = await res.json();
   if (res.ok) {
-    const parsedJson: unknown = await res.json();
     const parsedRes = route.responseSchema
       .omit({ code: true })
       .parse(parsedJson);
@@ -42,7 +42,19 @@ export async function apiFetch<T extends Route>(
 
     return {
       message: parsedRes.message,
+      status: res.status,
       data,
+    };
+  }
+
+  if (res.status === 401) {
+    const parsedRes = route.responseSchema
+      .omit({ code: true })
+      .parse(parsedJson);
+    return {
+      message: parsedRes.message,
+      status: res.status,
+      data: undefined,
     };
   }
   let errorData: ApiErrorResponse = {};
@@ -56,11 +68,11 @@ export async function apiFetch<T extends Route>(
         message: candidate.message,
         messages: candidate.messages,
         fields: candidate.fields,
-        status : res.status
+        status: res.status,
       };
     }
   } catch {
-    errorData = { message: res.statusText  , status : res.status};
+    errorData = { message: res.statusText, status: res.status };
   }
 
   throw new ApiError(errorData);
