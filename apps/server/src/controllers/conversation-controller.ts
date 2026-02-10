@@ -57,24 +57,50 @@ class ConversationController {
             select: {
               id: true,
               body: true,
+              status: true,
+              createdAt: true,
               authorId: true,
               conversationId: true,
-              author: { select: { id: true, name: true, imgUrl: true } },
+              author: {
+                select: { id: true, name: true, imgUrl: true, bio: true },
+              },
             },
           },
           users: {
-            select: { id: true, name: true, imgUrl: true },
+            select: { id: true, name: true, imgUrl: true, bio: true },
           },
         },
       });
 
-      const filteredConversations = conversations.map((conversation) => {
-        const otherUser = conversation.users.find((user) => user.id !== userid);
-        return {
-          ...conversation,
-          title: otherUser?.name ?? "Conversation",
-        };
-      });
+      const filteredConversations = conversations.map(
+        ({ users, messages, createdAt, updatedAt, id }) => {
+          const otherUser = users.find((user) => user.id !== userid);
+          const {
+            id: messageId,
+            body,
+            author,
+            status,
+            createdAt: messageCreatedAt,
+          } = messages[messages.length - 1];
+          const lastMessage = {
+            id: messageId,
+            body,
+            author,
+            status,
+            createdAt: messageCreatedAt,
+          };
+          const lastMessageAt = lastMessage.createdAt;
+          return {
+            createdAt,
+            updatedAt,
+            id,
+            users,
+            lastMessage,
+            lastMessageAt,
+            title: otherUser?.name ?? "Conversation",
+          };
+        },
+      );
       return { code: 200, message: "success", data: filteredConversations };
     }),
   ];
@@ -99,19 +125,56 @@ class ConversationController {
               body: true,
               authorId: true,
               conversationId: true,
-              author: { select: { id: true, name: true, imgUrl: true } },
+              status: true,
+              createdAt: true,
+              author: {
+                select: { id: true, bio: true, name: true, imgUrl: true },
+              },
+              bookmarkedBy: true,
             },
           },
           users: {
-            select: { id: true, name: true, imgUrl: true },
+            select: { id: true, name: true, imgUrl: true, bio: true },
           },
         },
       });
       const otherUser = conversation.users.find((user) => user.id !== userid);
+      const mappedMessages = conversation.messages.map(
+        ({
+          id,
+          authorId,
+          author,
+          status,
+          createdAt,
+          conversationId,
+          bookmarkedBy,
+          body,
+        }) => {
+          return {
+            id,
+            body,
+            author,
+            authorId,
+            status,
+            createdAt,
+            conversationId,
+            isMine: authorId === userid,
+            isBookmarked:
+              bookmarkedBy.findIndex(({ id }) => id === userid) >= 0
+                ? true
+                : false,
+          };
+        },
+      );
+      const mapped = {
+        ...conversation,
+        messages: mappedMessages,
+        title: otherUser.name ?? "Conversation",
+      };
       return {
         code: 200,
         message: "success",
-        data: { ...conversation, title: otherUser.name ?? "Conversation" },
+        data: mapped,
       };
     }),
   ];
