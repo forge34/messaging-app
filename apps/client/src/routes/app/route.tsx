@@ -1,8 +1,8 @@
 import { Sidebar } from "@/components/sidebar";
 import { getMe } from "@/lib/queries/auth";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_app")({
+export const Route = createFileRoute("/app")({
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
     const data = await context.queryClient.ensureQueryData(getMe());
@@ -15,8 +15,9 @@ export const Route = createFileRoute("/_app")({
 
 function RouteComponent() {
   return (
-    <main>
+    <main className="flex flex-row">
       <Sidebar />
+      <Outlet/>
     </main>
   );
 }

@@ -12,6 +12,7 @@ export function useLogin() {
         headers: {
           credentials: "include",
         },
+        params: {},
       });
     },
     onSuccess: (data) => {
@@ -39,6 +40,7 @@ export function useSignup() {
         headers: {
           credentials: "include",
         },
+        params: {},
       });
     },
     onSuccess: (data) => {

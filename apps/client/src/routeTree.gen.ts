@@ -9,25 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppProfileRouteImport } from './routes/app/profile'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as AppConversationsRouteRouteImport } from './routes/_app/conversations/route'
+import { Route as AppConversationsRouteRouteImport } from './routes/app/conversations/route'
+import { Route as AppConversationsIdRouteImport } from './routes/app/conversations/$id'
 
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRouteRoute = AppRouteRouteImport.update({
-  id: '/_app',
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/signup',
@@ -44,63 +52,92 @@ const AppConversationsRouteRoute = AppConversationsRouteRouteImport.update({
   path: '/conversations',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppConversationsIdRoute = AppConversationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppConversationsRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/conversations': typeof AppConversationsRouteRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/conversations': typeof AppConversationsRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/conversations/$id': typeof AppConversationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/conversations': typeof AppConversationsRouteRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/conversations': typeof AppConversationsRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/conversations/$id': typeof AppConversationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_app': typeof AppRouteRouteWithChildren
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/_app/conversations': typeof AppConversationsRouteRoute
+  '/app': typeof AppRouteRouteWithChildren
+  '/app/conversations': typeof AppConversationsRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/conversations/$id': typeof AppConversationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/conversations' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/conversations'
+    | '/login'
+    | '/signup'
+    | '/app/profile'
+    | '/app/conversations/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/conversations' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/app'
+    | '/app/conversations'
+    | '/login'
+    | '/signup'
+    | '/app/profile'
+    | '/app/conversations/$id'
   id:
     | '__root__'
     | '/'
-    | '/_app'
     | '/_auth'
-    | '/_app/conversations'
+    | '/app'
+    | '/app/conversations'
     | '/_auth/login'
     | '/_auth/signup'
+    | '/app/profile'
+    | '/app/conversations/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRouteRoute: typeof AppRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AppRouteRoute: typeof AppRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -109,6 +146,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/_auth/signup': {
       id: '/_auth/signup'
@@ -124,27 +168,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_app/conversations': {
-      id: '/_app/conversations'
+    '/app/conversations': {
+      id: '/app/conversations'
       path: '/conversations'
-      fullPath: '/conversations'
+      fullPath: '/app/conversations'
       preLoaderRoute: typeof AppConversationsRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/conversations/$id': {
+      id: '/app/conversations/$id'
+      path: '/$id'
+      fullPath: '/app/conversations/$id'
+      preLoaderRoute: typeof AppConversationsIdRouteImport
+      parentRoute: typeof AppConversationsRouteRoute
+    }
   }
 }
-
-interface AppRouteRouteChildren {
-  AppConversationsRouteRoute: typeof AppConversationsRouteRoute
-}
-
-const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppConversationsRouteRoute: AppConversationsRouteRoute,
-}
-
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
-  AppRouteRouteChildren,
-)
 
 interface AuthRouteRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
@@ -160,10 +199,37 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AppConversationsRouteRouteChildren {
+  AppConversationsIdRoute: typeof AppConversationsIdRoute
+}
+
+const AppConversationsRouteRouteChildren: AppConversationsRouteRouteChildren = {
+  AppConversationsIdRoute: AppConversationsIdRoute,
+}
+
+const AppConversationsRouteRouteWithChildren =
+  AppConversationsRouteRoute._addFileChildren(
+    AppConversationsRouteRouteChildren,
+  )
+
+interface AppRouteRouteChildren {
+  AppConversationsRouteRoute: typeof AppConversationsRouteRouteWithChildren
+  AppProfileRoute: typeof AppProfileRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppConversationsRouteRoute: AppConversationsRouteRouteWithChildren,
+  AppProfileRoute: AppProfileRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRouteRoute: AppRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  AppRouteRoute: AppRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

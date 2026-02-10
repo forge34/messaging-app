@@ -8,8 +8,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+function generatePath(path: string, params: Record<string, string>) {
+  let newPath = path;
+
+  Object.keys(params).forEach((k) => {
+    newPath = newPath.replace(`:${k}`, params[k]);
+  });
+  return newPath;
+}
+
 interface FetchOptions<T extends Route> {
   body?: z.infer<T["requestBody"]>;
+  params: z.infer<T["params"]>;
   headers: RequestInit;
 }
 
@@ -18,11 +28,19 @@ const ApiURL = import.meta.env.VITE_API_URL as string;
 export async function apiFetch<T extends Route>(
   route: T,
   options: FetchOptions<T>,
-) {
-  const { body, headers } = options;
+): Promise<
+  | undefined
+  | {
+      message: string;
+      status: number;
+      data: z.infer<T["responseData"]> | undefined;
+    }
+> {
+  const { body, headers, params } = options;
   const bodyData = route.requestBody.parse(body);
 
-  const fetchUrl = new URL(route.path, ApiURL);
+  const fetchUrl = new URL(generatePath(route.path, params), ApiURL);
+
   const res = await fetch(fetchUrl, {
     ...headers,
     method: route.method,
@@ -32,16 +50,11 @@ export async function apiFetch<T extends Route>(
 
   const parsedJson: unknown = await res.json();
   if (res.ok) {
-    const parsedRes = route.responseSchema
-      .omit({ code: true })
-      .parse(parsedJson);
-
-    const data = parsedRes.data
-      ? route.responseData.parse(parsedRes.data)
-      : undefined;
+    const resJson = parsedJson as z.infer<T["responseSchema"]>;
+    const data = resJson.data as z.infer<T["responseData"]>;
 
     return {
-      message: parsedRes.message,
+      message: resJson.message,
       status: res.status,
       data,
     };

@@ -11,6 +11,7 @@ export const getMe = () =>
         headers: {
           credentials: "include",
         },
+        params: {},
       });
     },
     staleTime: 1000 * 60 * 5,

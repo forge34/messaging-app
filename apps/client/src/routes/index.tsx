@@ -38,7 +38,7 @@ function RouteComponent() {
           and collaborate effortlessly.
         </p>
         <Button className=" text-white text-xl px-8 py-4 ">
-          <Link to={user ? "/conversations" : "/login"}>Get Started</Link>
+          <Link to={user ? "/app" : "/login"}>Get Started</Link>
         </Button>
       </div>
     </div>
