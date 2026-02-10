@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@chat/db/client";
 import bcrypt from "bcryptjs";
 import { AvatarGenerator } from "random-avatar-generator";
-const prisma = new PrismaClient();
+
 const generator = new AvatarGenerator();
 
 async function main() {
@@ -36,6 +36,7 @@ async function main() {
       {
         body: `Hi ${user.name}, how are you doing?`,
         authorId: forge.id,
+
       },
       {
         body: `Hey forge! I'm doing well. Just been working on some projects.`,
@@ -68,7 +69,6 @@ async function main() {
         users: {
           connect: [{ id: forge.id }, { id: user.id }],
         },
-        type: "PRIVATE",
       },
     });
 
