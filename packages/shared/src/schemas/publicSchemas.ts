@@ -12,7 +12,6 @@ export const PublicUserSchema = UserModelSchema.pick({
   bio: true,
 }).strict();
 
-
 export const PublicMessageSchema = MessageModelSchema.pick({
   id: true,
   conversationId: true,
@@ -38,7 +37,18 @@ export const PublicConversationSchema = ConversationModelSchema.pick({
     users: z.array(PublicUserSchema),
     messages: z.array(PublicMessageSchema),
     title: z.string().nonempty(),
-    lastMessage: PublicMessageSchema,
-    lastMessageAt: z.date(),
   })
   .strict();
+
+export const ConversationListSchema = PublicConversationSchema.omit({
+  messages: true,
+}).extend({
+  lastMessage: PublicMessageSchema.pick({
+    id: true,
+    body: true,
+    createdAt: true,
+    status: true,
+    author: true,
+  }),
+  lastMessageAt: z.date(),
+});

@@ -2,6 +2,7 @@ import z from "zod";
 import { createRoute } from "./routeConfig.js";
 import { LoginRequest, SignupRequest } from "../schemas/auth-schema.js";
 import {
+    ConversationListSchema,
   PublicConversationSchema,
   PublicMessageSchema,
   PublicUserSchema,
@@ -60,7 +61,7 @@ export const Routes = {
     path: "/conversation/currentUser",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(PublicConversationSchema),
+    responseData: z.array(ConversationListSchema),
   }),
   getConversationById: createRoute({
     ...EmptyParamQueries,
