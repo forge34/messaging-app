@@ -22,11 +22,12 @@ export const PublicMessageSchema = MessageModelSchema.pick({
 })
   .extend({
     author: PublicUserSchema,
-    bookmarkedBy: z.array(PublicUserSchema),
     isMine: z.boolean(),
     isBookmarked: z.boolean(),
   })
   .strict();
+
+export type PublicMessageSchema = z.infer<typeof PublicConversationSchema>;
 
 export const PublicConversationSchema = ConversationModelSchema.pick({
   id: true,
@@ -52,3 +53,5 @@ export const ConversationListSchema = PublicConversationSchema.omit({
   }),
   lastMessageAt: z.date(),
 });
+
+export type ConversationListSchema = z.infer<typeof ConversationListSchema>;

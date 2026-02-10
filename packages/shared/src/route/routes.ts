@@ -94,7 +94,7 @@ export const Routes = {
     path: "/users/bookmarks",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(PublicMessageSchema.omit({ bookmarkedBy: true })),
+    responseData: z.array(PublicMessageSchema),
   }),
 
   getUsers: createRoute({
