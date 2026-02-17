@@ -3,6 +3,7 @@ import { apiFetch } from "../utils";
 import { Routes } from "@chat/shared";
 import { toast } from "sonner";
 import { ApiError } from "../error";
+import { redirect } from "@tanstack/react-router";
 
 export function useLogin() {
   return useMutation({
@@ -16,7 +17,9 @@ export function useLogin() {
       });
     },
     onSuccess: (data) => {
+      if (!data) return;
       toast.success(data.message);
+      redirect({ to: "/app" });
     },
     onError: (err) => {
       if (err instanceof ApiError) {
@@ -44,6 +47,7 @@ export function useSignup() {
       });
     },
     onSuccess: (data) => {
+      if (!data) return;
       toast.success(data.message);
     },
     onError: (err) => {
