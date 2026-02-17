@@ -27,7 +27,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
   })
   .strict();
 
-export type PublicMessageSchema = z.infer<typeof PublicConversationSchema>;
+export type PublicMessageSchema = z.infer<typeof PublicMessageSchema>;
 
 export const PublicConversationSchema = ConversationModelSchema.pick({
   id: true,
@@ -40,6 +40,8 @@ export const PublicConversationSchema = ConversationModelSchema.pick({
     title: z.string().nonempty(),
   })
   .strict();
+
+export type PublicConversationSchema = z.infer<typeof PublicConversationSchema>;
 
 export const ConversationListSchema = PublicConversationSchema.omit({
   messages: true,

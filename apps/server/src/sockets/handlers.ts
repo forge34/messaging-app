@@ -6,6 +6,7 @@ import { io } from "../server.js";
 export const handleMessageCreate =
   (user: User, socket: Socket) =>
   async (message: Message, conversationId: string, tempId: string) => {
+    console.log("creating message")
     const content = message.body.trim();
     if (!content) {
       return;
@@ -31,7 +32,7 @@ export const handleMessageCreate =
     });
     const otherUser = conversation?.users.find((u) => u.id !== user.id);
 
-    socket.to(`user:${otherUser.id}`).emit("message:create", createdMessage);
+    socket.to(`user:${otherUser.id}`).emit("message:create", createdMessage, conversationId);
     socket.emit(
       "message:create:confirm",
       createdMessage,

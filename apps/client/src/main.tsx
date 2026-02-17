@@ -6,7 +6,7 @@ import { routeTree } from "./routeTree.gen";
 
 import "./index.css";
 import { ErrorComponent } from "./components/error-component";
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 
 

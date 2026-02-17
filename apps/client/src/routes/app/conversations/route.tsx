@@ -19,9 +19,11 @@ function RouteComponent() {
   const conversations = data?.data;
 
   return (
-    <div className="bg-card/80 w-full flex flex-row">
+    <div className="bg-card/80 w-full h-screen grid grid-cols-6">
       <DirectMessageList conversations={conversations} />
-      <Outlet/>
+      <div className="col-span-4 min-h-0">
+        <Outlet />
+      </div>
     </div>
   );
 }

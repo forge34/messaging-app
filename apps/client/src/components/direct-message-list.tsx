@@ -17,7 +17,7 @@ export function DirectMessageList({
   }
 
   return (
-    <div className="divide-y divide-border py-2 px-6 border-r">
+    <div className="divide-y divide-border py-2 px-6 border-r col-span-2">
       <Input
         className="bg-background rounded-md"
         icon={<Search className="h-4 w-4" />}

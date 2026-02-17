@@ -1,23 +1,52 @@
 import { Sidebar } from "@/components/sidebar";
 import { getMe } from "@/lib/queries/auth";
+import { socket } from "@/lib/sockets";
+import { onMessageConfirm, onMessageCreate } from "@/lib/sockets/handlers";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/app")({
   component: RouteComponent,
   beforeLoad: async ({ context }) => {
     const data = await context.queryClient.ensureQueryData(getMe());
 
-    if (data.status === 401) {
+    if (data?.status === 401) {
       throw redirect({ to: "/login" });
     }
   },
 });
 
 function RouteComponent() {
+  const { isSuccess } = useQuery(getMe());
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (!socket.connected) {
+        console.log("connecting");
+        socket.connect();
+      }
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [isSuccess]);
+
+  useEffect(() => {
+    socket.on("message:create", onMessageCreate);
+    socket.on("message:create:confirm",onMessageConfirm);
+
+    return () => {
+      socket.off("message:create", onMessageCreate);
+      socket.off("message:create:confirm",onMessageConfirm);
+    };
+  });
+
   return (
-    <main className="flex flex-row">
+    <main className="flex flex-row w-full h-screen">
       <Sidebar />
-      <Outlet/>
+      <Outlet />
     </main>
   );
 }

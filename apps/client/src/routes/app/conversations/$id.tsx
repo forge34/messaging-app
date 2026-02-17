@@ -1,3 +1,4 @@
+import { MessageInput } from "@/components/message-input";
 import { GetConversationById } from "@/lib/queries/conversations";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -27,7 +28,7 @@ function RouteComponent() {
 
   const conversation = data?.data;
   return (
-    <div className="w-full flex flex-col px">
+    <div className="h-full flex flex-col ">
       <div className="flex flex-row py-2 px-4 border-b items-center">
         <X
           className="h-6 w-6 mr-2"
@@ -37,25 +38,28 @@ function RouteComponent() {
         />
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>
       </div>
-      <div className="flex flex-col h-full gap-y-4 py-4 px-6 justify-end">
-        {conversation?.messages.map((msg) => {
+      <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
+        {conversation?.messages.map((msg, i) => {
+          const isLast = i === conversation.messages.length - 1;
           return (
             <div
+              key={msg.id}
               className={cn(
                 "rounded-md py-2 px-6 max-w-fit",
                 msg.isMine ? "bg-primary ml-auto" : "bg-secondary",
               )}
             >
               <p>{msg.body}</p>
-              <span className={ cn( "text-xs ", msg.isMine ? "ml-auto":"mr-auto" ) } >{formatTime(msg.createdAt.toString())}</span>
+              <span
+                className={cn("text-xs ", msg.isMine ? "ml-auto" : "mr-auto")}
+              >
+                {formatTime(msg.createdAt.toString())}
+              </span>
             </div>
           );
         })}
       </div>
-      <input
-        className="bg-background py-2 px-6 mb-2"
-        placeholder="Send a message"
-      />
+      <MessageInput conversationId={id} />
     </div>
   );
 }
