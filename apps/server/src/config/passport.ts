@@ -26,12 +26,6 @@ class PassportConfig {
           where: {
             id: payload.id,
           },
-          include: {
-            messages: true,
-            blocked: {},
-            bookmarks: true,
-            blockedBy: true,
-          },
         });
 
         if (user) {
