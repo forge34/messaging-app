@@ -2,8 +2,9 @@ import { MessageInput } from "@/components/message-input";
 import { GetConversationById } from "@/lib/queries/conversations";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/app/conversations/$id")({
   component: RouteComponent,
@@ -27,6 +28,15 @@ function RouteComponent() {
   const navigate = useNavigate();
 
   const conversation = data?.data;
+
+  useEffect(() => {
+    const lastElement =
+      conversation?.messages[conversation.messages.length - 1];
+    navigate({
+      hash: lastElement?.id,
+    });
+  });
+
   return (
     <div className="h-full flex flex-col ">
       <div className="flex flex-row py-2 px-4 border-b items-center">
@@ -39,23 +49,25 @@ function RouteComponent() {
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>
       </div>
       <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
-        {conversation?.messages.map((msg, i) => {
-          const isLast = i === conversation.messages.length - 1;
+        {conversation?.messages.map((msg) => {
           return (
-            <div
-              key={msg.id}
-              className={cn(
-                "rounded-md py-2 px-6 max-w-fit",
-                msg.isMine ? "bg-primary ml-auto" : "bg-secondary",
-              )}
-            >
-              <p>{msg.body}</p>
-              <span
-                className={cn("text-xs ", msg.isMine ? "ml-auto" : "mr-auto")}
+            <Link to="." hash={msg.id}>
+              <div
+                id={msg.id}
+                key={msg.id}
+                className={cn(
+                  "rounded-md py-2 px-6 max-w-fit",
+                  msg.isMine ? "bg-primary ml-auto" : "bg-secondary",
+                )}
               >
-                {formatTime(msg.createdAt.toString())}
-              </span>
-            </div>
+                <p>{msg.body}</p>
+                <span
+                  className={cn("text-xs ", msg.isMine ? "ml-auto" : "mr-auto")}
+                >
+                  {formatTime(msg.createdAt.toString())}
+                </span>
+              </div>
+            </Link>
           );
         })}
       </div>
