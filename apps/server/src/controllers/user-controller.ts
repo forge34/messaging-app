@@ -9,7 +9,7 @@ class UserController {
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getCurrentUser, async (req) => {
       const { id, name, imgUrl, bio } = req.user as User;
-      return { code: 200, message: "Sucess", data: { id, name, imgUrl, bio } };
+      return { code: 200, message: "Success", data: { id, name, imgUrl, bio } };
     }),
   ];
 
