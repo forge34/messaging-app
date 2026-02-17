@@ -51,12 +51,19 @@ function RouteComponent() {
       <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
         {conversation?.messages.map((msg) => {
           return (
-            <Link to="." hash={msg.id}>
+            <Link to="." hash={msg.id} className="flex flex-row gap-2">
+              <img
+                src={msg.author.imgUrl}
+                className={cn(
+                  "rounded-full w-10 h-10 self-center",
+                  msg.isMine ? "order-2" : "",
+                )}
+              />
               <div
                 id={msg.id}
                 key={msg.id}
                 className={cn(
-                  "rounded-md py-2 px-6 max-w-fit",
+                  "rounded-md py-2 px-4 max-w-fit ",
                   msg.isMine ? "bg-primary ml-auto" : "bg-secondary",
                 )}
               >
