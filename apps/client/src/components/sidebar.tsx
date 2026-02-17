@@ -1,7 +1,15 @@
 import { MessageCircle, Users, User, Settings, LogOut } from "lucide-react";
 import { NavItem } from "./nav-item";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "@/lib/queries/auth";
+import { Route as UserProfileRoute } from "../routes/app/users/profile.tsx";
 
 export function Sidebar() {
+  const { data } = useQuery(getMe());
+
+  const user = data?.data;
+
+  if (!user) return null;
   return (
     <div className="flex flex-col h-screen w-56 border-r bg-background p-4">
       <div className="flex flex-col gap-1">
@@ -13,7 +21,11 @@ export function Sidebar() {
 
         <NavItem to="." label="Channels" icon={<Users className="w-5 h-5" />} />
 
-        <NavItem to="/app/profile" label="Profile" icon={<User className="w-5 h-5" />} />
+        <NavItem
+          to={UserProfileRoute.to}
+          label="My Profile"
+          icon={<User className="w-5 h-5" />}
+        />
 
         <NavItem
           to="."
