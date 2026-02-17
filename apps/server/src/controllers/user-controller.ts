@@ -13,6 +13,32 @@ class UserController {
     }),
   ];
 
+  static getUserById = [
+    passport.authenticate("jwt", { session: false, failWithError: true }),
+    createHandler(Routes.getUserById, async (req) => {
+      const { id } = req.params;
+      console.log(id);
+
+      const user = await prisma.user.findFirst({
+        where: {
+          id: id,
+        },
+        omit: {
+          password: true,
+        },
+        include: {
+          blocked: true,
+          blockedBy: true,
+          messages: true,
+          bookmarks: true,
+          conversations: true,
+        },
+      });
+
+      return { code: 200, message: "Success", data: user };
+    }),
+  ];
+
   static getBookmarks = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getBookmarks, async (req, res) => {

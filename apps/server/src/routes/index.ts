@@ -27,6 +27,7 @@ router.post("/message/:id/bookmark", MessagesController.bookmarkMessage);
 router.get("/users", UserController.getMany);
 router.get("/users/bookmarks", UserController.getBookmarks);
 router.get("/users/me", UserController.getCurrent);
+router.get("/users/:id", UserController.getUserById);
 router.post("/users/:id/block", UserController.blockUser);
 
 export default router;

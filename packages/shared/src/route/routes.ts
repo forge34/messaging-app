@@ -2,7 +2,8 @@ import z from "zod";
 import { createRoute } from "./routeConfig.js";
 import { LoginRequest, SignupRequest } from "../schemas/auth-schema.js";
 import {
-    ConversationListSchema,
+  ConversationListSchema,
+  FullUserSchema,
   PublicConversationSchema,
   PublicMessageSchema,
   PublicUserSchema,
@@ -119,5 +120,15 @@ export const Routes = {
     }),
     requestBody: z.undefined(),
     responseData: z.undefined(),
+  }),
+  getUserById: createRoute({
+    ...EmptyParamQueries,
+    path: "/users/:id",
+    method: "GET",
+    params: z.object({
+      id: z.string(),
+    }),
+    requestBody: z.undefined(),
+    responseData: FullUserSchema,
   }),
 } as const;

@@ -12,6 +12,7 @@ export const PublicUserSchema = UserModelSchema.pick({
   bio: true,
 }).strict();
 
+
 export const PublicMessageSchema = MessageModelSchema.pick({
   id: true,
   conversationId: true,
@@ -57,3 +58,24 @@ export const ConversationListSchema = PublicConversationSchema.omit({
 });
 
 export type ConversationListSchema = z.infer<typeof ConversationListSchema>;
+
+
+export const FullUserSchema = UserModelSchema.omit({ password: true }).extend({
+  blocked: z.array(PublicUserSchema),
+  blockedBy: z.array(PublicUserSchema),
+
+  messages: z.array(
+    PublicMessageSchema.omit({
+      author: true,
+      isMine: true,
+      isBookmarked: true,
+    }),
+  ),
+  bookmarks: z.array(
+    PublicMessageSchema.omit({
+      author: true,
+      isMine: true,
+      isBookmarked: true,
+    }),
+  ),
+});
