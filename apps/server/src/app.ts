@@ -34,7 +34,7 @@ app.use((err:any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ZodError) {
    const errors = z.flattenError(err);
     return res
-      .status(401)
+      .status(400)
       .json({ messages: errors.formErrors, fields: errors.fieldErrors });
   }
   if (err.name === "AuthenticationError") {
