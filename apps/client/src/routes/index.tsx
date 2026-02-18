@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getMe } from "@/lib/queries/auth";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-
+import {} from "../../public/bg.jpg"
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });

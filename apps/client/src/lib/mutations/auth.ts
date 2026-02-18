@@ -20,9 +20,12 @@ export function useLogin() {
     },
     onSuccess: async (data) => {
       if (!data) return;
-      queryClient.setQueryData(["user"], data.data);
+      await queryClient.refetchQueries({ queryKey: ["user"] });
+    },
+    onSettled: async (data) => {
+      if (!data) return;
       toast.success(data.message);
-      navigate({ to: "/app" });
+      navigate({ to: "/app/conversations" });
     },
     onError: (err) => {
       if (err instanceof ApiError) {
@@ -49,8 +52,11 @@ export function useLogout() {
     },
     onSuccess: async (data) => {
       if (!data) return;
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onSettled: async (data) => {
+      if (!data) return;
       toast.success(data.message);
-      queryClient.setQueryData(["user"], null);
       navigate({ to: "/" });
     },
     onError: (err) => {

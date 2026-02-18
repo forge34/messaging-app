@@ -23,7 +23,6 @@ function RouteComponent() {
   useEffect(() => {
     if (isSuccess) {
       if (!socket.connected) {
-        console.log("connecting");
         socket.connect();
       }
     }
