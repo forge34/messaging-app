@@ -20,7 +20,7 @@ export function createHandler<T extends Route>(
   route: T,
   handler: (
     req: InferReq<T>,
-    res: Response
+    res: Response,
   ) => Promise<z.infer<T["responseSchema"]> | undefined>,
 ): RequestHandler {
   return async function (req: Request, res: Response) {
@@ -28,9 +28,12 @@ export function createHandler<T extends Route>(
     const params = route.params.parse(req.params);
     const query = route.queries.parse(req.query);
 
-    const result = route.responseSchema.parse(
-      await handler({ ...req, body, params, query } as unknown as InferReq<T>,res),
+    const handlerResult = await handler(
+      { ...req, body, params, query } as unknown as InferReq<T>,
+      res,
     );
+
+    const result = route.responseSchema.parse(handlerResult);
 
     if (result) {
       const data = route.responseData.parse(result.data);

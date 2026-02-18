@@ -19,7 +19,7 @@ export const Routes = {
     path: "/login",
     method: "POST",
     requestBody: LoginRequest,
-    responseData: z.undefined(),
+    responseData: PublicUserSchema,
   }),
   signup: createRoute({
     ...EmptyParamQueries,
@@ -33,7 +33,7 @@ export const Routes = {
     ...EmptyParamQueries,
     path: "/logout",
     method: "POST",
-    requestBody: z.null(),
+    requestBody: z.object({}).strict(),
     responseData: z.undefined(),
   }),
   createConversation: createRoute({

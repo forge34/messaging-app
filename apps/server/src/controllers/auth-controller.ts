@@ -48,31 +48,42 @@ class Auth {
   static login = createHandler(Routes.login, async (req, res) => {
     const data = req.body;
 
-    const user = await prisma.user.findUnique({
+    const { id, name, password, bio, imgUrl } = await prisma.user.findUnique({
       where: {
         name: data.username,
       },
+      select: {
+        password: true,
+        id: true,
+        name: true,
+        bio: true,
+        imgUrl: true,
+      },
     });
 
-    if (!user) {
+    if (!id) {
       res.status(401).json({ code: 401, message: "Invalid credentials" });
       return;
     }
 
-    const matches = await bcrypt.compare(data.password, user.password);
+    const matches = await bcrypt.compare(data.password, password);
 
     if (!matches) {
       res.status(401).json({ code: 401, message: "Invalid credentials" });
       return;
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET || "", {
+    const token = jwt.sign({ id: id }, process.env.SECRET || "", {
       expiresIn: "3d",
     });
 
     res.cookie("jwt", token, cookieOptions);
 
-    return { code: 200, message: "Login sucess" };
+    return {
+      code: 200,
+      message: "Login sucess",
+      data: { id, name, bio, imgUrl },
+    };
   });
 
   static logout = [

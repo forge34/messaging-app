@@ -3,10 +3,11 @@ import { NavItem } from "./nav-item";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/lib/queries/auth";
 import { Route as UserProfileRoute } from "../routes/app/users/profile.tsx";
+import { useLogout } from "@/lib/mutations/auth.ts";
 
 export function Sidebar() {
   const { data } = useQuery(getMe());
-
+  const logout = useLogout();
   const user = data?.data;
 
   if (!user) return null;
@@ -34,7 +35,12 @@ export function Sidebar() {
         />
       </div>
 
-      <div className="mt-auto pt-4 border-t">
+      <div
+        className="mt-auto pt-4 border-t"
+        onClick={() => {
+          logout.mutate();
+        }}
+      >
         <NavItem
           to="."
           label="Logout"
