@@ -1,9 +1,11 @@
+import { AnimatedRoute } from "@/components/animated-route";
+import { Message } from "@/components/message";
 import { MessageInput } from "@/components/message-input";
 import { GetConversationById } from "@/lib/queries/conversations";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { X } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/app/conversations/$id")({
@@ -15,30 +17,31 @@ export const Route = createFileRoute("/app/conversations/$id")({
   },
 });
 
-const formatTime = (date: string) => {
-  const now = new Date(date);
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data } = useQuery(GetConversationById(id));
   const navigate = useNavigate();
 
+  const router = useRouter();
   const conversation = data?.data;
 
   useEffect(() => {
-    const lastElement =
-      conversation?.messages[conversation.messages.length - 1];
+    if (!conversation?.messages?.length) return;
+
+    const lastElement = conversation.messages[conversation.messages.length - 1];
+
     navigate({
       hash: lastElement?.id,
+      replace: true,
     });
   });
 
   return (
-    <div className="h-full flex flex-col ">
+    <AnimatedRoute
+      key={router.state.location.pathname}
+      variant="slide"
+      className="h-full flex flex-col "
+    >
       <div className="flex flex-row py-2 px-4 border-b items-center">
         <X
           className="h-6 w-6 mr-2"
@@ -49,36 +52,13 @@ function RouteComponent() {
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>
       </div>
       <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
-        {conversation?.messages.map((msg) => {
-          return (
-            <Link to="." hash={msg.id} className="flex flex-row gap-2">
-              <img
-                src={msg.author.imgUrl}
-                className={cn(
-                  "rounded-full w-10 h-10 self-center",
-                  msg.isMine ? "order-2" : "",
-                )}
-              />
-              <div
-                id={msg.id}
-                key={msg.id}
-                className={cn(
-                  "rounded-md py-2 px-4 max-w-fit ",
-                  msg.isMine ? "bg-primary ml-auto" : "bg-secondary",
-                )}
-              >
-                <p>{msg.body}</p>
-                <span
-                  className={cn("text-xs ", msg.isMine ? "ml-auto" : "mr-auto")}
-                >
-                  {formatTime(msg.createdAt.toString())}
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+        <AnimatePresence initial={false}>
+          {conversation?.messages.map((msg) => {
+            return <Message message={msg} key={msg.id} />;
+          })}
+        </AnimatePresence>
       </div>
       <MessageInput conversationId={id} />
-    </div>
+    </AnimatedRoute>
   );
 }
