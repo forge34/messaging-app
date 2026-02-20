@@ -4,6 +4,7 @@ import { Routes } from "@chat/shared";
 import { toast } from "sonner";
 import { ApiError } from "../error";
 import { useNavigate } from "@tanstack/react-router";
+import { Route as MeRoute } from "../../routes/app/conversations/@me.tsx";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export function useLogin() {
     onSettled: async (data) => {
       if (!data) return;
       toast.success(data.message);
-      navigate({ to: "/app/conversations" });
+      navigate({ to: MeRoute.to });
     },
     onError: (err) => {
       if (err instanceof ApiError) {

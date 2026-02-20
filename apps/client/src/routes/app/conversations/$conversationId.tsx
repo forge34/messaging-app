@@ -11,6 +11,7 @@ import {
 import { X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
+import { Route as MeRoute } from "./@me.tsx";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -52,7 +53,7 @@ function RouteComponent() {
         <X
           className="h-6 w-6 mr-2"
           onClick={() => {
-            navigate({ to: "/app/conversations/me" });
+            navigate({ to : MeRoute.to });
           }}
         />
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>

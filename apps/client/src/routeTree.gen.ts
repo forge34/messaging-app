@@ -17,7 +17,7 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AppUsersRouteRouteImport } from './routes/app/users/route'
 import { Route as AppConversationsRouteRouteImport } from './routes/app/conversations/route'
 import { Route as AppUsersProfileRouteImport } from './routes/app/users/profile'
-import { Route as AppConversationsMeRouteImport } from './routes/app/conversations/me'
+import { Route as AppConversationsAtmeRouteImport } from './routes/app/conversations/@me'
 import { Route as AppConversationsConversationIdRouteImport } from './routes/app/conversations/$conversationId'
 
 const AppRouteRoute = AppRouteRouteImport.update({
@@ -59,9 +59,9 @@ const AppUsersProfileRoute = AppUsersProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppUsersRouteRoute,
 } as any)
-const AppConversationsMeRoute = AppConversationsMeRouteImport.update({
-  id: '/me',
-  path: '/me',
+const AppConversationsAtmeRoute = AppConversationsAtmeRouteImport.update({
+  id: '/@me',
+  path: '/@me',
   getParentRoute: () => AppConversationsRouteRoute,
 } as any)
 const AppConversationsConversationIdRoute =
@@ -79,7 +79,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
-  '/app/conversations/me': typeof AppConversationsMeRoute
+  '/app/conversations/@me': typeof AppConversationsAtmeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRoutesByTo {
@@ -90,7 +90,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
-  '/app/conversations/me': typeof AppConversationsMeRoute
+  '/app/conversations/@me': typeof AppConversationsAtmeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRoutesById {
@@ -103,7 +103,7 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
-  '/app/conversations/me': typeof AppConversationsMeRoute
+  '/app/conversations/@me': typeof AppConversationsAtmeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRouteTypes {
@@ -116,7 +116,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/conversations/$conversationId'
-    | '/app/conversations/me'
+    | '/app/conversations/@me'
     | '/app/users/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,7 +127,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/conversations/$conversationId'
-    | '/app/conversations/me'
+    | '/app/conversations/@me'
     | '/app/users/profile'
   id:
     | '__root__'
@@ -139,7 +139,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/app/conversations/$conversationId'
-    | '/app/conversations/me'
+    | '/app/conversations/@me'
     | '/app/users/profile'
   fileRoutesById: FileRoutesById
 }
@@ -207,11 +207,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersProfileRouteImport
       parentRoute: typeof AppUsersRouteRoute
     }
-    '/app/conversations/me': {
-      id: '/app/conversations/me'
-      path: '/me'
-      fullPath: '/app/conversations/me'
-      preLoaderRoute: typeof AppConversationsMeRouteImport
+    '/app/conversations/@me': {
+      id: '/app/conversations/@me'
+      path: '/@me'
+      fullPath: '/app/conversations/@me'
+      preLoaderRoute: typeof AppConversationsAtmeRouteImport
       parentRoute: typeof AppConversationsRouteRoute
     }
     '/app/conversations/$conversationId': {
@@ -240,12 +240,12 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface AppConversationsRouteRouteChildren {
   AppConversationsConversationIdRoute: typeof AppConversationsConversationIdRoute
-  AppConversationsMeRoute: typeof AppConversationsMeRoute
+  AppConversationsAtmeRoute: typeof AppConversationsAtmeRoute
 }
 
 const AppConversationsRouteRouteChildren: AppConversationsRouteRouteChildren = {
   AppConversationsConversationIdRoute: AppConversationsConversationIdRoute,
-  AppConversationsMeRoute: AppConversationsMeRoute,
+  AppConversationsAtmeRoute: AppConversationsAtmeRoute,
 }
 
 const AppConversationsRouteRouteWithChildren =

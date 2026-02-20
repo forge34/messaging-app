@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 
-export const Route = createFileRoute("/app/conversations/me")({
+export const Route = createFileRoute("/app/conversations/@me")({
   component: RouteComponent,
   loader: async ({ context: { queryClient } }) => {
     const data = await queryClient.ensureQueryData(getUsers());
@@ -42,7 +42,7 @@ function RouteComponent() {
               <h3 className="text-2xl">{u.name}</h3>
               <Button
                 onClick={() => {
-                  if (u.hasConversation) {
+                  if (u.hasConversation && u.mutualConversation) {
                     navigate({
                       to: "/app/conversations/$conversationId",
                       params: { conversationId: u.mutualConversation },

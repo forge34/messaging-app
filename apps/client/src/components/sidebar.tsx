@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/lib/queries/auth";
 import { Route as UserProfileRoute } from "../routes/app/users/profile.tsx";
 import { useLogout } from "@/lib/mutations/auth.ts";
+import { Route as MeRoute } from "../routes/app/conversations/@me.tsx";
 
 export function Sidebar() {
   const { data } = useQuery(getMe());
@@ -15,7 +16,7 @@ export function Sidebar() {
     <div className="flex flex-col h-screen w-56 border-r bg-background p-4">
       <div className="flex flex-col gap-1">
         <NavItem
-          to="/app/conversations/me"
+          to={MeRoute.to}
           label="Direct Messages"
           icon={<MessageCircle className="w-5 h-5" />}
         />

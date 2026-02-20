@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { ConversationListSchema } from "@chat/shared";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
+import { Route as ConversationIdRoute } from "../routes/app/conversations/$conversationId.tsx";
 
 export function DirectMessageList({
   conversations,
@@ -29,7 +30,7 @@ export function DirectMessageList({
         return (
           <Link
             key={id}
-            to="/app/conversations/$conversationId"
+            to={ConversationIdRoute.to}
             params={{ conversationId: id }}
             className="flex items-center gap-3 px-4 py-3 w-full text-left hover:brightness-110 hover:bg-background/30  transition-all delay-0"
           >
