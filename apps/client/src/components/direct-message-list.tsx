@@ -29,8 +29,8 @@ export function DirectMessageList({
         return (
           <Link
             key={id}
-            to="/app/conversations/$id"
-            params={{ id }}
+            to="/app/conversations/$conversationId"
+            params={{ conversationId: id }}
             className="flex items-center gap-3 px-4 py-3 w-full text-left hover:brightness-110 hover:bg-background/30  transition-all delay-0"
           >
             <img

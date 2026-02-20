@@ -3,23 +3,29 @@ import { Message } from "@/components/message";
 import { MessageInput } from "@/components/message-input";
 import { GetConversationById } from "@/lib/queries/conversations";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 
-export const Route = createFileRoute("/app/conversations/$id")({
+export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
-  loader: async ({ context: { queryClient }, params: { id } }) => {
-    const data = await queryClient.ensureQueryData(GetConversationById(id));
+  loader: async ({ context: { queryClient }, params: { conversationId } }) => {
+    const data = await queryClient.ensureQueryData(
+      GetConversationById(conversationId),
+    );
 
     return data;
   },
 });
 
 function RouteComponent() {
-  const { id } = Route.useParams();
-  const { data } = useQuery(GetConversationById(id));
+  const {  conversationId } = Route.useParams();
+  const { data } = useQuery(GetConversationById(conversationId));
   const navigate = useNavigate();
 
   const router = useRouter();
@@ -46,7 +52,7 @@ function RouteComponent() {
         <X
           className="h-6 w-6 mr-2"
           onClick={() => {
-            navigate({ to: "/app/conversations" });
+            navigate({ to: "/app/conversations/me" });
           }}
         />
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>
@@ -58,7 +64,7 @@ function RouteComponent() {
           })}
         </AnimatePresence>
       </div>
-      <MessageInput conversationId={id} />
+      <MessageInput conversationId={conversationId} />
     </AnimatedRoute>
   );
 }

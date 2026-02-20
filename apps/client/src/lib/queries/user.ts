@@ -2,15 +2,28 @@ import { Routes } from "@chat/shared";
 import { queryOptions } from "@tanstack/react-query";
 import { apiFetch } from "../utils";
 
-export const getUserById = (id : string) =>
+export const getUserById = (id: string) =>
   queryOptions({
-    queryKey: ["user" , id],
+    queryKey: ["user", id],
     queryFn: async () => {
       return apiFetch(Routes.getUserById, {
         headers: {
           credentials: "include",
         },
-        params: {id},
+        params: { id },
+      });
+    },
+  });
+
+export const getUsers = () =>
+  queryOptions({
+    queryKey: ["users"],
+    queryFn: async () => {
+      return apiFetch(Routes.getUsers, {
+        headers: {
+          credentials: "include",
+        },
+        params : {}
       });
     },
   });

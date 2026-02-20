@@ -124,6 +124,7 @@ class UserController {
           ...u,
           isCurrent: u.id === currentUser.id,
           hasConversation: !!conversation?.id,
+          mutualConversation: conversation?.id,
         };
       });
 

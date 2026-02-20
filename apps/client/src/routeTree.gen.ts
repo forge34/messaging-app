@@ -17,7 +17,8 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AppUsersRouteRouteImport } from './routes/app/users/route'
 import { Route as AppConversationsRouteRouteImport } from './routes/app/conversations/route'
 import { Route as AppUsersProfileRouteImport } from './routes/app/users/profile'
-import { Route as AppConversationsIdRouteImport } from './routes/app/conversations/$id'
+import { Route as AppConversationsMeRouteImport } from './routes/app/conversations/me'
+import { Route as AppConversationsConversationIdRouteImport } from './routes/app/conversations/$conversationId'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
@@ -58,11 +59,17 @@ const AppUsersProfileRoute = AppUsersProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppUsersRouteRoute,
 } as any)
-const AppConversationsIdRoute = AppConversationsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
+const AppConversationsMeRoute = AppConversationsMeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => AppConversationsRouteRoute,
 } as any)
+const AppConversationsConversationIdRoute =
+  AppConversationsConversationIdRouteImport.update({
+    id: '/$conversationId',
+    path: '/$conversationId',
+    getParentRoute: () => AppConversationsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,7 +78,8 @@ export interface FileRoutesByFullPath {
   '/app/users': typeof AppUsersRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/app/conversations/$id': typeof AppConversationsIdRoute
+  '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
+  '/app/conversations/me': typeof AppConversationsMeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRoutesByTo {
@@ -81,7 +89,8 @@ export interface FileRoutesByTo {
   '/app/users': typeof AppUsersRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
-  '/app/conversations/$id': typeof AppConversationsIdRoute
+  '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
+  '/app/conversations/me': typeof AppConversationsMeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRoutesById {
@@ -93,7 +102,8 @@ export interface FileRoutesById {
   '/app/users': typeof AppUsersRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
-  '/app/conversations/$id': typeof AppConversationsIdRoute
+  '/app/conversations/$conversationId': typeof AppConversationsConversationIdRoute
+  '/app/conversations/me': typeof AppConversationsMeRoute
   '/app/users/profile': typeof AppUsersProfileRoute
 }
 export interface FileRouteTypes {
@@ -105,7 +115,8 @@ export interface FileRouteTypes {
     | '/app/users'
     | '/login'
     | '/signup'
-    | '/app/conversations/$id'
+    | '/app/conversations/$conversationId'
+    | '/app/conversations/me'
     | '/app/users/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -115,7 +126,8 @@ export interface FileRouteTypes {
     | '/app/users'
     | '/login'
     | '/signup'
-    | '/app/conversations/$id'
+    | '/app/conversations/$conversationId'
+    | '/app/conversations/me'
     | '/app/users/profile'
   id:
     | '__root__'
@@ -126,7 +138,8 @@ export interface FileRouteTypes {
     | '/app/users'
     | '/_auth/login'
     | '/_auth/signup'
-    | '/app/conversations/$id'
+    | '/app/conversations/$conversationId'
+    | '/app/conversations/me'
     | '/app/users/profile'
   fileRoutesById: FileRoutesById
 }
@@ -194,11 +207,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsersProfileRouteImport
       parentRoute: typeof AppUsersRouteRoute
     }
-    '/app/conversations/$id': {
-      id: '/app/conversations/$id'
-      path: '/$id'
-      fullPath: '/app/conversations/$id'
-      preLoaderRoute: typeof AppConversationsIdRouteImport
+    '/app/conversations/me': {
+      id: '/app/conversations/me'
+      path: '/me'
+      fullPath: '/app/conversations/me'
+      preLoaderRoute: typeof AppConversationsMeRouteImport
+      parentRoute: typeof AppConversationsRouteRoute
+    }
+    '/app/conversations/$conversationId': {
+      id: '/app/conversations/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/app/conversations/$conversationId'
+      preLoaderRoute: typeof AppConversationsConversationIdRouteImport
       parentRoute: typeof AppConversationsRouteRoute
     }
   }
@@ -219,11 +239,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface AppConversationsRouteRouteChildren {
-  AppConversationsIdRoute: typeof AppConversationsIdRoute
+  AppConversationsConversationIdRoute: typeof AppConversationsConversationIdRoute
+  AppConversationsMeRoute: typeof AppConversationsMeRoute
 }
 
 const AppConversationsRouteRouteChildren: AppConversationsRouteRouteChildren = {
-  AppConversationsIdRoute: AppConversationsIdRoute,
+  AppConversationsConversationIdRoute: AppConversationsConversationIdRoute,
+  AppConversationsMeRoute: AppConversationsMeRoute,
 }
 
 const AppConversationsRouteRouteWithChildren =

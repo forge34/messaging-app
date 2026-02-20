@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   Outlet,
-  useParams,
+  useRouter,
 } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 export const Route = createFileRoute("/app/conversations")({
   component: RouteComponent,
@@ -21,8 +21,7 @@ export const Route = createFileRoute("/app/conversations")({
 
 function RouteComponent() {
   const { data } = useQuery(getCurrentUserConversations());
-  const { id } = useParams({ strict: false });
-
+  const router = useRouter();
   const conversations = data?.data;
 
   return (
@@ -30,19 +29,7 @@ function RouteComponent() {
       <DirectMessageList conversations={conversations} />
       <div className="col-span-4 min-h-0 relative overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
-          {id ? (
-            <Outlet />
-          ) : (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="h-full flex items-center justify-center text-muted-foreground"
-            >
-              Select a conversation
-            </motion.div>
-          )}
+          <Outlet key={router.state.location.pathname} />
         </AnimatePresence>
       </div>
     </div>

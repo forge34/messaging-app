@@ -107,6 +107,7 @@ export const Routes = {
       PublicUserSchema.extend({
         isCurrent: z.boolean(),
         hasConversation: z.boolean(),
+        mutualConversation : z.string().optional()
       }),
     ),
   }),

@@ -15,7 +15,7 @@ export function Sidebar() {
     <div className="flex flex-col h-screen w-56 border-r bg-background p-4">
       <div className="flex flex-col gap-1">
         <NavItem
-          to="/app/conversations"
+          to="/app/conversations/me"
           label="Direct Messages"
           icon={<MessageCircle className="w-5 h-5" />}
         />

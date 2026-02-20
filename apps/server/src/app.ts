@@ -40,6 +40,7 @@ app.use((err:any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "AuthenticationError") {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  console.log(err)
   res.status(500).json({ message: err.message });
 });
 
