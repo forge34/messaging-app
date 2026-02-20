@@ -4,10 +4,10 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "pnpm db:generate && tsc -p tsconfig.json",
     "db:push": "pnpm prisma db push",
     "db:reset": "pnpm prisma db push --force-reset",
-    "db:generate": "pnpm prisma generate  && pnpm build",
+    "db:generate": "pnpm prisma generate",
     "db:migrate": "pnpm prisma migrate dev",
     "dev": "tsc -w  -p tsconfig.json"
   },
