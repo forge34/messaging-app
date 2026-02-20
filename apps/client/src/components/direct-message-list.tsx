@@ -25,7 +25,8 @@ export function DirectMessageList({
         placeholder="Search conversations"
       />
       {conversations.map((conversation: ConversationListSchema) => {
-        const { id, title, lastMessage, lastMessageAt } = conversation;
+        const { id, title, lastMessage, lastMessageAt, otherUser, createdAt } =
+          conversation;
 
         return (
           <Link
@@ -35,8 +36,8 @@ export function DirectMessageList({
             className="flex items-center gap-3 px-4 py-3 w-full text-left hover:brightness-110 hover:bg-background/30  transition-all delay-0"
           >
             <img
-              src={lastMessage.author.imgUrl ?? "/avatar-placeholder.png"}
-              alt={lastMessage.author.name}
+              src={otherUser.imgUrl ?? "/avatar-placeholder.png"}
+              alt={otherUser.name}
               className="h-10 w-10 rounded-full object-cover"
             />
 
@@ -44,17 +45,21 @@ export function DirectMessageList({
               <div className="flex items-center justify-between gap-2">
                 <span className="font-medium truncate">{title}</span>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  {new Date(lastMessageAt).toLocaleTimeString([], {
+                  {new Date(lastMessageAt || createdAt).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </span>
               </div>
 
-              <div className="text-sm text-muted-foreground truncate">
-                <span className="font-medium">{lastMessage.author.name}:</span>
-                {lastMessage.body}
-              </div>
+              {lastMessage && (
+                <div className="text-sm text-muted-foreground truncate">
+                  <span className="font-medium">
+                    {lastMessage.author.name}:{" "}
+                  </span>
+                  {lastMessage.body}
+                </div>
+              )}
             </div>
           </Link>
         );

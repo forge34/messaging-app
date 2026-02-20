@@ -1,6 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCreateConversation } from "@/lib/mutations/conversations";
 import { getUsers } from "@/lib/queries/user";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/app/conversations/@me")({
 function RouteComponent() {
   const { data } = useQuery(getUsers());
   const navigate = useNavigate();
+  const createConversation = useCreateConversation();
 
   const users = data?.data;
   return (
@@ -32,7 +34,7 @@ function RouteComponent() {
           if (u.isCurrent) return null;
 
           return (
-            <div className="flex flex-col items-center py-2 px-4 gap-4  rounded-md bg-input/70">
+            <div key={u.id} className="flex flex-col items-center py-2 px-4 gap-4  rounded-md bg-input/70">
               <Avatar className="h-28 w-28">
                 <AvatarImage src={u?.imgUrl} />
                 <AvatarFallback className="text-3xl">
@@ -41,12 +43,14 @@ function RouteComponent() {
               </Avatar>
               <h3 className="text-2xl">{u.name}</h3>
               <Button
-                onClick={() => {
+                onClick={async () => {
                   if (u.hasConversation && u.mutualConversation) {
                     navigate({
                       to: "/app/conversations/$conversationId",
                       params: { conversationId: u.mutualConversation },
                     });
+                  } else {
+                    await createConversation.mutateAsync(u.id);
                   }
                 }}
               >

@@ -75,28 +75,28 @@ class ConversationController {
       const filteredConversations = conversations.map(
         ({ users, messages, createdAt, updatedAt, id }) => {
           const otherUser = users.find((user) => user.id !== userid);
-          const {
-            id: messageId,
-            body,
-            author,
-            status,
-            createdAt: messageCreatedAt,
-          } = messages[messages.length - 1];
-          const lastMessage = {
-            id: messageId,
-            body,
-            author,
-            status,
-            createdAt: messageCreatedAt,
-          };
-          const lastMessageAt = lastMessage.createdAt;
+
+          const last =
+            messages.length > 0 ? messages[messages.length - 1] : null;
+
+          const lastMessage = last
+            ? {
+                id: last.id,
+                body: last.body,
+                author: last.author,
+                status: last.status,
+                createdAt: last.createdAt,
+              }
+            : null;
+
           return {
             createdAt,
             updatedAt,
             id,
             users,
+            otherUser,
             lastMessage,
-            lastMessageAt,
+            lastMessageAt: lastMessage?.createdAt ?? null,
             title: otherUser?.name ?? "Conversation",
           };
         },

@@ -30,9 +30,10 @@ app.use(passport.initialize());
 
 app.use("/", router);
 
-app.use((err:any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
   if (err instanceof ZodError) {
-   const errors = z.flattenError(err);
+    const errors = z.flattenError(err);
     return res
       .status(400)
       .json({ messages: errors.formErrors, fields: errors.fieldErrors });
@@ -40,7 +41,6 @@ app.use((err:any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "AuthenticationError") {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  console.log(err)
   res.status(500).json({ message: err.message });
 });
 
