@@ -1,10 +1,19 @@
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { getMe } from "@/lib/queries/auth";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
+  beforeLoad: async ({ context }) => {
+    await context.queryClient.ensureQueryData(getMe());
+  },
+  pendingComponent: () => (
+    <div className="flex h-screen w-full items-center justify-center bg-background">
+      <Spinner className="size-20" />
+    </div>
+  ),
 });
 
 function RouteComponent() {

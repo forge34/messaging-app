@@ -6,7 +6,13 @@ import { routeTree } from "./routeTree.gen";
 
 import "./index.css";
 import { ErrorComponent } from "./components/error-component";
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      throwOnError: true,
+    },
+  },
+});
 
 const router = createRouter({
   routeTree,
@@ -14,8 +20,8 @@ const router = createRouter({
   context: {
     queryClient,
   },
-  defaultErrorComponent: ({ error }) => (
-    <ErrorComponent error={error}></ErrorComponent>
+  defaultErrorComponent: ({ error, reset, info }) => (
+    <ErrorComponent error={error} reset={reset} info={info}></ErrorComponent>
   ),
 });
 
