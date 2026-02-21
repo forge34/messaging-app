@@ -39,6 +39,9 @@ export async function apiFetch<T extends Route>(
   const { body, headers, params } = options;
   const bodyData = route.requestBody.parse(body);
 
+  if (!ApiURL) {
+    throw new Error("Configuration Error: VITE_API_URL is not defined");
+  }
   const fetchUrl = new URL(generatePath(route.path, params), ApiURL);
 
   const res = await fetch(fetchUrl, {

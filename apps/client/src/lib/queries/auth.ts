@@ -15,15 +15,20 @@ export const getMe = () =>
       });
     },
     staleTime: 1000 * 60 * 5,
-    retry: (_: number, error) => {
+    retry: (count: number, error) => {
       if (error instanceof ApiError) {
         if (error.data.status === 401) {
           return false;
         }
       }
 
+      if (count >= 3) {
+        return false;
+      }
       return true;
     },
+
+    throwOnError: true,
   });
 
 export function useVerify() {
