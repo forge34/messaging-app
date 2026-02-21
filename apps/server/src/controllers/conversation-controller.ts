@@ -15,6 +15,35 @@ class ConversationController {
       });
       const currentUser = req.user as User;
 
+      const hasConversation = await prisma.conversation.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: otherUser.id,
+                },
+              },
+            },
+            {
+              users: {
+                some: {
+                  id: currentUser.id,
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      if (hasConversation) {
+        return {
+          code: 200,
+          message: "conversation created",
+          data: hasConversation,
+        };
+      }
+
       const conversation = await prisma.conversation.create({
         data: {
           users: {
