@@ -3,10 +3,14 @@ import { app, corsOptions } from "./app.js";
 import { Server } from "socket.io";
 import { socketJwtVerify } from "./sockets/index.js";
 import { type User } from "@chat/db/client";
-import { handleMessageCreate, handleMessageDelete } from "./sockets/handlers.js";
+import {
+  handleMessageCreate,
+  handleMessageDelete,
+} from "./sockets/handlers.js";
 
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
 const server = createServer(app);
+const hostname = "localhost";
 
 export const io = new Server(server, {
   cors: corsOptions,
@@ -43,7 +47,7 @@ io.on("connection", (socket) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-  server.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+  server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
   });
 }
