@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getMe } from "@/lib/queries/auth";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {} from "../../public/bg.jpg"
+
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
@@ -12,7 +12,7 @@ function RouteComponent() {
   const user = data?.data;
 
   return (
-    <div className="min-h-screen bg-[url(bg.jpg)] bg-cover bg-center relative">
+    <div className="min-h-screen bg-[url(/bg.jpg)] bg-cover bg-center relative">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
 
       <nav className="flex justify-between items-center px-8 py-4 relative z-10">
