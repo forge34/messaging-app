@@ -35,12 +35,14 @@ function RouteComponent() {
   });
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-1  gap-6 items-center">
-      <Card className="w-1/2 mx-auto">
-        <CardHeader className="space-y-2 pb-4">
-          <CardTitle className="text-2xl font-semibold mx-auto">Create an account</CardTitle>
+    <div className="w-full md:w-2/3 flex items-center justify-center p-4">
+      <Card className="w-full shadow-lg">
+        <CardHeader className="space-y-1 pb-6 text-center">
+          <CardTitle className="text-lg md:text-2xl font-bold tracking-tight">
+            Create an account
+          </CardTitle>
           <CardDescription className="text-sm">
-            Create a new account
+            Enter your details to get started
           </CardDescription>
         </CardHeader>
 
@@ -50,47 +52,22 @@ function RouteComponent() {
             form.handleSubmit();
           }}
         >
-          <CardContent className="flex flex-col gap-5 px-6 pb-6">
-            <form.Field
-              name="username"
-              children={(field) => (
-                <div className="flex flex-col gap-1.5">
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
-                    placeholder="Username"
-                    className="h-12"
-                  />
-                  {!field.state.meta.isValid && (
-                    <em className="text-xs text-destructive">
-                      {field.state.meta.errors[0]?.message}
-                    </em>
-                  )}
-                </div>
-              )}
-            />
-
+          <CardContent className="grid gap-4 px-6 pb-8">
             <form.Field
               name="password"
               children={(field) => (
-                <div className="flex flex-col gap-1.5">
+                <div className="grid gap-1.5">
                   <Input
                     type="password"
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
+                    autoComplete="new-password"
+                    onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Password"
-                    className="h-12"
+                    className="h-11"
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-xs text-destructive">
+                  {field.state.meta.errors.length > 0 && (
+                    <em className="text-xs text-destructive not-italic">
                       {field.state.meta.errors[0]?.message}
                     </em>
                   )}
@@ -101,20 +78,18 @@ function RouteComponent() {
             <form.Field
               name="confirmPassword"
               children={(field) => (
-                <div className="flex flex-col gap-1.5">
+                <div className="grid gap-1.5">
                   <Input
                     type="password"
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
+                    autoComplete="new-password"
+                    onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Confirm Password"
-                    className="h-12"
+                    className="h-11"
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-xs text-destructive">
+                  {field.state.meta.errors.length > 0 && (
+                    <em className="text-xs text-destructive not-italic">
                       {field.state.meta.errors[0]?.message}
                     </em>
                   )}
@@ -122,24 +97,33 @@ function RouteComponent() {
               )}
             />
 
-            <Button className="h-10 text-sm font-medium">Sign Up</Button>
+            <Button type="submit" className="w-full h-10 mt-2">
+              Sign Up
+            </Button>
 
             <div className="relative flex items-center py-2">
               <div className="grow border-t border-border" />
-              <span className="mx-3 text-xs text-muted-foreground">
+              <span className="mx-3 text-[10px] uppercase text-muted-foreground whitespace-nowrap">
                 or continue with
               </span>
               <div className="grow border-t border-border" />
             </div>
 
-            <Button type="button" variant="outline" className="h-10 text-sm">
-              <SiGoogle />
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-10 gap-2"
+            >
+              <SiGoogle className="h-4 w-4" />
               Sign up with Google
             </Button>
 
-            <p className="text-center text-xs text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground mt-2">
               Already have an account?{" "}
-              <Link to="/login" className="text-accent hover:underline">
+              <Link
+                to="/login"
+                className="font-medium text-primary hover:underline underline-offset-4"
+              >
                 Login
               </Link>
             </p>

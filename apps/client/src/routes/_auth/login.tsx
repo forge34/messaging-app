@@ -33,10 +33,12 @@ function RouteComponent() {
   });
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-1  gap-6 items-center ">
-      <Card className="w-1/2 mx-auto">
-        <CardHeader className="space-y-1 pb-4">
-          <CardTitle className="text-3xl font-semibold mx-auto">Welcome back!</CardTitle>
+    <div className="w-full md:w-2/3 flex items-center justify-center p-4">
+      <Card className="w-full shadow-lg">
+        <CardHeader className="space-y-1 pb-6 text-center">
+          <CardTitle className="text-lg md:text-2xl font-bold tracking-tight">
+            Welcome back!
+          </CardTitle>
           <CardDescription className="text-sm">
             Login to your account
           </CardDescription>
@@ -48,24 +50,22 @@ function RouteComponent() {
             form.handleSubmit();
           }}
         >
-          <CardContent className="flex flex-col gap-4 px-6 pb-6">
+          <CardContent className="grid gap-4">
             <form.Field
               name="username"
               children={(field) => (
-                <div className="flex flex-col gap0.5">
+                <div className="grid gap-2">
                   <Input
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
+                    autoComplete="username"
+                    onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Username"
-                    className="h-11"
+                    className="h-10"
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-xs text-destructive">
-                      {field.state.meta.errors[1]?.message}
+                  {field.state.meta.errors.length > 0 && (
+                    <em className="text-xs text-destructive not-italic">
+                      {field.state.meta.errors[0]?.message}
                     </em>
                   )}
                 </div>
@@ -75,21 +75,19 @@ function RouteComponent() {
             <form.Field
               name="password"
               children={(field) => (
-                <div className="flex flex-col gap0.5">
+                <div className="grid gap-2">
                   <Input
                     type="password"
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
+                    autoComplete="current-password"
+                    onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Password"
-                    className="h-11"
+                    className="h-10"
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-xs text-destructive">
-                      {field.state.meta.errors[1]?.message}
+                  {field.state.meta.errors.length > 0 && (
+                    <em className="text-xs text-destructive not-italic">
+                      {field.state.meta.errors[0]?.message}
                     </em>
                   )}
                 </div>
@@ -99,33 +97,51 @@ function RouteComponent() {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="text-xs text-muted-foreground hover:text-foreground transition"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
                 Forgot password?
               </button>
             </div>
 
-            <Button className="h-9 text-sm font-medium">Login</Button>
-
-            <div className="relative flex items-center py-1">
-              <div className="grow border-t border-border" />
-              <span className="mx-2 text-xs text-muted-foreground">
-                or continue with
-              </span>
-              <div className="grow border-t border-border" />
-            </div>
-
-            <Button type="button" variant="outline" className="h-9 text-sm">
-              <SiGoogle />
-              Sign in with Google
+            <Button
+              type="submit"
+              className="w-full h-10"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Logging in..." : "Login"}
             </Button>
 
-            <p className="text-center text-xs text-muted-foreground">
-              Don’t have an account?{" "}
-              <Link to="/signup" className="text-accent hover:underline">
+            <div className="relative my-2">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-10 gap-2"
+            >
+              <SiGoogle className="h-4 w-4" />
+              Google
+            </Button>
+
+            <div className="mt-4 text-center text-sm">
+              <span className="text-muted-foreground">
+                Don’t have an account?{" "}
+              </span>
+              <Link
+                to="/signup"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
                 Sign up
               </Link>
-            </p>
+            </div>
           </CardContent>
         </form>
       </Card>
