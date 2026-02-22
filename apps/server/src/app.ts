@@ -1,4 +1,3 @@
-import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
@@ -30,7 +29,7 @@ app.use(passport.initialize());
 
 app.use("/", router);
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, _: NextFunction) => {
   console.log(err);
   if (err instanceof ZodError) {
     const errors = z.flattenError(err);

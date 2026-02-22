@@ -12,13 +12,12 @@ const cookieExtractor = (req: Request) => {
   return jwt;
 };
 
-const jwtOptions: passportJwt.StrategyOptionsWithSecret = {
-  jwtFromRequest: cookieExtractor,
-  secretOrKey: process.env.SECRET,
-};
-
 class PassportConfig {
   static configJwt() {
+    const jwtOptions: passportJwt.StrategyOptionsWithSecret = {
+      jwtFromRequest: cookieExtractor,
+      secretOrKey: process.env.SECRET,
+    };
     const jwtStrategy = new passportJwt.Strategy(
       jwtOptions,
       async (payload, done) => {
