@@ -33,6 +33,7 @@ export function createHandler<T extends Route>(
       res,
     );
 
+    if (!handlerResult) return;
     const result = route.responseSchema.parse(handlerResult);
 
     if (result) {
