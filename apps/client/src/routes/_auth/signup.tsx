@@ -42,7 +42,7 @@ function RouteComponent() {
             Create an account
           </CardTitle>
           <CardDescription className="text-sm">
-            Enter your details to get started
+            Create a new account
           </CardDescription>
         </CardHeader>
 
@@ -52,22 +52,47 @@ function RouteComponent() {
             form.handleSubmit();
           }}
         >
-          <CardContent className="grid gap-4 px-6 pb-8">
+          <CardContent className="flex flex-col gap-5 px-6 pb-6">
+            <form.Field
+              name="username"
+              children={(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Input
+                    name={field.name}
+                    value={field.state.value}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
+                    placeholder="Username"
+                    className="h-12"
+                  />
+                  {!field.state.meta.isValid && (
+                    <em className="text-xs text-destructive">
+                      {field.state.meta.errors[0]?.message}
+                    </em>
+                  )}
+                </div>
+              )}
+            />
+
             <form.Field
               name="password"
               children={(field) => (
-                <div className="grid gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Input
                     type="password"
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="new-password"
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
                     placeholder="Password"
-                    className="h-11"
+                    className="h-12"
                   />
-                  {field.state.meta.errors.length > 0 && (
-                    <em className="text-xs text-destructive not-italic">
+                  {!field.state.meta.isValid && (
+                    <em className="text-xs text-destructive">
                       {field.state.meta.errors[0]?.message}
                     </em>
                   )}
@@ -78,18 +103,20 @@ function RouteComponent() {
             <form.Field
               name="confirmPassword"
               children={(field) => (
-                <div className="grid gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Input
                     type="password"
                     name={field.name}
                     value={field.state.value}
-                    autoComplete="new-password"
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
                     placeholder="Confirm Password"
-                    className="h-11"
+                    className="h-12"
                   />
-                  {field.state.meta.errors.length > 0 && (
-                    <em className="text-xs text-destructive not-italic">
+                  {!field.state.meta.isValid && (
+                    <em className="text-xs text-destructive">
                       {field.state.meta.errors[0]?.message}
                     </em>
                   )}
@@ -97,33 +124,24 @@ function RouteComponent() {
               )}
             />
 
-            <Button type="submit" className="w-full h-10 mt-2">
-              Sign Up
-            </Button>
+            <Button className="h-10 text-sm font-medium">Sign Up</Button>
 
             <div className="relative flex items-center py-2">
               <div className="grow border-t border-border" />
-              <span className="mx-3 text-[10px] uppercase text-muted-foreground whitespace-nowrap">
+              <span className="mx-3 text-xs text-muted-foreground">
                 or continue with
               </span>
               <div className="grow border-t border-border" />
             </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full h-10 gap-2"
-            >
-              <SiGoogle className="h-4 w-4" />
+            <Button type="button" variant="outline" className="h-10 text-sm">
+              <SiGoogle />
               Sign up with Google
             </Button>
 
-            <p className="text-center text-xs text-muted-foreground mt-2">
+            <p className="text-center text-xs text-muted-foreground">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-primary hover:underline underline-offset-4"
-              >
+              <Link to="/login" className="text-accent hover:underline">
                 Login
               </Link>
             </p>

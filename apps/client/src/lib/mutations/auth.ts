@@ -26,7 +26,7 @@ export function useLogin() {
     onSettled: async (data) => {
       if (!data) return;
       toast.success(data.message);
-      navigate({ to: MeRoute.to });
+      navigate({ to: MeRoute.to, reloadDocument: true });
     },
     onError: (err) => {
       if (err instanceof ApiError) {
@@ -71,6 +71,7 @@ export function useLogout() {
 }
 
 export function useSignup() {
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: async (body: {
       username: string;
@@ -88,6 +89,7 @@ export function useSignup() {
     onSuccess: (data) => {
       if (!data) return;
       toast.success(data.message);
+      navigate({ to: "/login", reloadDocument: true });
     },
     onError: (err) => {
       if (err instanceof ApiError) {
