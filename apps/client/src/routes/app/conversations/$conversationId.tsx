@@ -25,7 +25,7 @@ export const Route = createFileRoute("/app/conversations/$conversationId")({
 });
 
 function RouteComponent() {
-  const {  conversationId } = Route.useParams();
+  const { conversationId } = Route.useParams();
   const { data } = useQuery(GetConversationById(conversationId));
   const navigate = useNavigate();
 
@@ -35,13 +35,15 @@ function RouteComponent() {
   useEffect(() => {
     if (!conversation?.messages?.length) return;
 
-    const lastElement = conversation.messages[conversation.messages.length - 1];
+    const lastMessage = conversation.messages[conversation.messages.length - 1];
 
-    navigate({
-      hash: lastElement?.id,
-      replace: true,
-    });
-  });
+    if (window.location.hash !== `#${lastMessage.id}`) {
+      navigate({
+        hash: lastMessage.id,
+        replace: true,
+      });
+    }
+  }, [conversation?.messages, navigate]);
 
   return (
     <AnimatedRoute
@@ -53,7 +55,7 @@ function RouteComponent() {
         <X
           className="h-6 w-6 mr-2"
           onClick={() => {
-            navigate({ to : MeRoute.to });
+            navigate({ to: MeRoute.to });
           }}
         />
         <h3 className="text-xl font-semibold">{conversation?.title}</h3>
