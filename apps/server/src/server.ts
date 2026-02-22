@@ -1,4 +1,3 @@
-
 import { createServer } from "http";
 import { app, corsOptions } from "./app.js";
 import { Server } from "socket.io";
@@ -11,7 +10,6 @@ import {
 
 const port = Number(process.env.PORT) || 3000;
 const server = createServer(app);
-const hostname = "localhost";
 
 export const io = new Server(server, {
   cors: corsOptions,
@@ -48,7 +46,7 @@ io.on("connection", (socket) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-  server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+  server.listen(port, () => {
+    console.log(`Server running at ${port}`);
   });
 }

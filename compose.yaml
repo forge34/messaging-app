@@ -21,10 +21,11 @@ services:
     build:
       context: .
       dockerfile: ./apps/server/Dockerfile
-    ports:
-      - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/db
+      - PORT=3000 
+    ports:
+      - "127.0.0.1:${PORT}:${PORT}"
     stdin_open: true
     tty: true
     depends_on:
