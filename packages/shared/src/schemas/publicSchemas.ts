@@ -24,6 +24,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
     author: PublicUserSchema,
     isMine: z.boolean(),
     isBookmarked: z.boolean(),
+    clientId : z.string().optional()
   })
   .strict();
 

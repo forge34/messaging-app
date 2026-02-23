@@ -168,33 +168,35 @@ class ConversationController {
         },
       });
       const otherUser = conversation.users.find((user) => user.id !== userid);
-      const mappedMessages = conversation.messages.map(
-        ({
-          id,
-          authorId,
-          author,
-          status,
-          createdAt,
-          conversationId,
-          bookmarkedBy,
-          body,
-        }) => {
-          return {
+      const mappedMessages = conversation.messages
+        .map(
+          ({
             id,
-            body,
-            author,
             authorId,
+            author,
             status,
             createdAt,
             conversationId,
-            isMine: authorId === userid,
-            isBookmarked:
-              bookmarkedBy.findIndex(({ id }) => id === userid) >= 0
-                ? true
-                : false,
-          };
-        },
-      );
+            bookmarkedBy,
+            body,
+          }) => {
+            return {
+              id,
+              body,
+              author,
+              authorId,
+              status,
+              createdAt,
+              conversationId,
+              isMine: authorId === userid,
+              isBookmarked:
+                bookmarkedBy.findIndex(({ id }) => id === userid) >= 0
+                  ? true
+                  : false,
+            };
+          },
+        )
+        .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
       const mapped = {
         ...conversation,
         messages: mappedMessages,

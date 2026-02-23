@@ -1,7 +1,11 @@
 import { Sidebar } from "@/components/sidebar";
 import { getMe } from "@/lib/queries/auth";
 import { socket } from "@/lib/sockets";
-import { onMessageConfirm, onMessageCreate } from "@/lib/sockets/handlers";
+import {
+  onMessageConfirm,
+  onMessageCreate,
+  onMessageRead,
+} from "@/lib/sockets/handlers";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -34,11 +38,13 @@ function RouteComponent() {
 
   useEffect(() => {
     socket.on("message:create", onMessageCreate);
-    socket.on("message:create:confirm",onMessageConfirm);
+    socket.on("message:create:confirm", onMessageConfirm);
+    socket.on("message:read", onMessageRead);
 
     return () => {
       socket.off("message:create", onMessageCreate);
-      socket.off("message:create:confirm",onMessageConfirm);
+      socket.off("message:create:confirm", onMessageConfirm);
+      socket.off("message:read", onMessageRead);
     };
   });
 

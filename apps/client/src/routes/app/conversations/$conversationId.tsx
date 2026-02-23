@@ -12,6 +12,7 @@ import { X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 import { Route as MeRoute } from "./@me.tsx";
+import { socket } from "@/lib/sockets/index.ts";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -45,6 +46,11 @@ function RouteComponent() {
     }
   }, [conversation?.messages, navigate]);
 
+  useEffect(() => {
+    if (!conversationId) return;
+    socket.emit("message:read", conversationId);
+  }, [conversationId]);
+
   return (
     <AnimatedRoute
       key={router.state.location.pathname}
@@ -63,7 +69,7 @@ function RouteComponent() {
       <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
         <AnimatePresence initial={false}>
           {conversation?.messages.map((msg) => {
-            return <Message message={msg} key={msg.id} />;
+            return <Message message={msg} key={msg.clientId || msg.id} />;
           })}
         </AnimatePresence>
       </div>

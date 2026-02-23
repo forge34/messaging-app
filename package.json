@@ -12,7 +12,7 @@
     "build:server": "pnpm --filter ./apps/server/ build",
     "build:client": "pnpm --filter ./apps/client/ build",
     "db:generate": "pnpm --filter ./packages/db db:generate",
-    "db:migrate": "pnpm --filter ./packages/db db:migrate",
+    "db:migrate": "pnpm --filter @chat/db db:migrate",
     "dev": "pnpm --parallel run dev",
     "build": "pnpm -r run build"
   },
