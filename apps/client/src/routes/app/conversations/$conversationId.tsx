@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route as MeRoute } from "./@me.tsx";
 import { socket } from "@/lib/sockets/index.ts";
 
@@ -31,6 +31,10 @@ function RouteComponent() {
   const navigate = useNavigate();
 
   const router = useRouter();
+  const [typing, setTyping] = useState({
+    typing: false,
+    name: "",
+  });
   const conversation = data?.data;
 
   useEffect(() => {
@@ -47,8 +51,24 @@ function RouteComponent() {
   }, [conversation?.messages, navigate]);
 
   useEffect(() => {
+    let timeoutId: number;
+
+    function handleTyping(name: string) {
+      setTyping({ typing: true, name });
+
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setTyping({ typing: false, name: "" });
+      }, 3000);
+    }
     if (!conversationId) return;
     socket.emit("message:read", conversationId);
+    socket.on("typing", handleTyping);
+
+    return () => {
+      socket.off("typing", handleTyping);
+      clearTimeout(timeoutId);
+    };
   }, [conversationId]);
 
   return (
@@ -73,6 +93,11 @@ function RouteComponent() {
           })}
         </AnimatePresence>
       </div>
+      {typing.typing && (
+        <h3 className="text-sm text-muted-foreground mx-4 my-2">
+          {typing.name + " is typing..."}
+        </h3>
+      )}
       <MessageInput conversationId={conversationId} />
     </AnimatedRoute>
   );

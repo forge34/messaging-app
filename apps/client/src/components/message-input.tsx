@@ -1,10 +1,11 @@
 import { socket } from "@/lib/sockets";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Input } from "./ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Routes, type PublicMessageSchema } from "@chat/shared";
 import { getMe } from "@/lib/queries/auth";
 import z from "zod";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 
 interface MessageInputProps {
   conversationId: string;
@@ -14,7 +15,17 @@ export function MessageInput({ conversationId }: MessageInputProps) {
   const [value, setValue] = useState("");
   const { data } = useQuery(getMe());
   const queryClient = useQueryClient();
+  const debouncedValue = useDebounce(value, 1000);
   const user = data?.data;
+
+  useEffect(() => {
+    if (!value.trim() || !user?.name) return;
+    socket.emit("typing", conversationId, user?.name);
+    return () => {
+      return;
+    };
+  }, [debouncedValue, user?.name, conversationId,value]);
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 

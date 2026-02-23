@@ -50,6 +50,10 @@ io.on("connection", async (socket) => {
   socket.on("message:create", create);
   socket.on("message:delete", deleteH);
   socket.on("message:read", handleMessageRead(user, socket));
+  socket.on("typing", (conversationId: string, username: string) => {
+    console.log("someone is typing")
+    socket.to(conversationId).emit("typing", username);
+  });
   socket.on("disconnect", () => {
     const index = onlineId.findIndex((u) => u.socketId === socket.id);
 
