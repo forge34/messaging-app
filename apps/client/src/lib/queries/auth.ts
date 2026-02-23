@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { apiFetch } from "../utils";
 import { Routes } from "@chat/shared";
 import { ApiError } from "../error";
+import { apiFetch } from "../fetch-wrapper";
 
 export const getMe = () =>
   queryOptions({

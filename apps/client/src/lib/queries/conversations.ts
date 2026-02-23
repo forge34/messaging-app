@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
-import { apiFetch } from "../utils";
 import { Routes } from "@chat/shared";
+import { apiFetch } from "../fetch-wrapper";
 
 export const getCurrentUserConversations = () =>
   queryOptions({

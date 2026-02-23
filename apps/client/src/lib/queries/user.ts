@@ -1,6 +1,6 @@
 import { Routes } from "@chat/shared";
 import { queryOptions } from "@tanstack/react-query";
-import { apiFetch } from "../utils";
+import { apiFetch } from "../fetch-wrapper";
 
 export const getUserById = (id: string) =>
   queryOptions({

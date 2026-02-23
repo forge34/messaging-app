@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "../utils";
 import { Routes } from "@chat/shared";
 import { toast } from "sonner";
 import { ApiError } from "../error";
 import { useNavigate } from "@tanstack/react-router";
 import { Route as MeRoute } from "../../routes/app/conversations/@me.tsx";
+import { apiFetch } from "../fetch-wrapper.tsx";
 
 export function useLogin() {
   const navigate = useNavigate();
