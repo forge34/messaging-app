@@ -26,16 +26,13 @@ const StatusIcon = ({
     case "DELIVERED":
       return <Check size={15} className="opacity-70" />;
     case "READ":
-      return <CheckCheck size={15}  />;
+      return <CheckCheck size={15} />;
     default:
       return null;
   }
 };
 
 export function Message({ message }: MessageProps) {
-  if (message.clientId){
-    console.log(message.status)
-  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}

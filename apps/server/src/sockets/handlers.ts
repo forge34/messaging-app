@@ -28,21 +28,13 @@ export const handleMessageCreate =
       },
     });
 
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId },
-      include: {
-        users: true,
-      },
-    });
-
     const newMessage: Partial<PublicMessageSchema> = {
       ...createdMessage,
-      isMine: true,
       clientId: tempId,
     };
 
     socket.broadcast
-      .to(conversation.id)
+      .to(conversationId)
       .emit("message:create", newMessage, conversationId);
 
     socket.emit("message:create:confirm", conversationId, newMessage, tempId);
