@@ -61,17 +61,38 @@ export async function onMessageCreate(
           ...oldData,
           data: {
             ...oldData.data,
-            messages: [...oldData.data.messages, {...message , isMine : false}],
+            messages: [...oldData.data.messages, { ...message, isMine: false }],
           },
         };
       },
     );
   }
 }
-export async function onMessageRead() {
-  await queryClient.invalidateQueries({
-    queryKey: ["conversations"],
-  });
+export async function onMessageRead(
+  conversationId: string,
+  messageIds: string[],
+) {
+  console.log(messageIds);
+  queryClient.setQueryData(
+    ["conversations", conversationId],
+    (oldData: ResponseSchema<typeof Routes.getConversationById>) => {
+      const conversation = oldData.data;
+      console.log("updating status");
+
+      if (!conversation) return;
+      const messages = conversation.messages.map((m) => {
+        if (messageIds.includes(m.id)) return { ...m, status: "READ" };
+        return m;
+      });
+
+      const newConversation = { ...conversation, messages };
+
+      return {
+        ...oldData,
+        data: newConversation,
+      };
+    },
+  );
 }
 export async function onMessageConfirm(
   conversationId: string,
@@ -88,7 +109,7 @@ export async function onMessageConfirm(
           return {
             ...message,
             clientId: tempId,
-            isMine : true
+            isMine: true,
           };
         }
         return m;

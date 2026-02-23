@@ -55,16 +55,18 @@ export const handleMessageRead =
       return;
     }
 
-    const messages = conversation.messages.filter(
+    const unreadMessages = conversation.messages.filter(
       (m) => m.authorId !== user.id && m.status !== "READ",
     );
 
-    if (!messages.length) return;
+    if (!unreadMessages.length) return;
+
+    const messageIds = unreadMessages.map((m) => m.id);
 
     await prisma.message.updateMany({
       where: {
         id: {
-          in: messages.map((m) => m.id),
+          in: messageIds,
         },
       },
       data: {
@@ -73,14 +75,14 @@ export const handleMessageRead =
     });
 
     await prisma.messageReceipt.createMany({
-      data: messages.map((m) => ({
+      data: unreadMessages.map((m) => ({
         messageId: m.id,
         userId: user.id,
       })),
       skipDuplicates: true,
     });
 
-    socket.to(conversationId).emit("message:read");
+    socket.to(conversationId).emit("message:read", conversationId, messageIds);
   };
 
 export const handleMessageDelete =

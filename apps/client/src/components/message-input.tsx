@@ -71,6 +71,7 @@ export function MessageInput({ conversationId }: MessageInputProps) {
       },
     );
     socket.emit("message:create", message, conversationId, tempId);
+    socket.emit("message:read", conversationId);
 
     setValue("");
   }
