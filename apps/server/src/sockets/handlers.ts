@@ -1,6 +1,7 @@
 import { prisma } from "@chat/db/client";
 import { PublicMessageSchema, PublicUserSchema } from "@chat/shared";
 import { ServerSocket } from "../server.js";
+import { markMessagesAsRead } from "./helpers.js";
 
 export const handleMessageCreate =
   (user: PublicUserSchema, socket: ServerSocket) =>
@@ -31,6 +32,13 @@ export const handleMessageCreate =
       clientId: tempId,
     };
 
+    const messageIds = await markMessagesAsRead(conversationId, user.id);
+
+    if (messageIds.length >= 0)
+      socket
+        .to(conversationId)
+        .emit("message:read", conversationId, messageIds);
+
     socket.broadcast
       .to(conversationId)
       .emit("message:create", newMessage, conversationId);
@@ -41,47 +49,12 @@ export const handleMessageCreate =
 export const handleMessageRead =
   (user: PublicUserSchema, socket: ServerSocket) =>
   async (conversationId: string) => {
-    const conversation = await prisma.conversation.findFirst({
-      where: {
-        id: conversationId,
-      },
-      include: {
-        messages: true,
-      },
-    });
+    const messageIds = await markMessagesAsRead(conversationId, user.id);
 
-    if (!conversation) {
-      return;
-    }
-
-    const unreadMessages = conversation.messages.filter(
-      (m) => m.authorId !== user.id && m.status !== "READ",
-    );
-
-    if (!unreadMessages.length) return;
-
-    const messageIds = unreadMessages.map((m) => m.id);
-
-    await prisma.message.updateMany({
-      where: {
-        id: {
-          in: messageIds,
-        },
-      },
-      data: {
-        status: "READ",
-      },
-    });
-
-    await prisma.messageReceipt.createMany({
-      data: unreadMessages.map((m) => ({
-        messageId: m.id,
-        userId: user.id,
-      })),
-      skipDuplicates: true,
-    });
-
-    socket.to(conversationId).emit("message:read", conversationId, messageIds);
+    if (messageIds.length >= 0)
+      socket
+        .to(conversationId)
+        .emit("message:read", conversationId, messageIds);
   };
 
 export const handleMessageDelete = async (
