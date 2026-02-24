@@ -72,12 +72,10 @@ export async function onMessageRead(
   conversationId: string,
   messageIds: string[],
 ) {
-  console.log(messageIds);
   queryClient.setQueryData(
     ["conversations", conversationId],
     (oldData: ResponseSchema<typeof Routes.getConversationById>) => {
       const conversation = oldData.data;
-      console.log("updating status");
 
       if (!conversation) return;
       const messages = conversation.messages.map((m) => {

@@ -24,7 +24,7 @@ export function MessageInput({ conversationId }: MessageInputProps) {
     return () => {
       return;
     };
-  }, [debouncedValue, user?.name, conversationId,value]);
+  }, [debouncedValue, user?.name, conversationId, value]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -82,7 +82,6 @@ export function MessageInput({ conversationId }: MessageInputProps) {
       },
     );
     socket.emit("message:create", message, conversationId, tempId);
-
     setValue("");
   }
   return (

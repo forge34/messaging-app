@@ -19,6 +19,7 @@ export interface ServerToClientEvents {
     tempId: string,
   ) => void;
   typing: (username: string) => void;
+  "typing:stop" : () => void
 }
 
 export interface ClientToServerEvents {
@@ -30,4 +31,5 @@ export interface ClientToServerEvents {
   "message:delete": (messageId: string, conversationId: string) => void;
   "message:read": (conversationId: string) => void;
   typing: (conversationId: string, username: string) => void;
+  "typing:stop" : (conversationId : string) => void
 }

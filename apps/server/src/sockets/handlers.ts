@@ -44,6 +44,7 @@ export const handleMessageCreate =
       .emit("message:create", newMessage, conversationId);
 
     socket.emit("message:create:confirm", conversationId, newMessage, tempId);
+    socket.to(conversationId).emit("typing:stop");
   };
 
 export const handleMessageRead =

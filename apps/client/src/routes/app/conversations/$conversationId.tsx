@@ -9,7 +9,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { X } from "lucide-react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Route as MeRoute } from "./@me.tsx";
 import { socket } from "@/lib/sockets/index.ts";
@@ -42,12 +42,10 @@ function RouteComponent() {
 
     const lastMessage = conversation.messages[conversation.messages.length - 1];
 
-    if (window.location.hash !== `#${lastMessage.id}`) {
-      navigate({
-        hash: lastMessage.id,
-        replace: true,
-      });
-    }
+    navigate({
+      hash: lastMessage.id,
+      replace: true,
+    });
   }, [conversation?.messages, navigate]);
 
   useEffect(() => {
@@ -61,12 +59,19 @@ function RouteComponent() {
         setTyping({ typing: false, name: "" });
       }, 3000);
     }
+
+    function handleTypingStop() {
+      console.log("stop typing");
+      setTyping({ typing: false, name: "" });
+    }
     if (!conversationId) return;
     socket.emit("message:read", conversationId);
     socket.on("typing", handleTyping);
+    socket.on("typing:stop", handleTypingStop);
 
     return () => {
       socket.off("typing", handleTyping);
+      socket.off("typing:stop", handleTypingStop);
       clearTimeout(timeoutId);
     };
   }, [conversationId]);
@@ -94,9 +99,21 @@ function RouteComponent() {
         </AnimatePresence>
       </div>
       {typing.typing && (
-        <h3 className="text-sm text-muted-foreground mx-4 my-2">
-          {typing.name + " is typing..."}
-        </h3>
+        <AnimatePresence>
+          <motion.h3
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="flex items-center font-semibold text-sm text-muted-foreground mx-4 my-2"
+          >
+            {typing.name} is typing
+            <span className="flex ml-1 space-x-1">
+              <span className="animate-bounce [animation-delay:-0.3s]">.</span>
+              <span className="animate-bounce [animation-delay:-0.15s]">.</span>
+              <span className="animate-bounce">.</span>
+            </span>
+          </motion.h3>
+        </AnimatePresence>
       )}
       <MessageInput conversationId={conversationId} />
     </AnimatedRoute>
