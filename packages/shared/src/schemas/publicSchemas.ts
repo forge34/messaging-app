@@ -24,7 +24,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
     author: PublicUserSchema,
     isMine: z.boolean(),
     isBookmarked: z.boolean(),
-    clientId : z.string().optional()
+    clientId: z.string().optional(),
   })
   .strict();
 
@@ -60,7 +60,10 @@ export const ConversationListSchema = PublicConversationSchema.omit({
 
 export type ConversationListSchema = z.infer<typeof ConversationListSchema>;
 
-export const FullUserSchema = UserModelSchema.omit({ password: true }).extend({
+export const FullUserSchema = UserModelSchema.omit({
+  password: true,
+  messageReceipts: true,
+}).extend({
   blocked: z.array(PublicUserSchema),
   blockedBy: z.array(PublicUserSchema),
 
