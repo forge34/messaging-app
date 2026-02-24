@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ApiError } from "../error";
 import { useNavigate } from "@tanstack/react-router";
 import { Route as MeRoute } from "../../routes/app/conversations/@me.tsx";
-import { apiFetch } from "../fetch-wrapper.tsx";
+import { apiFetch } from "../fetch-wrapper.ts";
 
 export function useLogin() {
   const navigate = useNavigate();

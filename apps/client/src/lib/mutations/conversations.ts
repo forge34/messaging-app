@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { queryClient } from "@/main";
 import { redirect } from "@tanstack/react-router";
 import { Route as ConversatonIdRoute } from "../../routes/app/conversations/$conversationId.tsx";
-import { apiFetch } from "../fetch-wrapper.tsx";
+import { apiFetch } from "../fetch-wrapper.ts";
 
 export const useCreateConversation = () => {
   return useMutation({
