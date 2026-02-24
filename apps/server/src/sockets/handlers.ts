@@ -58,6 +58,7 @@ export const handleMessageCreate =
         conversationId: conversationId,
         authorId: user.id,
         status: "DELIVERED",
+        deliveredAt : new Date()
       },
     });
 

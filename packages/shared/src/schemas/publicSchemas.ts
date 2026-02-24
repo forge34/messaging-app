@@ -18,7 +18,7 @@ export type PublicUserSchema = z.infer<typeof PublicUserSchema>;
 
 export const PublicMessageReceiptsSchema = MessageReceiptModelSchema.omit({
   user: true,
-  message:true
+  message: true,
 });
 
 export type PublicMessageReceiptsSchema = z.infer<
@@ -49,6 +49,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
     isMine: z.boolean(),
     isBookmarked: z.boolean(),
     clientId: z.string().optional(),
+    deliveredAt: z.date().optional(),
   })
   .strict();
 
