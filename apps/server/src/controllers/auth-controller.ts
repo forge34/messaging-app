@@ -48,7 +48,7 @@ class Auth {
   static login = createHandler(Routes.login, async (req, res) => {
     const data = req.body;
 
-    const { id, name, password, bio, imgUrl } = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         name: data.username,
       },
@@ -61,10 +61,13 @@ class Auth {
       },
     });
 
-    if (!id) {
+    if (!user) {
       res.status(401).json({ code: 401, message: "Invalid credentials" });
       return;
     }
+
+    const { id, name, password, bio, imgUrl } = user;
+
 
     const matches = await bcrypt.compare(data.password, password);
 
