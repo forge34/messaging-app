@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test && ./run-integrations.sh",
     "start": "node dist/server.js",
     "build": "tsc -p tsconfig.prod.json",
-    "dev": "tsc -p tsconfig.dev.json && (dotenv -e ../../.env -- nodemon dist/server.js & tsc --watch -p tsconfig.dev.json)"
+    "dev": "(dotenv -e ../../.env -- nodemon dist/server.js & tsc --watch -p tsconfig.dev.json)"
   },
   "author": "",
   "license": "ISC",
