@@ -18,12 +18,11 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    build:
-      context: .
-      dockerfile: ./apps/server/Dockerfile
+    image: ghcr.io/forge34/messaging-app-frontend:latest
+
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/db
-      - PORT=3000 
+      - PORT=3000
     ports:
       - "127.0.0.1:${PORT}:${PORT}"
     stdin_open: true
