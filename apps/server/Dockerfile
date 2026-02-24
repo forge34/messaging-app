@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:24-slim AS base
 RUN apt-get update -y && apt-get install -y openssl
 ENV COREPACK_HOME="/pnpm/corepack"
 ENV PNPM_HOME="/pnpm"
@@ -23,7 +23,7 @@ COPY apps/server/ ./apps/server/
 
 RUN pnpm build:packages && pnpm build:server
 
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
