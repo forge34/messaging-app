@@ -33,7 +33,7 @@ export const handleMessageCreate =
     };
 
     const messageIds = await markMessagesAsRead(conversationId, user.id);
-
+    console.log(messageIds);
     if (messageIds.length >= 0)
       socket
         .to(conversationId)

@@ -4,24 +4,16 @@ export async function markMessagesAsRead(
   conversationId: string,
   userId: string,
 ) {
-  const conversation = await prisma.conversation.findFirst({
+  const unreadMessages = await prisma.message.findMany({
     where: {
-      id: conversationId,
+      conversationId: conversationId,
+      authorId: { not: userId },
+      status: { not: "READ" },
     },
-    include: {
-      messages: true,
-    },
+    select: { id: true },
   });
 
-  if (!conversation) {
-    return;
-  }
-
-  const unreadMessages = conversation.messages.filter(
-    (m) => m.authorId !== userId && m.status !== "READ",
-  );
-
-  if (!unreadMessages.length) return;
+  if (!unreadMessages.length) return [];
 
   const messageIds = unreadMessages.map((m) => m.id);
 
@@ -44,5 +36,5 @@ export async function markMessagesAsRead(
     skipDuplicates: true,
   });
 
-  return messageIds;
+  return messageIds || [];
 }
