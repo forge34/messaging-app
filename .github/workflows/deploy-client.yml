@@ -22,6 +22,8 @@ jobs:
 
       - name: Build packages + client
         run: pnpm build:packages && pnpm build:client
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Upload dist folder as artifact
         uses: actions/upload-artifact@v4
