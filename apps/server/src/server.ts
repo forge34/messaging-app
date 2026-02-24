@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { app, corsOptions } from "./app.js";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { socketJwtVerify } from "./sockets/index.js";
 import { prisma, type User } from "@chat/db/client";
 import {
@@ -8,14 +8,19 @@ import {
   handleMessageDelete,
   handleMessageRead,
 } from "./sockets/handlers.js";
+import { ClientToServerEvents, ServerToClientEvents } from "@chat/shared";
 
 const port = Number(process.env.PORT) || 3000;
 const server = createServer(app);
 
-export const io = new Server(server, {
-  cors: corsOptions,
-});
+export const io = new Server<ClientToServerEvents, ServerToClientEvents>(
+  server,
+  {
+    cors: corsOptions,
+  },
+);
 
+export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 io.engine.use(socketJwtVerify);
 
 const onlineId: {
@@ -44,22 +49,18 @@ io.on("connection", async (socket) => {
     socket.join(c.id);
   });
 
-  io.emit("users:join", onlineId);
   const create = handleMessageCreate(user, socket);
-  const deleteH = handleMessageDelete(socket);
   socket.on("message:create", create);
-  socket.on("message:delete", deleteH);
+  socket.on("message:delete", handleMessageDelete);
   socket.on("message:read", handleMessageRead(user, socket));
   socket.on("typing", (conversationId: string, username: string) => {
-    console.log("someone is typing")
+    console.log("someone is typing");
     socket.to(conversationId).emit("typing", username);
   });
   socket.on("disconnect", () => {
     const index = onlineId.findIndex((u) => u.socketId === socket.id);
 
     if (index !== -1) onlineId.splice(index, 1);
-
-    io.emit("users:join", onlineId);
   });
 });
 

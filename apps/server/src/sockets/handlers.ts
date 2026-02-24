@@ -1,11 +1,9 @@
-import { Message, User } from "@chat/db/client";
-import { Socket } from "socket.io";
 import { prisma } from "@chat/db/client";
-import { io } from "../server.js";
-import { PublicMessageSchema } from "@chat/shared";
+import { PublicMessageSchema, PublicUserSchema } from "@chat/shared";
+import { ServerSocket } from "../server.js";
 
 export const handleMessageCreate =
-  (user: User, socket: Socket) =>
+  (user: PublicUserSchema, socket: ServerSocket) =>
   async (
     message: PublicMessageSchema,
     conversationId: string,
@@ -41,7 +39,8 @@ export const handleMessageCreate =
   };
 
 export const handleMessageRead =
-  (user: User, socket: Socket) => async (conversationId: string) => {
+  (user: PublicUserSchema, socket: ServerSocket) =>
+  async (conversationId: string) => {
     const conversation = await prisma.conversation.findFirst({
       where: {
         id: conversationId,
@@ -85,13 +84,15 @@ export const handleMessageRead =
     socket.to(conversationId).emit("message:read", conversationId, messageIds);
   };
 
-export const handleMessageDelete =
-  (socket: Socket) => async (message: Message, conversationId: string) => {
-    await prisma.message.delete({
-      where: {
-        id: message.id,
-      },
-    });
-
-    io.emit("message:delete:confirm", conversationId);
-  };
+export const handleMessageDelete = async (
+  messageId: string,
+  conversationId: string,
+) => {
+  await prisma.message.delete({
+    where: {
+      id: messageId,
+    },
+  });
+  console.log(conversationId);
+  // io.emit("message:delete:confirm", conversationId);
+};

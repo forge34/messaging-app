@@ -12,6 +12,8 @@ export const PublicUserSchema = UserModelSchema.pick({
   bio: true,
 }).strict();
 
+export type PublicUserSchema = z.infer<typeof PublicUserSchema>
+
 export const PublicMessageSchema = MessageModelSchema.pick({
   id: true,
   conversationId: true,
