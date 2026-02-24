@@ -160,6 +160,8 @@ class ConversationController {
                 select: { id: true, bio: true, name: true, imgUrl: true },
               },
               bookmarkedBy: true,
+              messageReceipts: true,
+              messageReactions: true,
             },
           },
           users: {
@@ -179,8 +181,12 @@ class ConversationController {
             conversationId,
             bookmarkedBy,
             body,
+            messageReactions,
+            messageReceipts,
           }) => {
             return {
+              messageReactions,
+              messageReceipts,
               id,
               body,
               author,

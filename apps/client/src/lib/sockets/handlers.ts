@@ -7,6 +7,34 @@ import {
 import { toast } from "sonner";
 import type z from "zod";
 
+export async function onMesssageReaction(
+  conversationId: string,
+  message: PublicMessageSchema,
+) {
+  queryClient.setQueryData(
+    ["conversations", conversationId],
+    (
+      oldData: ResponseSchema<typeof Routes.getConversationById> | undefined,
+    ) => {
+      if (!oldData?.data) return oldData;
+
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          messages: oldData.data.messages.map((m) => {
+            if (m.id !== message.id) return m;
+
+            return {
+              ...m, 
+              messageReactions: message.messageReactions,
+            };
+          }),
+        },
+      };
+    },
+  );
+}
 export async function onMessageCreate(
   message: PublicMessageSchema,
   conversationId: string,

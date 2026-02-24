@@ -3,6 +3,40 @@ import { PublicMessageSchema, PublicUserSchema } from "@chat/shared";
 import { ServerSocket } from "../server.js";
 import { markMessagesAsRead } from "./helpers.js";
 
+export const handleMessageReaction =
+  (user: PublicUserSchema, socket: ServerSocket) =>
+  async (conversationId: string, messageId: string, emoji: string) => {
+    const message = await prisma.message.update({
+      where: {
+        id: messageId,
+      },
+      data: {
+        messageReactions: {
+          upsert: {
+            where: {
+              messageId_userId: {
+                messageId: messageId,
+                userId: user.id,
+              },
+            },
+            create: {
+              emoji,
+              userId: user.id,
+            },
+            update: { emoji },
+          },
+        },
+      },
+      include: {
+        author: true,
+        messageReactions: true,
+        messageReceipts: true,
+      },
+    });
+
+    socket.emit("message:reaction", conversationId, message);
+  };
+
 export const handleMessageCreate =
   (user: PublicUserSchema, socket: ServerSocket) =>
   async (

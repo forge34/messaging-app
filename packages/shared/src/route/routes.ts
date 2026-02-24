@@ -95,7 +95,12 @@ export const Routes = {
     path: "/users/bookmarks",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(PublicMessageSchema),
+    responseData: z.array(
+      PublicMessageSchema.omit({
+        messageReceipts: true,
+        messageReactions: true,
+      }),
+    ),
   }),
 
   getUsers: createRoute({
@@ -107,7 +112,7 @@ export const Routes = {
       PublicUserSchema.extend({
         isCurrent: z.boolean(),
         hasConversation: z.boolean(),
-        mutualConversation : z.string().optional()
+        mutualConversation: z.string().optional(),
       }),
     ),
   }),

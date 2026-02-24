@@ -6,7 +6,9 @@ import { Routes, type PublicMessageSchema } from "@chat/shared";
 import { getMe } from "@/lib/queries/auth";
 import z from "zod";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-
+import { Smile } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 interface MessageInputProps {
   conversationId: string;
 }
@@ -84,15 +86,29 @@ export function MessageInput({ conversationId }: MessageInputProps) {
     socket.emit("message:create", message, conversationId, tempId);
     setValue("");
   }
+
+  const onEmojiClick = (emojiData: { emoji: string }) => {
+    setValue((prev) => prev + emojiData.emoji);
+  };
+
   return (
     <form
-      className="bg-background py-2 px-6 mb-2"
+      className="bg-background flex flex-row py-2 px-6 mb-2"
       onSubmit={(e) => {
         handleSubmit(e);
       }}
     >
       <input type="submit" hidden />
-
+      <Popover>
+        <PopoverTrigger asChild>
+          <button className="hover:text-primary transition-colors">
+            <Smile size={24} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0 border-none bg-transparent shadow-none mb-2">
+          <EmojiPicker theme={Theme.AUTO} onEmojiClick={onEmojiClick} />
+        </PopoverContent>
+      </Popover>
       <Input
         placeholder="Send a message"
         value={value}

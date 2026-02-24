@@ -5,6 +5,7 @@ import {
   onMessageConfirm,
   onMessageCreate,
   onMessageRead,
+  onMesssageReaction,
 } from "@/lib/sockets/handlers";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
@@ -40,11 +41,13 @@ function RouteComponent() {
     socket.on("message:create", onMessageCreate);
     socket.on("message:create:confirm", onMessageConfirm);
     socket.on("message:read", onMessageRead);
+    socket.on("message:reaction", onMesssageReaction);
 
     return () => {
       socket.off("message:create", onMessageCreate);
       socket.off("message:create:confirm", onMessageConfirm);
       socket.off("message:read", onMessageRead);
+      socket.off("message:reaction", onMesssageReaction);
     };
   });
 

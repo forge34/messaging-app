@@ -19,7 +19,8 @@ export interface ServerToClientEvents {
     tempId: string,
   ) => void;
   typing: (username: string) => void;
-  "typing:stop" : () => void
+  "typing:stop": () => void;
+  "message:reaction": (conversationId:string,message: PublicMessageSchema) => void;
 }
 
 export interface ClientToServerEvents {
@@ -31,5 +32,6 @@ export interface ClientToServerEvents {
   "message:delete": (messageId: string, conversationId: string) => void;
   "message:read": (conversationId: string) => void;
   typing: (conversationId: string, username: string) => void;
-  "typing:stop" : (conversationId : string) => void
+  "typing:stop": (conversationId: string) => void;
+  "message:reaction": (conversationId : string,messageId: string, emoji: string) => void;
 }

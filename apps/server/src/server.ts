@@ -2,13 +2,18 @@ import { createServer } from "http";
 import { app, corsOptions } from "./app.js";
 import { Server, Socket } from "socket.io";
 import { socketJwtVerify } from "./sockets/index.js";
-import { prisma, type User } from "@chat/db/client";
+import { prisma } from "@chat/db/client";
 import {
   handleMessageCreate,
   handleMessageDelete,
+  handleMessageReaction,
   handleMessageRead,
 } from "./sockets/handlers.js";
-import { ClientToServerEvents, ServerToClientEvents } from "@chat/shared";
+import {
+  ClientToServerEvents,
+  PublicUserSchema,
+  ServerToClientEvents,
+} from "@chat/shared";
 
 const port = Number(process.env.PORT) || 3000;
 const server = createServer(app);
@@ -30,7 +35,7 @@ const onlineId: {
 
 io.on("connection", async (socket) => {
   const req = socket.request as any;
-  const user = req.user as User;
+  const user = req.user as PublicUserSchema;
 
   if (!onlineId.find((u) => u.userId === user.id))
     onlineId.push({ userId: user.id, socketId: socket.id });
@@ -59,6 +64,7 @@ io.on("connection", async (socket) => {
   socket.on("typing:stop", (conversationId) => {
     socket.to(conversationId).emit("typing:stop");
   });
+  socket.on("message:reaction", handleMessageReaction(user, socket));
   socket.on("disconnect", () => {
     const index = onlineId.findIndex((u) => u.socketId === socket.id);
 

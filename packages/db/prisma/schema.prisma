@@ -24,26 +24,28 @@ model User {
   password String
   messages Message[] @relation("UserMessages")
 
-  bookmarks       Message[]        @relation("UserBookmarks")
-  conversations   Conversation[]
-  bio             String           @default("")
-  imgUrl          String
-  blockedBy       User[]           @relation("blocked")
-  messageReceipts MessageReceipt[]
+  bookmarks        Message[]          @relation("UserBookmarks")
+  conversations    Conversation[]
+  bio              String             @default("")
+  imgUrl           String
+  blockedBy        User[]             @relation("blocked")
+  messageReceipts  MessageReceipt[]
+  messageReactions MessageReactions[]
 }
 
 model Message {
-  id              String           @id @default(cuid())
-  body            String
-  createdAt       DateTime         @default(now())
-  deliveredAt     DateTime?
-  authorId        String
-  conversationId  String?
-  author          User             @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  conversation    Conversation?    @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  bookmarkedBy    User[]           @relation("UserBookmarks")
-  status          MessageStatus    @default(PENDING)
-  messageReceipts MessageReceipt[]
+  id               String             @id @default(cuid())
+  body             String
+  createdAt        DateTime           @default(now())
+  deliveredAt      DateTime?
+  authorId         String
+  conversationId   String?
+  author           User               @relation("UserMessages", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  conversation     Conversation?      @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookmarkedBy     User[]             @relation("UserBookmarks")
+  status           MessageStatus      @default(PENDING)
+  messageReceipts  MessageReceipt[]
+  messageReactions MessageReactions[]
 }
 
 model MessageReceipt {
@@ -54,6 +56,17 @@ model MessageReceipt {
 
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+}
+
+model MessageReactions {
+  id        String  @id @default(cuid())
+  messageId String
+  userId    String
+  emoji     String
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([messageId, userId])
 }
