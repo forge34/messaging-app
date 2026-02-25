@@ -15,36 +15,18 @@ export function DirectMessageList({
 
   if (!conversations || conversations.length === 0) {
     return (
-      <div className="p-6 text-sm text-muted-foreground">
-        No conversations yet.
+      <div className="divide-y divide-border py-3 px-3 md:px-4 border-r md:col-span-2 w-full md:w-auto flex flex-col h-full">
+        <Header md={md} />
+        <div className="p-6 text-sm text-muted-foreground">
+          No conversations yet.
+        </div>
       </div>
     );
   }
 
   return (
     <div className="divide-y divide-border py-3 px-3 md:px-4 border-r md:col-span-2 w-full md:w-auto flex flex-col h-full">
-    <div className="flex flex-row items-center gap-2 pb-3">
-      <Input
-        className="bg-background rounded-md flex-1"
-        icon={<Search className="h-4 w-4" />}
-        placeholder="Search conversations"
-      />
-      {!md && (
-        <Button
-          variant="outline"
-          size="icon"
-          className="shrink-0"
-          aria-label="View all users"
-          asChild
-          >
-            <Link to="/app/conversations/@me">
-              <Users className="w-5 h-5" />
-            </Link>
-          </Button>
-        )}
-      </div>
-
-      {/* Conversations list */}
+      <Header md={md} />
       <div className="flex-1 overflow-y-auto">
         {conversations.map((conversation: ConversationListSchema) => {
           const {
@@ -95,6 +77,31 @@ export function DirectMessageList({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function Header({ md }: { md: boolean }) {
+  return (
+    <div className="flex flex-row items-center gap-2 pb-3">
+      <Input
+        className="bg-background rounded-md flex-1"
+        icon={<Search className="h-4 w-4" />}
+        placeholder="Search conversations"
+      />
+      {!md && (
+        <Button
+          variant="outline"
+          size="icon"
+          className="shrink-0"
+          aria-label="View all users"
+          asChild
+        >
+          <Link to="/app/conversations/@me">
+            <Users className="w-5 h-5" />
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
