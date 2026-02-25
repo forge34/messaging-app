@@ -49,7 +49,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
     isMine: z.boolean(),
     isBookmarked: z.boolean(),
     clientId: z.string().optional(),
-    deliveredAt: z.date().optional(),
+    deliveredAt: z.date().nullable().optional(),
   })
   .strict();
 
@@ -97,6 +97,7 @@ export const FullUserSchema = UserModelSchema.omit({
       author: true,
       isMine: true,
       isBookmarked: true,
+      deliveredAt: true,
       messageReceipts: true,
       messageReactions: true,
     }),
@@ -106,6 +107,7 @@ export const FullUserSchema = UserModelSchema.omit({
       author: true,
       isMine: true,
       isBookmarked: true,
+      deliveredAt: true,
       messageReceipts: true,
       messageReactions: true,
     }),

@@ -29,7 +29,11 @@ class UserController {
         include: {
           blocked: true,
           blockedBy: true,
-          messages: true,
+          messages: {
+            omit: {
+              deliveredAt: true,
+            },
+          },
           bookmarks: true,
           conversations: true,
         },
