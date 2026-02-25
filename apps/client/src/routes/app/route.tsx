@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/sidebar";
+import { useBreakpoint } from "@/lib/hooks/use-match-media";
 import { getMe } from "@/lib/queries/auth";
 import { socket } from "@/lib/sockets";
 import {
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/app")({
 
 function RouteComponent() {
   const { isSuccess } = useQuery(getMe());
-
+  const { md } = useBreakpoint();
   useEffect(() => {
     if (isSuccess) {
       if (!socket.connected) {
@@ -54,7 +55,9 @@ function RouteComponent() {
   return (
     <main className="flex flex-row w-full h-screen">
       <Sidebar />
-      <Outlet />
+      <div className={`flex-1 ${!md ? "pt-16" : ""}`}>
+        <Outlet />
+      </div>
     </main>
   );
 }

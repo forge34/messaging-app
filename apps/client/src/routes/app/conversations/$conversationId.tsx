@@ -8,11 +8,13 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Route as MeRoute } from "./@me.tsx";
 import { socket } from "@/lib/sockets/index.ts";
+import { Route as ConversationRoute } from "./route.tsx";
+import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -20,7 +22,6 @@ export const Route = createFileRoute("/app/conversations/$conversationId")({
     const data = await queryClient.ensureQueryData(
       GetConversationById(conversationId),
     );
-
     return data;
   },
 });
@@ -29,8 +30,8 @@ function RouteComponent() {
   const { conversationId } = Route.useParams();
   const { data } = useQuery(GetConversationById(conversationId));
   const navigate = useNavigate();
-
   const router = useRouter();
+  const { md } = useBreakpoint();
   const [typing, setTyping] = useState({
     typing: false,
     name: "",
@@ -39,9 +40,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (!conversation?.messages?.length) return;
-
     const lastMessage = conversation.messages[conversation.messages.length - 1];
-
     navigate({
       hash: lastMessage.id,
       replace: true,
@@ -50,16 +49,13 @@ function RouteComponent() {
 
   useEffect(() => {
     let timeoutId: number;
-
     function handleTyping(name: string) {
       setTyping({ typing: true, name });
-
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setTyping({ typing: false, name: "" });
       }, 3000);
     }
-
     function handleTypingStop() {
       console.log("stop typing");
       setTyping({ typing: false, name: "" });
@@ -68,7 +64,6 @@ function RouteComponent() {
     socket.emit("message:read", conversationId);
     socket.on("typing", handleTyping);
     socket.on("typing:stop", handleTypingStop);
-
     return () => {
       socket.off("typing", handleTyping);
       socket.off("typing:stop", handleTypingStop);
@@ -80,18 +75,23 @@ function RouteComponent() {
     <AnimatedRoute
       key={router.state.location.pathname}
       variant="slide"
-      className="h-full flex flex-col "
+      className="h-full flex flex-col"
     >
-      <div className="flex flex-row py-2 px-4 border-b items-center">
-        <X
-          className="h-6 w-6 mr-2"
+      <div className="flex flex-row py-3 px-4 border-b items-center gap-2">
+        <button
           onClick={() => {
-            navigate({ to: MeRoute.to });
+            navigate({ to : md ? MeRoute.to : ConversationRoute.to });
           }}
-        />
-        <h3 className="text-xl font-semibold">{conversation?.title}</h3>
+          className="p-1 hover:bg-accent rounded-md transition-colors"
+          aria-label="Back to conversations"
+        >
+          <ArrowLeft className="h-5 w-5 md:h-6 md:w-6" />
+        </button>
+        <h3 className="text-lg md:text-xl font-semibold truncate">
+          {conversation?.title}
+        </h3>
       </div>
-      <div className="flex flex-col gap-y-4 py-4 px-6 flex-1 overflow-y-scroll">
+      <div className="flex flex-col gap-y-4 py-4 px-3 md:px-6 flex-1 overflow-y-scroll">
         <AnimatePresence initial={false}>
           {conversation?.messages.map((msg) => {
             return <Message message={msg} key={msg.clientId || msg.id} />;
@@ -104,7 +104,7 @@ function RouteComponent() {
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="flex items-center font-semibold text-sm text-muted-foreground mx-4 my-2"
+            className="flex items-center font-semibold text-sm text-muted-foreground mx-3 md:mx-4 my-2"
           >
             {typing.name} is typing
             <span className="flex ml-1 space-x-1">
