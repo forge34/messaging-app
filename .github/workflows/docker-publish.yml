@@ -7,13 +7,13 @@ name: Docker
 
 on:
   schedule:
-    - cron: '33 0 * * *'
+    - cron: "33 0 * * *"
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: ["v*.*.*"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -21,10 +21,8 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,7 +41,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
         with:
-          cosign-release: 'v2.2.4'
+          cosign-release: "v2.2.4"
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -75,8 +73,8 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
-          context: .                      
-          file: ./apps/server/Dockerfile   
+          context: .
+          file: ./apps/server/Dockerfile
           push: true
           tags: ghcr.io/forge34/messaging-app-frontend
           labels: ${{ steps.meta.outputs.labels }}
@@ -107,7 +105,6 @@ jobs:
           port: 22
           script: cd messaging-app-frontend && docker compose pull
 
-
       - name: Run container
         uses: appleboy/ssh-action@v1
         with:
@@ -115,6 +112,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          script: cd messaging-app-frontend && docker compose down && docker compose up -d
-
-
+          script: |
+            cd messaging-app-frontend
+            docker compose down --remove-orphans 
+            docker compose up -d
