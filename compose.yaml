@@ -23,7 +23,7 @@ services:
     image: ghcr.io/forge34/messaging-app-frontend:latest
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/db
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/db
       - PORT=3000
     ports:
       - "127.0.0.1:${PORT}:${PORT}"
