@@ -4,14 +4,16 @@ import {
   MessageReactionsModelSchema,
   MessageReceiptModelSchema,
   UserModelSchema,
+  UserSchema,
 } from "@chat/db/schemas";
 import z from "zod";
 
-export const PublicUserSchema = UserModelSchema.pick({
+export const PublicUserSchema = UserSchema.pick({
   id: true,
   name: true,
   imgUrl: true,
   bio: true,
+  lastSeen : true
 }).strict();
 
 export type PublicUserSchema = z.infer<typeof PublicUserSchema>;

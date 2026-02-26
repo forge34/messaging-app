@@ -8,8 +8,8 @@ class UserController {
   static getCurrent = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getCurrentUser, async (req) => {
-      const { id, name, imgUrl, bio } = req.user as User;
-      return { code: 200, message: "Success", data: { id, name, imgUrl, bio } };
+      const { id, name, imgUrl, bio,lastSeen } = req.user as User;
+      return { code: 200, message: "Success", data: { lastSeen,id, name, imgUrl, bio } };
     }),
   ];
 

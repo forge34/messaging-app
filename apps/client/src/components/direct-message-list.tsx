@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Route as ConversationIdRoute } from "../routes/app/conversations/$conversationId.tsx";
 import { Button } from "./ui/button";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
+import { useOnlineUsers } from "@/lib/context/online-users.tsx";
 
 export function DirectMessageList({
   conversations,
@@ -12,7 +13,7 @@ export function DirectMessageList({
   conversations: ConversationListSchema[] | undefined;
 }) {
   const { md } = useBreakpoint();
-
+  const { isOnline } = useOnlineUsers();
   if (!conversations || conversations.length === 0) {
     return (
       <div className="divide-y divide-border py-3 px-3 md:px-4 border-r md:col-span-2 w-full md:w-auto flex flex-col h-full">
@@ -44,11 +45,16 @@ export function DirectMessageList({
               params={{ conversationId: id }}
               className="flex items-center gap-3 px-2 md:px-3 py-3 w-full text-left hover:brightness-110 hover:bg-background/30 transition-all rounded-md"
             >
-              <img
-                src={otherUser.imgUrl ?? "/avatar-placeholder.png"}
-                alt={otherUser.name}
-                className="h-10 w-10 rounded-full object-cover flex-shrink-0"
-              />
+              <div className="h-10 w-10 rounded-full shrink-0 relative ">
+                <img
+                  src={otherUser.imgUrl ?? "/avatar-placeholder.png"}
+                  alt={otherUser.name}
+                  className="object-cover "
+                />
+                {isOnline(otherUser.id) && (
+                  <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0 right-0" />
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium truncate text-sm md:text-base">

@@ -1,5 +1,7 @@
 import { PublicMessageSchema } from "../schemas/publicSchemas";
 
+export type OnlineUsers = Map<string, { isOnline: boolean; timerId: NodeJS.Timeout | null }>;
+
 export interface ServerToClientEvents {
   "message:create": (
     message: PublicMessageSchema,
@@ -10,7 +12,6 @@ export interface ServerToClientEvents {
     messageId: string,
     conversationId: string,
   ) => Promise<void>;
-  "users:join": (onlineUsers: { userId: string; socketId: string }[]) => void;
 
   "message:read": (conversationId: string, messageIds: string[]) => void;
   "message:create:confirm": (
@@ -20,7 +21,11 @@ export interface ServerToClientEvents {
   ) => void;
   typing: (username: string) => void;
   "typing:stop": () => void;
-  "message:reaction": (conversationId:string,message: PublicMessageSchema) => void;
+  "message:reaction": (
+    conversationId: string,
+    message: PublicMessageSchema,
+  ) => void;
+  "users:presence_update": (onlineIds: string[]) => void;
 }
 
 export interface ClientToServerEvents {
@@ -33,5 +38,9 @@ export interface ClientToServerEvents {
   "message:read": (conversationId: string) => void;
   typing: (conversationId: string, username: string) => void;
   "typing:stop": (conversationId: string) => void;
-  "message:reaction": (conversationId : string,messageId: string, emoji: string) => void;
+  "message:reaction": (
+    conversationId: string,
+    messageId: string,
+    emoji: string,
+  ) => void;
 }

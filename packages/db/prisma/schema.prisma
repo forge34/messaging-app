@@ -7,9 +7,10 @@ generator client {
 }
 
 generator zod {
-  provider = "prisma-zod-generator"
-  output   = "../src/generated/"
-  config   = "./generator.config.json"
+  provider              = "prisma-zod-generator"
+  output                = "../src/generated/"
+  config                = "./generator.config.json"
+  optionalFieldBehavior = "optional"
 }
 
 datasource db {
@@ -23,6 +24,7 @@ model User {
   blocked  User[]    @relation("blocked")
   password String
   messages Message[] @relation("UserMessages")
+  lastSeen DateTime?
 
   bookmarks        Message[]          @relation("UserBookmarks")
   conversations    Conversation[]

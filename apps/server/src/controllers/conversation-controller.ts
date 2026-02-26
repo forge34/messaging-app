@@ -91,7 +91,12 @@ class ConversationController {
               authorId: true,
               conversationId: true,
               author: {
-                select: { id: true, name: true, imgUrl: true, bio: true },
+                select: {
+                  id: true,
+                  name: true,
+                  imgUrl: true,
+                  bio: true,
+                },
               },
             },
           },
@@ -157,7 +162,12 @@ class ConversationController {
               status: true,
               createdAt: true,
               author: {
-                select: { id: true, bio: true, name: true, imgUrl: true },
+                select: {
+                  id: true,
+                  bio: true,
+                  name: true,
+                  imgUrl: true,
+                },
               },
               bookmarkedBy: true,
               messageReceipts: true,
@@ -165,7 +175,13 @@ class ConversationController {
             },
           },
           users: {
-            select: { id: true, name: true, imgUrl: true, bio: true },
+            select: {
+              id: true,
+              name: true,
+              imgUrl: true,
+              bio: true,
+              lastSeen: true,
+            },
           },
         },
       });

@@ -15,6 +15,7 @@ import { Route as MeRoute } from "./@me.tsx";
 import { socket } from "@/lib/sockets/index.ts";
 import { Route as ConversationRoute } from "./route.tsx";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
+import { getMe } from "@/lib/queries/auth.ts";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -26,18 +27,44 @@ export const Route = createFileRoute("/app/conversations/$conversationId")({
   },
 });
 
+function getLastSeenText(lastSeen?: Date | null) {
+  if (!lastSeen) return null;
+
+  const date = new Date(lastSeen);
+  const diffMs = Date.now() - date.getTime();
+
+  const seconds = Math.floor(diffMs / 1000);
+  if (seconds < 60) return "Last seen just now";
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60)
+    return `Last seen ${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `Last seen ${hours} hour${hours > 1 ? "s" : ""} ago`;
+
+  const days = Math.floor(hours / 24);
+  return `Last seen ${days} day${days > 1 ? "s" : ""} ago`;
+}
+
 function RouteComponent() {
   const { conversationId } = Route.useParams();
   const { data } = useQuery(GetConversationById(conversationId));
   const navigate = useNavigate();
   const router = useRouter();
   const { md } = useBreakpoint();
+  const { data: currentUserData } = useQuery(getMe());
+  const currentUser = currentUserData?.data;
   const [typing, setTyping] = useState({
     typing: false,
     name: "",
   });
   const conversation = data?.data;
+  const lastSeenText = getLastSeenText(
+    conversation?.users.find((u) => u.id !== currentUser?.id)?.lastSeen,
+  );
 
+  console.log(lastSeenText)
   useEffect(() => {
     if (!conversation?.messages?.length) return;
     const lastMessage = conversation.messages[conversation.messages.length - 1];
@@ -80,16 +107,25 @@ function RouteComponent() {
       <div className="flex flex-row py-3 px-4 border-b items-center gap-2">
         <button
           onClick={() => {
-            navigate({ to : md ? MeRoute.to : ConversationRoute.to });
+            navigate({ to: md ? MeRoute.to : ConversationRoute.to });
           }}
           className="p-1 hover:bg-accent rounded-md transition-colors"
           aria-label="Back to conversations"
         >
           <ArrowLeft className="h-5 w-5 md:h-6 md:w-6" />
         </button>
-        <h3 className="text-lg md:text-xl font-semibold truncate">
-          {conversation?.title}
-        </h3>
+
+        <div className="flex flex-col min-w-0">
+          <h3 className="text-lg md:text-xl font-semibold truncate">
+            {conversation?.title}
+          </h3>
+
+          {lastSeenText && !typing.typing && (
+            <span className="text-xs text-muted-foreground truncate">
+              {lastSeenText}
+            </span>
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-y-4 py-4 px-3 md:px-6 flex-1 overflow-y-scroll">
         <AnimatePresence initial={false}>

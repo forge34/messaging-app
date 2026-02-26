@@ -11,6 +11,7 @@ import {
 } from "./sockets/handlers.js";
 import {
   ClientToServerEvents,
+  OnlineUsers,
   PublicUserSchema,
   ServerToClientEvents,
 } from "@chat/shared";
@@ -28,18 +29,20 @@ export const io = new Server<ClientToServerEvents, ServerToClientEvents>(
 export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 io.engine.use(socketJwtVerify);
 
-const onlineId: {
-  userId: string;
-  socketId: string;
-}[] = [];
+const onlineId: OnlineUsers = new Map();
 
 io.on("connection", async (socket) => {
   const req = socket.request as any;
   const user = req.user as PublicUserSchema;
+  const isUserOnline = onlineId.get(user.id);
 
-  if (!onlineId.find((u) => u.userId === user.id))
-    onlineId.push({ userId: user.id, socketId: socket.id });
+  if (isUserOnline && isUserOnline.timerId) {
+    clearTimeout(isUserOnline.timerId);
+  }
 
+  onlineId.set(user.id, { isOnline: true, timerId: null });
+
+  io.emit("users:presence_update", Array.from(onlineId.keys()));
   const conversations = await prisma.conversation.findMany({
     where: {
       users: {
@@ -66,9 +69,19 @@ io.on("connection", async (socket) => {
   });
   socket.on("message:reaction", handleMessageReaction(user, socket));
   socket.on("disconnect", () => {
-    const index = onlineId.findIndex((u) => u.socketId === socket.id);
+    const timeout = setTimeout(async () => {
+      onlineId.delete(user.id); 
 
-    if (index !== -1) onlineId.splice(index, 1);
+      io.emit("users:presence_update", Array.from(onlineId.keys()));
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { lastSeen: new Date() },
+      });
+
+    }, 5000); 
+
+    onlineId.set(user.id, { isOnline: false, timerId: timeout });
   });
 });
 

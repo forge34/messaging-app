@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/sidebar";
+import { useOnlineUsers } from "@/lib/context/online-users";
 import { useBreakpoint } from "@/lib/hooks/use-match-media";
 import { getMe } from "@/lib/queries/auth";
 import { socket } from "@/lib/sockets";
@@ -26,6 +27,8 @@ export const Route = createFileRoute("/app")({
 function RouteComponent() {
   const { isSuccess } = useQuery(getMe());
   const { md } = useBreakpoint();
+  const { setOnlineUsers } = useOnlineUsers();
+
   useEffect(() => {
     if (isSuccess) {
       if (!socket.connected) {
@@ -39,16 +42,21 @@ function RouteComponent() {
   }, [isSuccess]);
 
   useEffect(() => {
+    function handlePresenceUpdate(onlineIds: string[]) {
+      setOnlineUsers(onlineIds);
+    }
     socket.on("message:create", onMessageCreate);
     socket.on("message:create:confirm", onMessageConfirm);
     socket.on("message:read", onMessageRead);
     socket.on("message:reaction", onMesssageReaction);
+    socket.on("users:presence_update", handlePresenceUpdate);
 
     return () => {
       socket.off("message:create", onMessageCreate);
       socket.off("message:create:confirm", onMessageConfirm);
       socket.off("message:read", onMessageRead);
       socket.off("message:reaction", onMesssageReaction);
+      socket.off("users:presence_update", handlePresenceUpdate);
     };
   });
 
