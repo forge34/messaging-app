@@ -3,8 +3,10 @@ name: client-deploy
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+    paths:
+      - apps/client/**
+      - packages/db/**
+      - packages/shared/**
 
 jobs:
   cache-and-install:
