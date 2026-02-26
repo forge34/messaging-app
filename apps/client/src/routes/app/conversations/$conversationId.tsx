@@ -16,6 +16,7 @@ import { socket } from "@/lib/sockets/index.ts";
 import { Route as ConversationRoute } from "./route.tsx";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 import { getMe } from "@/lib/queries/auth.ts";
+import { useOnlineUsers } from "@/lib/context/online-users.tsx";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -54,17 +55,14 @@ function RouteComponent() {
   const router = useRouter();
   const { md } = useBreakpoint();
   const { data: currentUserData } = useQuery(getMe());
+  const { isOnline } = useOnlineUsers();
   const currentUser = currentUserData?.data;
   const [typing, setTyping] = useState({
     typing: false,
     name: "",
   });
   const conversation = data?.data;
-  const lastSeenText = getLastSeenText(
-    conversation?.users.find((u) => u.id !== currentUser?.id)?.lastSeen,
-  );
 
-  console.log(lastSeenText)
   useEffect(() => {
     if (!conversation?.messages?.length) return;
     const lastMessage = conversation.messages[conversation.messages.length - 1];
@@ -98,6 +96,11 @@ function RouteComponent() {
     };
   }, [conversationId]);
 
+  const otherUser = conversation?.users.find((u) => u.id !== currentUser?.id);
+  if (!otherUser) return;
+
+  const lastSeenText = getLastSeenText(otherUser?.lastSeen);
+  const OnlineText = isOnline(otherUser.id!) ? "Online" : null;
   return (
     <AnimatedRoute
       key={router.state.location.pathname}
@@ -120,9 +123,9 @@ function RouteComponent() {
             {conversation?.title}
           </h3>
 
-          {lastSeenText && !typing.typing && (
+          {(OnlineText || lastSeenText) && (
             <span className="text-xs text-muted-foreground truncate">
-              {lastSeenText}
+              {OnlineText || lastSeenText}
             </span>
           )}
         </div>

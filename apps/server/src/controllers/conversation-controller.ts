@@ -223,6 +223,7 @@ class ConversationController {
         ...conversation,
         messages: mappedMessages,
         title: otherUser.name ?? "Conversation",
+        lastSeen: otherUser.lastSeen ?? undefined,
       };
       return {
         code: 200,

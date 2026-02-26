@@ -1,8 +1,8 @@
 import {
-  ConversationModelSchema,
-  MessageModelSchema,
-  MessageReactionsModelSchema,
-  MessageReceiptModelSchema,
+  ConversationSchema,
+  MessageReactionsSchema,
+  MessageReceiptSchema,
+  MessageSchema,
   UserModelSchema,
   UserSchema,
 } from "@chat/db/schemas";
@@ -13,30 +13,24 @@ export const PublicUserSchema = UserSchema.pick({
   name: true,
   imgUrl: true,
   bio: true,
-  lastSeen : true
+  lastSeen: true,
 }).strict();
 
 export type PublicUserSchema = z.infer<typeof PublicUserSchema>;
 
-export const PublicMessageReceiptsSchema = MessageReceiptModelSchema.omit({
-  user: true,
-  message: true,
-});
+export const PublicMessageReceiptsSchema = MessageReceiptSchema;
 
 export type PublicMessageReceiptsSchema = z.infer<
   typeof PublicMessageReceiptsSchema
 >;
 
-export const PublicMessageReactionsSchema = MessageReactionsModelSchema.omit({
-  user: true,
-  message: true,
-});
+export const PublicMessageReactionsSchema = MessageReactionsSchema;
 
 export type PublicMessageReactionsSchema = z.infer<
   typeof PublicMessageReactionsSchema
 >;
 
-export const PublicMessageSchema = MessageModelSchema.pick({
+export const PublicMessageSchema = MessageSchema.pick({
   id: true,
   conversationId: true,
   authorId: true,
@@ -57,7 +51,7 @@ export const PublicMessageSchema = MessageModelSchema.pick({
 
 export type PublicMessageSchema = z.infer<typeof PublicMessageSchema>;
 
-export const PublicConversationSchema = ConversationModelSchema.pick({
+export const PublicConversationSchema = ConversationSchema.pick({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -66,6 +60,7 @@ export const PublicConversationSchema = ConversationModelSchema.pick({
     users: z.array(PublicUserSchema),
     messages: z.array(PublicMessageSchema),
     title: z.string().nonempty(),
+    lastSeen: z.date().optional(),
   })
   .strict();
 
