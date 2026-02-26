@@ -43,22 +43,28 @@ export const handleMessageCreate =
     message: PublicMessageSchema,
     conversationId: string,
     tempId: string,
+    parentMessageId: string,
   ) => {
     const content = message.body.trim();
     if (!content) {
       return;
     }
-
     const createdMessage = await prisma.message.create({
       include: {
         author: true,
+        parentMessage : {
+          include : {
+            author : true
+          }
+        }
       },
       data: {
         body: content,
         conversationId: conversationId,
         authorId: user.id,
         status: "DELIVERED",
-        deliveredAt : new Date()
+        deliveredAt: new Date(),
+        parentMessageId: parentMessageId ?? null,
       },
     });
 
@@ -68,7 +74,6 @@ export const handleMessageCreate =
     };
 
     const messageIds = await markMessagesAsRead(conversationId, user.id);
-    console.log(messageIds);
     if (messageIds.length >= 0)
       socket
         .to(conversationId)

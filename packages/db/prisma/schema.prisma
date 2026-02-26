@@ -7,9 +7,9 @@ generator client {
 }
 
 generator zod {
-  provider              = "prisma-zod-generator"
-  output                = "../src/generated/"
-  config                = "./generator.config.json"
+  provider = "prisma-zod-generator"
+  output   = "../src/generated/"
+  config   = "./generator.config.json"
 }
 
 datasource db {
@@ -47,6 +47,9 @@ model Message {
   status           MessageStatus      @default(PENDING)
   messageReceipts  MessageReceipt[]
   messageReactions MessageReactions[]
+  parentMessageId  String?
+  parentMessage    Message?           @relation(name: "parentMessage", fields: [parentMessageId], references: [id])
+  replies          Message[]          @relation(name: "parentMessage")
 }
 
 model MessageReceipt {

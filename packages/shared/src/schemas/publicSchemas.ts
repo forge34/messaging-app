@@ -37,6 +37,7 @@ export const PublicMessageSchema = MessageSchema.pick({
   body: true,
   createdAt: true,
   status: true,
+  parentMessageId: true,
 })
   .extend({
     author: PublicUserSchema,
@@ -46,6 +47,16 @@ export const PublicMessageSchema = MessageSchema.pick({
     isBookmarked: z.boolean(),
     clientId: z.string().optional(),
     deliveredAt: z.date().nullable().optional(),
+    parentMessage: MessageSchema.pick({
+      id: true,
+      conversationId: true,
+      authorId: true,
+      body: true,
+      createdAt: true,
+      status: true,
+    }).extend({
+      author: PublicUserSchema,
+    }).optional().nullable(),
   })
   .strict();
 
@@ -97,6 +108,7 @@ export const FullUserSchema = UserModelSchema.omit({
       deliveredAt: true,
       messageReceipts: true,
       messageReactions: true,
+      parentMessage: true,
     }),
   ),
   bookmarks: z.array(
@@ -107,6 +119,7 @@ export const FullUserSchema = UserModelSchema.omit({
       deliveredAt: true,
       messageReceipts: true,
       messageReactions: true,
+      parentMessage: true,
     }),
   ),
 });

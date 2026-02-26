@@ -1,6 +1,9 @@
 import { PublicMessageSchema } from "../schemas/publicSchemas";
 
-export type OnlineUsers = Map<string, { isOnline: boolean; timerId: NodeJS.Timeout | null }>;
+export type OnlineUsers = Map<
+  string,
+  { isOnline: boolean; timerId: NodeJS.Timeout | null }
+>;
 
 export interface ServerToClientEvents {
   "message:create": (
@@ -33,6 +36,7 @@ export interface ClientToServerEvents {
     message: Partial<PublicMessageSchema>,
     conversationId: string,
     tempId: string,
+    parentMessageId: string,
   ) => void;
   "message:delete": (messageId: string, conversationId: string) => void;
   "message:read": (conversationId: string) => void;

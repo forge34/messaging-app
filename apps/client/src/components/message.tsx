@@ -2,14 +2,16 @@ import { cn } from "@/lib/utils";
 import type { PublicMessageSchema } from "@chat/shared";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { Check, CheckCheck, Clock, Smile } from "lucide-react";
+import { Check, CheckCheck, Clock, Smile, Reply } from "lucide-react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
-import { useState } from "react";
+import { Button } from "./ui/button";
+import { useState  } from "react";
 import { socket } from "@/lib/sockets";
 
 interface MessageProps {
   message: PublicMessageSchema;
+  onReply?: (message: PublicMessageSchema) => void;
 }
 
 const formatTime = (date: string) => {
@@ -17,6 +19,17 @@ const formatTime = (date: string) => {
   const hours = now.getHours().toString().padStart(2, "0");
   const minutes = now.getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
+};
+
+const getAuthorColor = (name: string) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const hue = Math.abs(hash % 360);
+
+  return `oklch(0.8 0.15 ${hue})`;
 };
 
 const StatusIcon = ({
@@ -36,7 +49,7 @@ const StatusIcon = ({
   }
 };
 
-export function Message({ message }: MessageProps) {
+export function Message({ message, onReply }: MessageProps) {
   const [isHovered, setIsHovered] = useState(false);
   const onEmojiClick = (emojiData: { emoji: string }) => {
     socket.emit(
@@ -55,6 +68,11 @@ export function Message({ message }: MessageProps) {
     {},
   );
 
+  const parentMessage = message?.parentMessage;
+
+  function scrollIntoView() {
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -67,6 +85,7 @@ export function Message({ message }: MessageProps) {
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      id={message.id}
     >
       <img
         src={message.author.imgUrl}
@@ -80,18 +99,57 @@ export function Message({ message }: MessageProps) {
           message.isMine ? "items-end" : "items-start",
         )}
       >
+        {parentMessage && (
+          <div
+            onClick={scrollIntoView}
+            className={cn(
+              "mb-1 rounded-xl px-3 py-2 backdrop-blur-sm",
+              message.isMine ? "bg-primary/15" : "bg-secondary/40",
+            )}
+          >
+            <div className="flex items-start gap-2">
+              <div
+                className={cn(
+                  "w-1 rounded-full self-stretch",
+                  message.isMine ? "bg-primary" : "bg-primary/70",
+                )}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium opacity-90 truncate">
+                  {parentMessage.author.name}
+                </p>
+                <p className="text-xs opacity-70 line-clamp-2 leading-snug">
+                  {parentMessage.body}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         <div
           className={cn(
-            "absolute top-0 transition-opacity duration-200 flex gap-1",
+            "flex-col absolute top-0 transition-opacity duration-200 flex gap-1",
             message.isMine ? "right-full mr-2" : "left-full ml-2",
             isHovered ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 rounded-full shadow-sm"
+            onClick={() => onReply?.(message)}
+          >
+            <Reply size={16} />
+          </Button>
+
           <Popover>
             <PopoverTrigger asChild>
-              <button className="p-1.5 rounded-full bg-secondary hover:bg-muted text-muted-foreground shadow-sm border border-border">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="h-8 w-8 rounded-full shadow-sm"
+              >
                 <Smile size={16} />
-              </button>
+              </Button>
             </PopoverTrigger>
             <PopoverContent
               side="top"
@@ -124,6 +182,12 @@ export function Message({ message }: MessageProps) {
                 : "bg-secondary text-secondary-foreground rounded-tl-none",
             )}
           >
+            <h3
+              className="text-md font-semibold"
+              style={{ color: getAuthorColor(message.author.name) }}
+            >
+              {message.author.name}
+            </h3>
             <p className="text-sm leading-relaxed whitespace-pre-wrap">
               {message.body}
             </p>
@@ -145,7 +209,7 @@ export function Message({ message }: MessageProps) {
                 key={emoji}
                 className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted border border-border text-xs shadow-sm"
               >
-                <span className="text-md">{emoji}</span>
+                <span className="text-lg">{emoji}</span>
                 <span className="text-[10px] opacity-70">{count}</span>
               </div>
             ))}

@@ -17,6 +17,7 @@ import { Route as ConversationRoute } from "./route.tsx";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 import { getMe } from "@/lib/queries/auth.ts";
 import { useOnlineUsers } from "@/lib/context/online-users.tsx";
+import type { PublicMessageSchema } from "@chat/shared";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -61,6 +62,9 @@ function RouteComponent() {
     typing: false,
     name: "",
   });
+  const [parentMessage, setParentMessage] = useState<
+    PublicMessageSchema | undefined
+  >(undefined);
   const conversation = data?.data;
 
   useEffect(() => {
@@ -132,9 +136,13 @@ function RouteComponent() {
       </div>
       <div className="flex flex-col gap-y-4 py-4 px-3 md:px-6 flex-1 overflow-y-scroll">
         <AnimatePresence initial={false}>
-          {conversation?.messages.map((msg) => {
-            return <Message message={msg} key={msg.clientId || msg.id} />;
-          })}
+          {conversation?.messages.map((msg) => (
+            <Message
+              onReply={(message) => setParentMessage(message)}
+              message={msg}
+              key={msg.clientId || msg.id}
+            />
+          ))}
         </AnimatePresence>
       </div>
       {typing.typing && (
@@ -154,7 +162,11 @@ function RouteComponent() {
           </motion.h3>
         </AnimatePresence>
       )}
-      <MessageInput conversationId={conversationId} />
+      <MessageInput
+        conversationId={conversationId}
+        parentMessage={parentMessage}
+        onClearParent={() => setParentMessage(undefined)}
+      />
     </AnimatedRoute>
   );
 }

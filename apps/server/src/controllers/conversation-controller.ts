@@ -172,6 +172,20 @@ class ConversationController {
               bookmarkedBy: true,
               messageReceipts: true,
               messageReactions: true,
+              parentMessageId: true,
+              parentMessage: {
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      name: true,
+                      imgUrl: true,
+                      bio: true,
+                      lastSeen: true,
+                    },
+                  },
+                },
+              },
             },
           },
           users: {
@@ -199,6 +213,8 @@ class ConversationController {
             body,
             messageReactions,
             messageReceipts,
+            parentMessageId,
+            parentMessage,
           }) => {
             return {
               messageReactions,
@@ -210,6 +226,8 @@ class ConversationController {
               status,
               createdAt,
               conversationId,
+              parentMessage,
+              parentMessageId,
               isMine: authorId === userid,
               isBookmarked:
                 bookmarkedBy.findIndex(({ id }) => id === userid) >= 0
