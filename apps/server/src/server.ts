@@ -4,8 +4,8 @@ import { Server, Socket } from "socket.io";
 import { socketJwtVerify } from "./sockets/index.js";
 import { prisma } from "@chat/db/client";
 import {
+  handleDisconnect,
   handleMessageCreate,
-  handleMessageDelete,
   handleMessageReaction,
   handleMessageRead,
 } from "./sockets/handlers.js";
@@ -59,30 +59,15 @@ io.on("connection", async (socket) => {
 
   const create = handleMessageCreate(user, socket);
   socket.on("message:create", create);
-  socket.on("message:delete", handleMessageDelete);
   socket.on("message:read", handleMessageRead(user, socket));
+  socket.on("message:reaction", handleMessageReaction(user, socket));
   socket.on("typing", (conversationId: string, username: string) => {
     socket.to(conversationId).emit("typing", username);
   });
   socket.on("typing:stop", (conversationId) => {
     socket.to(conversationId).emit("typing:stop");
   });
-  socket.on("message:reaction", handleMessageReaction(user, socket));
-  socket.on("disconnect", () => {
-    const timeout = setTimeout(async () => {
-      onlineId.delete(user.id); 
-
-      io.emit("users:presence_update", Array.from(onlineId.keys()));
-
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { lastSeen: new Date() },
-      });
-
-    }, 5000); 
-
-    onlineId.set(user.id, { isOnline: false, timerId: timeout });
-  });
+  socket.on("disconnect", handleDisconnect(user, onlineId));
 });
 
 if (process.env.NODE_ENV !== "test") {

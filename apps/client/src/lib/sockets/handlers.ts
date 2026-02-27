@@ -1,16 +1,16 @@
 import { queryClient } from "@/main";
 import {
   Routes,
-  type PublicMessageSchema,
   type ResponseSchema,
+  type ServerToClientEvents,
 } from "@chat/shared";
 import { toast } from "sonner";
 import type z from "zod";
 
 export async function onMesssageReaction(
-  conversationId: string,
-  message: PublicMessageSchema,
+  ...args: Parameters<ServerToClientEvents["message:reaction"]>
 ) {
+  const [conversationId, message] = args;
   queryClient.setQueryData(
     ["conversations", conversationId],
     (
@@ -26,7 +26,7 @@ export async function onMesssageReaction(
             if (m.id !== message.id) return m;
 
             return {
-              ...m, 
+              ...m,
               messageReactions: message.messageReactions,
             };
           }),
@@ -36,9 +36,9 @@ export async function onMesssageReaction(
   );
 }
 export async function onMessageCreate(
-  message: PublicMessageSchema,
-  conversationId: string,
+  ...args: Parameters<ServerToClientEvents["message:create"]>
 ) {
+  const [conversationId, message] = args;
   const user = queryClient.getQueryData(["user"]) as ResponseSchema<
     typeof Routes.getCurrentUser
   >;
@@ -76,6 +76,7 @@ export async function onMessageCreate(
   );
 
   if (!isMine) {
+    if (!message.author) return;
     toast.info("Message recieved from " + message.author.name);
     queryClient.setQueryData(
       ["conversations", conversationId],
@@ -97,9 +98,9 @@ export async function onMessageCreate(
   }
 }
 export async function onMessageRead(
-  conversationId: string,
-  messageIds: string[],
+  ...args: Parameters<ServerToClientEvents["message:read"]>
 ) {
+  const [conversationId, messageIds] = args;
   queryClient.setQueryData(
     ["conversations", conversationId],
     (oldData: ResponseSchema<typeof Routes.getConversationById>) => {
@@ -121,10 +122,10 @@ export async function onMessageRead(
   );
 }
 export async function onMessageConfirm(
-  conversationId: string,
-  message: PublicMessageSchema,
-  tempId: string,
+  ...args: Parameters<ServerToClientEvents["message:create:confirm"]>
 ) {
+  const [conversationId, message, tempId] = args;
+
   await queryClient.setQueryData(
     ["conversations", conversationId],
     (oldData: z.infer<typeof Routes.getConversationById.responseSchema>) => {

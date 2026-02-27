@@ -1,15 +1,16 @@
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../src/generated/"
+  config   = "./generator.config.json"
+}
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 
   moduleFormat        = "esm"
   importFileExtension = "js"
-}
-
-generator zod {
-  provider = "prisma-zod-generator"
-  output   = "../src/generated/"
-  config   = "./generator.config.json"
 }
 
 datasource db {

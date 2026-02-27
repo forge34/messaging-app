@@ -1,5 +1,7 @@
 {
   "$schema": "../node_modules/prisma-zod-generator/lib/config/schema.json",
+  "useMultipleFiles": false,
+  "dateTimeStrategy": "coerce",
   "mode": "full",
   "pureModels": true,
   "variants": {

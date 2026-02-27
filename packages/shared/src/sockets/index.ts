@@ -1,50 +1,91 @@
-import { PublicMessageSchema } from "../schemas/publicSchemas";
+import z from "zod";
+import { PublicMessageSchema } from "../schemas/publicSchemas.js";
+import { createEvent, EventMap } from "./schemas.js";
 
 export type OnlineUsers = Map<
   string,
   { isOnline: boolean; timerId: NodeJS.Timeout | null }
 >;
 
-export interface ServerToClientEvents {
-  "message:create": (
-    message: PublicMessageSchema,
-    conversationId: string,
-    tempId: string,
-  ) => void;
-  "message:delete": (
-    messageId: string,
-    conversationId: string,
-  ) => Promise<void>;
+export const ServerEvents = {
+  "message:create": createEvent({
+    name: "message:create",
+    input: z.tuple([z.string(), PublicMessageSchema.partial(), z.string()]),
+  }),
 
-  "message:read": (conversationId: string, messageIds: string[]) => void;
-  "message:create:confirm": (
-    conversationId: string,
-    message: PublicMessageSchema,
-    tempId: string,
-  ) => void;
-  typing: (username: string) => void;
-  "typing:stop": () => void;
-  "message:reaction": (
-    conversationId: string,
-    message: PublicMessageSchema,
-  ) => void;
-  "users:presence_update": (onlineIds: string[]) => void;
-}
+  "message:delete": createEvent({
+    name: "message:delete",
+    input: z.tuple([z.string(), z.string()]),
+  }),
 
-export interface ClientToServerEvents {
-  "message:create": (
-    message: Partial<PublicMessageSchema>,
-    conversationId: string,
-    tempId: string,
-    parentMessageId?: string,
-  ) => void;
-  "message:delete": (messageId: string, conversationId: string) => void;
-  "message:read": (conversationId: string) => void;
-  typing: (conversationId: string, username: string) => void;
-  "typing:stop": (conversationId: string) => void;
-  "message:reaction": (
-    conversationId: string,
-    messageId: string,
-    emoji: string,
-  ) => void;
-}
+  "message:read": createEvent({
+    name: "message:read",
+    input: z.tuple([z.string(), z.array(z.string())]),
+  }),
+
+  "message:create:confirm": createEvent({
+    name: "message:create:confirm",
+    input: z.tuple([z.string(), PublicMessageSchema.partial(), z.string()]),
+  }),
+
+  typing: createEvent({
+    name: "typing",
+    input: z.tuple([z.string()]),
+  }),
+
+  "typing:stop": createEvent({
+    name: "typing:stop",
+    input: z.tuple([]),
+  }),
+
+  "message:reaction": createEvent({
+    name: "message:reaction",
+    input: z.tuple([z.string(), PublicMessageSchema.partial()]),
+  }),
+
+  "users:presence_update": createEvent({
+    name: "users:presence_update",
+    input: z.tuple([z.array(z.string())]),
+  }),
+} as const;
+
+export type ServerToClientEvents = EventMap<typeof ServerEvents>;
+
+export const ClientEvents = {
+  "message:create": createEvent({
+    name: "message:create",
+    input: z.tuple([
+      PublicMessageSchema.partial(),
+      z.string(),
+      z.string(),
+      z.string().nullable().optional(),
+    ]),
+  }),
+
+  "message:delete": createEvent({
+    name: "message:delete",
+    input: z.tuple([z.string(), z.string()]),
+  }),
+
+  "message:read": createEvent({
+    name: "message:read",
+    input: z.tuple([z.string()]),
+  }),
+
+  typing: createEvent({
+    name: "typing",
+    input: z.tuple([z.string(), z.string()]),
+  }),
+
+  "typing:stop": createEvent({
+    name: "typing:stop",
+    input: z.tuple([z.string()]),
+  }),
+
+  "message:reaction": createEvent({
+    name: "message:reaction",
+    input: z.tuple([z.string(), z.string(), z.string()]),
+  }),
+} as const;
+
+export type ClientToServerEvents = EventMap<typeof ClientEvents>;

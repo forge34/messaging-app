@@ -3,7 +3,6 @@ import {
   MessageReactionsSchema,
   MessageReceiptSchema,
   MessageSchema,
-  UserModelSchema,
   UserSchema,
 } from "@chat/db/schemas";
 import z from "zod";
@@ -54,9 +53,12 @@ export const PublicMessageSchema = MessageSchema.pick({
       body: true,
       createdAt: true,
       status: true,
-    }).extend({
-      author: PublicUserSchema,
-    }).optional().nullable(),
+    })
+      .extend({
+        author: PublicUserSchema.omit({ lastSeen: true }),
+      })
+      .optional()
+      .nullable(),
   })
   .strict();
 
@@ -71,7 +73,7 @@ export const PublicConversationSchema = ConversationSchema.pick({
     users: z.array(PublicUserSchema),
     messages: z.array(PublicMessageSchema),
     title: z.string().nonempty(),
-    lastSeen: z.date().optional(),
+    lastSeen: z.coerce.date().optional(),
   })
   .strict();
 
@@ -87,16 +89,14 @@ export const ConversationListSchema = PublicConversationSchema.omit({
     status: true,
     author: true,
   }).nullable(),
-  lastMessageAt: z.date().nullable(),
+  lastMessageAt: z.coerce.date().nullable(),
   otherUser: PublicUserSchema,
 });
 
 export type ConversationListSchema = z.infer<typeof ConversationListSchema>;
 
-export const FullUserSchema = UserModelSchema.omit({
+export const FullUserSchema = UserSchema.omit({
   password: true,
-  messageReceipts: true,
-  messageReactions: true,
 }).extend({
   blocked: z.array(PublicUserSchema),
   blockedBy: z.array(PublicUserSchema),
