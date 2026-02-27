@@ -4,6 +4,7 @@ import { Server, Socket } from "socket.io";
 import { socketJwtVerify } from "./sockets/index.js";
 import { prisma } from "@chat/db/client";
 import {
+  handleConversationCreate,
   handleDisconnect,
   handleMessageCreate,
   handleMessageReaction,
@@ -87,7 +88,7 @@ io.on("connection", async (socket) => {
     createSafeListener(
       ClientEvents,
       "message:reaction",
-      handleMessageReaction(user, socket),
+      handleMessageReaction(user),
     ),
   );
 
@@ -104,6 +105,7 @@ io.on("connection", async (socket) => {
       socket.to(conversationId).emit("typing:stop");
     }),
   );
+
   socket.on("disconnect", handleDisconnect(user, onlineId, socket));
 });
 

@@ -10,12 +10,11 @@ import { markMessagesAsRead } from "./helpers.js";
 import { logger } from "../lib/logger.js";
 import { DisconnectReason } from "socket.io";
 
+
 export function handleMessageReaction(
   user: PublicUserSchema,
-  socket: ServerSocket,
 ): ClientToServerEvents["message:reaction"] {
   return async (...args) => {
-
     const [conversationId, messageId, emoji] = args;
     const message = await prisma.message.update({
       where: {
@@ -50,7 +49,7 @@ export function handleMessageReaction(
       },
     });
 
-    socket.emit("message:reaction", conversationId, message);
+    io.to(conversationId).emit("message:reaction", conversationId, message);
   };
 }
 
@@ -59,7 +58,6 @@ export function handleMessageCreate(
   socket: ServerSocket,
 ): ClientToServerEvents["message:create"] {
   return async (...args) => {
-
     const [message, conversationId, tempId, parentMessageId] = args;
     const content = message.body.trim();
     if (!content) {
@@ -122,14 +120,14 @@ export function handleMessageRead(
 export function handleDisconnect(
   user: PublicUserSchema,
   onlineId: OnlineUsers,
-  socket : ServerSocket
+  socket: ServerSocket,
 ) {
-  return (reason : DisconnectReason) => {
+  return (reason: DisconnectReason) => {
     logger.info({
       socketId: socket.id,
       msg: "Socket disconnected",
       userName: user.name,
-      reason
+      reason,
     });
     const timeout = setTimeout(async () => {
       onlineId.delete(user.id);
