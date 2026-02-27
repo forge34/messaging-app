@@ -1,13 +1,12 @@
 import { CookieOptions } from "express";
 import passport from "passport";
-import { type User } from "@chat/db/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { prisma } from "@chat/db/client";
 import { AvatarGenerator } from "random-avatar-generator";
 import { io } from "../server.js";
 import { createHandler } from "../lib/create-handler.js";
-import { Routes } from "@chat/shared";
+import { PublicUserSchema, Routes } from "@chat/shared";
 
 const generator = new AvatarGenerator();
 
@@ -92,7 +91,7 @@ class Auth {
   static logout = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.logout, async (req, res) => {
-      const { id: userId } = req.user as User;
+      const { id: userId } = req.user as PublicUserSchema;
       res.cookie("jwt", "", cookieOptions);
       io.in(`user:${userId}`).disconnectSockets(true);
       return { code: 200, message: "logout sucess" };

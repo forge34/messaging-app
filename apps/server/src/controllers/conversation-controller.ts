@@ -1,8 +1,7 @@
-import { User } from "@chat/db/client";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
 import { createHandler } from "../lib/create-handler.js";
-import { Routes } from "@chat/shared";
+import { PublicUserSchema, Routes } from "@chat/shared";
 
 class ConversationController {
   static create = [
@@ -13,7 +12,7 @@ class ConversationController {
           id: req.body.otherId,
         },
       });
-      const currentUser = req.user as User;
+      const currentUser = req.user as PublicUserSchema;
 
       const hasConversation = await prisma.conversation.findFirst({
         where: {
@@ -73,7 +72,7 @@ class ConversationController {
   static getCurrentUserConversations = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getCurrentUserConversations, async (req) => {
-      const { id: userid } = req.user as User;
+      const { id: userid } = req.user as PublicUserSchema;
       const conversations = await prisma.conversation.findMany({
         where: {
           users: { some: { id: userid } },
@@ -143,7 +142,7 @@ class ConversationController {
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getConversationById, async (req) => {
       const conversationid = String(req.params.id);
-      const { id: userid } = req.user as User;
+      const { id: userid } = req.user as PublicUserSchema;
 
       const conversation = await prisma.conversation.findFirst({
         where: {
@@ -181,7 +180,6 @@ class ConversationController {
                       name: true,
                       imgUrl: true,
                       bio: true,
-                      lastSeen: true,
                     },
                   },
                 },

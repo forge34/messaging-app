@@ -1,14 +1,13 @@
-import { User } from "@chat/db/client";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
 import { createHandler } from "../lib/create-handler.js";
-import { Routes } from "@chat/shared";
+import { PublicUserSchema, Routes } from "@chat/shared";
 
 class UserController {
   static getCurrent = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getCurrentUser, async (req) => {
-      const { id, name, imgUrl, bio,lastSeen } = req.user as User;
+      const { id, name, imgUrl, bio,lastSeen } = req.user as PublicUserSchema;
       return { code: 200, message: "Success", data: { lastSeen,id, name, imgUrl, bio } };
     }),
   ];
@@ -46,7 +45,7 @@ class UserController {
   static getBookmarks = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getBookmarks, async (req, res) => {
-      const { id: userid } = req.user as User;
+      const { id: userid } = req.user as PublicUserSchema;
 
       const user = await prisma.user.findFirst({
         select: {
@@ -100,7 +99,7 @@ class UserController {
   static getMany = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.getUsers, async (req) => {
-      const currentUser = req.user as User;
+      const currentUser = req.user as PublicUserSchema;
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -139,7 +138,7 @@ class UserController {
   static blockUser = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.blockUser, async (req) => {
-      const user = req.user as User;
+      const user = req.user as PublicUserSchema;
       const blockedId = req.params.id;
 
       await prisma.user.update({

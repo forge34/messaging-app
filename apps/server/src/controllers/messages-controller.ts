@@ -1,15 +1,14 @@
-import { User } from "@chat/db/client";
 import passport from "passport";
 import { prisma } from "@chat/db/client";
 import { createHandler } from "../lib/create-handler.js";
-import { Routes } from "@chat/shared";
+import { PublicUserSchema, Routes } from "@chat/shared";
 
 class MessagesController {
   static bookmarkMessage = [
     passport.authenticate("jwt", { session: false, failWithError: true }),
     createHandler(Routes.bookmarkMessage, async (req, res) => {
       const messageId = String(req.params.id);
-      const user = req.user as User;
+      const user = req.user as PublicUserSchema;
 
       const message = await prisma.message.findFirst({
         where: { id: messageId },
