@@ -4,6 +4,7 @@ import { useBreakpoint } from "@/lib/hooks/use-match-media";
 import { getMe } from "@/lib/queries/auth";
 import { socket } from "@/lib/sockets";
 import {
+  onConversatonCreate,
   onMessageConfirm,
   onMessageCreate,
   onMessageRead,
@@ -50,6 +51,7 @@ function RouteComponent() {
     socket.on("message:read", onMessageRead);
     socket.on("message:reaction", onMesssageReaction);
     socket.on("users:presence_update", handlePresenceUpdate);
+    socket.on("conversation:create", onConversatonCreate);
 
     return () => {
       socket.off("message:create", onMessageCreate);
@@ -57,6 +59,7 @@ function RouteComponent() {
       socket.off("message:read", onMessageRead);
       socket.off("message:reaction", onMesssageReaction);
       socket.off("users:presence_update", handlePresenceUpdate);
+      socket.off("conversation:create", onConversatonCreate);
     };
   });
 

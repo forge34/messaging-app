@@ -13,7 +13,6 @@ import {
 import {
   ClientEvents,
   ClientToServerEvents,
-  OnlineUsers,
   PublicUserSchema,
   ServerToClientEvents,
 } from "@chat/shared";
@@ -30,10 +29,14 @@ export const io = new Server<ClientToServerEvents, ServerToClientEvents>(
   },
 );
 
+export type OnlineUsers = Map<
+  string,
+  { socket: ServerSocket; isOnline: boolean; timerId: NodeJS.Timeout | null }
+>;
 export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 io.engine.use(socketJwtVerify);
 
-const onlineId: OnlineUsers = new Map();
+export const onlineId: OnlineUsers = new Map();
 
 io.on("connection", async (socket) => {
   const req = socket.request as any;
@@ -49,7 +52,7 @@ io.on("connection", async (socket) => {
     clearTimeout(isUserOnline.timerId);
   }
 
-  onlineId.set(user.id, { isOnline: true, timerId: null });
+  onlineId.set(user.id, { isOnline: true, timerId: null, socket });
 
   io.emit("users:presence_update", Array.from(onlineId.keys()));
   const conversations = await prisma.conversation.findMany({
@@ -106,6 +109,14 @@ io.on("connection", async (socket) => {
     }),
   );
 
+  socket.on(
+    "conversation:create",
+    createSafeListener(
+      ClientEvents,
+      "conversation:create",
+      handleConversationCreate(user, socket),
+    ),
+  );
   socket.on("disconnect", handleDisconnect(user, onlineId, socket));
 });
 

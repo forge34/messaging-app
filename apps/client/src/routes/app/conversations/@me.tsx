@@ -2,8 +2,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBreakpoint } from "@/lib/hooks/use-match-media";
-import { useCreateConversation } from "@/lib/mutations/conversations";
 import { getUsers } from "@/lib/queries/user";
+import { socket } from "@/lib/sockets";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Search, ArrowLeft } from "lucide-react";
@@ -19,7 +19,6 @@ export const Route = createFileRoute("/app/conversations/@me")({
 function RouteComponent() {
   const { data } = useQuery(getUsers());
   const navigate = useNavigate();
-  const createConversation = useCreateConversation();
   const { md } = useBreakpoint();
   const users = data?.data;
 
@@ -70,7 +69,7 @@ function RouteComponent() {
                         params: { conversationId: u.mutualConversation },
                       });
                     } else {
-                      await createConversation.mutateAsync(u.id);
+                      socket.emit("conversation:create" ,u.id)
                     }
                   }}
                 >

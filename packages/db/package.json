@@ -6,9 +6,10 @@
   "scripts": {
     "build": "pnpm db:generate && tsc -p tsconfig.json",
     "db:push": "pnpm prisma db push",
-    "db:reset": "pnpm prisma db push --force-reset",
+    "db:reset": "pnpm prisma migrate reset",
     "db:generate": "pnpm prisma generate",
     "db:migrate": "pnpm prisma migrate dev",
+    "db:studio": "pnpm prisma studio",
     "dev": "tsc -w  -p tsconfig.json"
   },
   "exports": {

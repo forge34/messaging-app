@@ -7,6 +7,57 @@ import {
 import { toast } from "sonner";
 import type z from "zod";
 
+export async function onConversatonCreate(
+  ...args: Parameters<ServerToClientEvents["conversation:create"]>
+) {
+  const [conversation] = args;
+  const conversationId = conversation.id;
+
+  queryClient.setQueryData(
+    ["conversations", conversationId],
+    (
+      oldData: ResponseSchema<typeof Routes.getConversationById> | undefined,
+    ) => {
+      if (oldData?.data) return oldData;
+
+      return {
+        ...oldData,
+        data: conversation,
+      };
+    },
+  );
+
+  const user = queryClient.getQueryData(["user"]) as ResponseSchema<
+    typeof Routes.getCurrentUser
+  >;
+
+  if (!user || !user.data) return;
+
+  queryClient.setQueryData(
+    ["conversations"],
+    (
+      oldData: z.infer<
+        typeof Routes.getCurrentUserConversations.responseSchema
+      >,
+    ) => {
+      if (!oldData?.data) return oldData;
+
+      const otherConversations = oldData.data.filter(
+        (c) => c.id !== conversationId,
+      );
+      return {
+        ...oldData,
+        data: [
+          {
+            ...conversation,
+            otherUser: conversation.users.find((u) => u.id !== user.data?.id),
+          },
+          ...otherConversations,
+        ],
+      };
+    },
+  );
+}
 export async function onMesssageReaction(
   ...args: Parameters<ServerToClientEvents["message:reaction"]>
 ) {

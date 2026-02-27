@@ -1,11 +1,10 @@
 import z from "zod";
-import { PublicMessageSchema } from "../schemas/publicSchemas.js";
+import {
+  PublicConversationSchema,
+  PublicMessageSchema,
+} from "../schemas/publicSchemas.js";
 import { createEvent, EventMap } from "./schemas.js";
 
-export type OnlineUsers = Map<
-  string,
-  { isOnline: boolean; timerId: NodeJS.Timeout | null }
->;
 
 export const ServerEvents = {
   "message:create": createEvent({
@@ -47,6 +46,10 @@ export const ServerEvents = {
     name: "users:presence_update",
     input: z.tuple([z.array(z.string())]),
   }),
+  "conversation:create": createEvent({
+    name: "conversation:create",
+    input: z.tuple([PublicConversationSchema]),
+  }),
 } as const;
 
 export type ServerToClientEvents = EventMap<typeof ServerEvents>;
@@ -85,6 +88,10 @@ export const ClientEvents = {
   "message:reaction": createEvent({
     name: "message:reaction",
     input: z.tuple([z.string(), z.string(), z.string()]),
+  }),
+  "conversation:create": createEvent({
+    name: "conversation:create",
+    input: z.tuple([z.string()]),
   }),
 } as const;
 

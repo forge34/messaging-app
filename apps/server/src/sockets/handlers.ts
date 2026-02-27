@@ -1,16 +1,196 @@
 import { prisma } from "@chat/db/client";
 import {
   ClientToServerEvents,
-  OnlineUsers,
   PublicMessageSchema,
   type PublicUserSchema,
 } from "@chat/shared";
-import { io, ServerSocket } from "../server.js";
+import { io, onlineId, OnlineUsers, ServerSocket } from "../server.js";
 import { markMessagesAsRead } from "./helpers.js";
 import { logger } from "../lib/logger.js";
 import { DisconnectReason } from "socket.io";
 
+export function handleConversationCreate(
+  user: PublicUserSchema,
+  socket: ServerSocket,
+): ClientToServerEvents["conversation:create"] {
+  return async (...args) => {
+    const [otherId] = args;
 
+    if (user.id === otherId) return;
+
+    const otherUser = await prisma.user.findUnique({ where: { id: otherId } });
+    if (!otherUser) return;
+
+    let conversation = await prisma.conversation.findFirst({
+      where: {
+        users: {
+          every: {
+            id: { in: [user.id, otherId] },
+          },
+        },
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        messages: {
+          select: {
+            id: true,
+            body: true,
+            authorId: true,
+            conversationId: true,
+            status: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                bio: true,
+                name: true,
+                imgUrl: true,
+              },
+            },
+            bookmarkedBy: true,
+            messageReceipts: true,
+            messageReactions: true,
+            parentMessageId: true,
+            parentMessage: {
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    imgUrl: true,
+                    bio: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        users: {
+          select: {
+            id: true,
+            name: true,
+            imgUrl: true,
+            bio: true,
+            lastSeen: true,
+          },
+        },
+      },
+    });
+
+    if (!conversation) {
+      conversation = await prisma.conversation.create({
+        data: {
+          users: {
+            connect: [{ id: user.id }, { id: otherId }],
+          },
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          messages: {
+            select: {
+              id: true,
+              body: true,
+              authorId: true,
+              conversationId: true,
+              status: true,
+              createdAt: true,
+              author: {
+                select: {
+                  id: true,
+                  bio: true,
+                  name: true,
+                  imgUrl: true,
+                },
+              },
+              bookmarkedBy: true,
+              messageReceipts: true,
+              messageReactions: true,
+              parentMessageId: true,
+              parentMessage: {
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      name: true,
+                      imgUrl: true,
+                      bio: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          users: {
+            select: {
+              id: true,
+              name: true,
+              imgUrl: true,
+              bio: true,
+              lastSeen: true,
+            },
+          },
+        },
+      });
+    }
+
+    const mappedMessages = conversation.messages
+      .map(
+        ({
+          id,
+          authorId,
+          author,
+          status,
+          createdAt,
+          conversationId,
+          bookmarkedBy,
+          body,
+          messageReactions,
+          messageReceipts,
+          parentMessageId,
+          parentMessage,
+        }) => {
+          return {
+            messageReactions,
+            messageReceipts,
+            id,
+            body,
+            author,
+            authorId,
+            status,
+            createdAt,
+            conversationId,
+            parentMessage,
+            parentMessageId,
+            isMine: authorId === user.id,
+            isBookmarked:
+              bookmarkedBy.findIndex(({ id }) => id === user.id) >= 0
+                ? true
+                : false,
+          };
+        },
+      )
+      .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+    const mapped = {
+      ...conversation,
+      messages: mappedMessages,
+      title: otherUser.name ?? "Conversation",
+      lastSeen: otherUser.lastSeen ?? undefined,
+    };
+
+    socket.join(conversation.id);
+    const otherSocket = onlineId.get(otherUser.id);
+
+    if (otherSocket) {
+      otherSocket.socket.join(conversation.id);
+    }
+    console.log(conversation);
+    socket.emit("conversation:create", mapped);
+  };
+}
 export function handleMessageReaction(
   user: PublicUserSchema,
 ): ClientToServerEvents["message:reaction"] {
@@ -140,6 +320,6 @@ export function handleDisconnect(
       });
     }, 5000);
 
-    onlineId.set(user.id, { isOnline: false, timerId: timeout });
+    onlineId.set(user.id, { isOnline: false, timerId: timeout, socket });
   };
 }

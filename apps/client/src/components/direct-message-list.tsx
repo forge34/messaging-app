@@ -38,6 +38,7 @@ export function DirectMessageList({
             otherUser,
             createdAt,
           } = conversation;
+
           return (
             <Link
               key={id}
