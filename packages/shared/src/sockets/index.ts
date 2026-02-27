@@ -36,7 +36,7 @@ export interface ClientToServerEvents {
     message: Partial<PublicMessageSchema>,
     conversationId: string,
     tempId: string,
-    parentMessageId: string,
+    parentMessageId?: string,
   ) => void;
   "message:delete": (messageId: string, conversationId: string) => void;
   "message:read": (conversationId: string) => void;
