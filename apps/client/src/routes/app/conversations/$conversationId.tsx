@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Route as MeRoute } from "./@me.tsx";
 import { socket } from "@/lib/sockets/index.ts";
 import { Route as ConversationRoute } from "./route.tsx";
@@ -18,6 +18,8 @@ import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 import { getMe } from "@/lib/queries/auth.ts";
 import { useOnlineUsers } from "@/lib/context/online-users.tsx";
 import type { PublicMessageSchema } from "@chat/shared";
+
+export type MessageRefMap = Map<string, HTMLDivElement | null>;
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
   component: RouteComponent,
@@ -65,16 +67,19 @@ function RouteComponent() {
   const [parentMessage, setParentMessage] = useState<
     PublicMessageSchema | undefined
   >(undefined);
+  const messagesRefs = useRef<MessageRefMap>(new Map());
   const conversation = data?.data;
 
   useEffect(() => {
     if (!conversation?.messages?.length) return;
     const lastMessage = conversation.messages[conversation.messages.length - 1];
-    navigate({
-      hash: lastMessage.id,
-      replace: true,
-    });
-  }, [conversation?.messages, navigate]);
+
+    const el = messagesRefs.current.get(lastMessage.id);
+
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [conversation?.messages]);
 
   useEffect(() => {
     let timeoutId: number;
@@ -86,7 +91,6 @@ function RouteComponent() {
       }, 3000);
     }
     function handleTypingStop() {
-      console.log("stop typing");
       setTyping({ typing: false, name: "" });
     }
     if (!conversationId) return;
@@ -138,6 +142,14 @@ function RouteComponent() {
         <AnimatePresence initial={false}>
           {conversation?.messages.map((msg) => (
             <Message
+              ref={(el) => {
+                messagesRefs.current.set(msg.id, el);
+
+                return () => {
+                  messagesRefs.current.delete(msg.id);
+                };
+              }}
+              refMap={messagesRefs.current}
               onReply={(message) => setParentMessage(message)}
               message={msg}
               key={msg.clientId || msg.id}

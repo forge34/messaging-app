@@ -6,12 +6,15 @@ import { Check, CheckCheck, Clock, Smile, Reply } from "lucide-react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
-import { useState  } from "react";
+import { useState, type Ref } from "react";
 import { socket } from "@/lib/sockets";
+import type { MessageRefMap } from "@/routes/app/conversations/$conversationId";
 
 interface MessageProps {
   message: PublicMessageSchema;
   onReply?: (message: PublicMessageSchema) => void;
+  ref: Ref<HTMLDivElement>;
+  refMap: MessageRefMap;
 }
 
 const formatTime = (date: string) => {
@@ -49,7 +52,7 @@ const StatusIcon = ({
   }
 };
 
-export function Message({ message, onReply }: MessageProps) {
+export function Message({ message, onReply, ref, refMap }: MessageProps) {
   const [isHovered, setIsHovered] = useState(false);
   const onEmojiClick = (emojiData: { emoji: string }) => {
     socket.emit(
@@ -70,11 +73,24 @@ export function Message({ message, onReply }: MessageProps) {
 
   const parentMessage = message?.parentMessage;
 
-  function scrollIntoView() {
+  function scrollIntoView(id: string) {
+    const el = refMap.get(id);
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    requestAnimationFrame(() => {
+      el.classList.add("highlight");
+
+      setTimeout(() => {
+        el.classList.remove("highlight");
+      }, 1000);
+    });
   }
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -85,6 +101,7 @@ export function Message({ message, onReply }: MessageProps) {
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => scrollIntoView(message.id)}
       id={message.id}
     >
       <img
@@ -101,7 +118,10 @@ export function Message({ message, onReply }: MessageProps) {
       >
         {parentMessage && (
           <div
-            onClick={scrollIntoView}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              scrollIntoView(parentMessage.id);
+            }}
             className={cn(
               "mb-1 rounded-xl px-3 py-2 backdrop-blur-sm",
               message.isMine ? "bg-primary/15" : "bg-secondary/40",
