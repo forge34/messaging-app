@@ -100,6 +100,13 @@ export const FullUserSchema = UserSchema.omit({
 }).extend({
   blocked: z.array(PublicUserSchema),
   blockedBy: z.array(PublicUserSchema),
+  conversations: z.array(
+    PublicConversationSchema.pick({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+    }),
+  ),
   messages: z.array(
     PublicMessageSchema.omit({
       author: true,

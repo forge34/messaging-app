@@ -87,7 +87,8 @@ export const Routes = {
     path: "/users/me",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: PublicUserSchema,
+    responseData: PublicUserSchema.extend({
+    }),
   }),
 
   getBookmarks: createRoute({

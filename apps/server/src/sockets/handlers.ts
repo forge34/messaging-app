@@ -1,6 +1,5 @@
 import { prisma } from "@chat/db/client";
 import {
-  ClientEvents,
   ClientToServerEvents,
   OnlineUsers,
   PublicMessageSchema,
@@ -16,9 +15,8 @@ export function handleMessageReaction(
   socket: ServerSocket,
 ): ClientToServerEvents["message:reaction"] {
   return async (...args) => {
-    const data = ClientEvents["message:reaction"].input.parse(args);
 
-    const [conversationId, messageId, emoji] = data;
+    const [conversationId, messageId, emoji] = args;
     const message = await prisma.message.update({
       where: {
         id: messageId,
@@ -61,9 +59,8 @@ export function handleMessageCreate(
   socket: ServerSocket,
 ): ClientToServerEvents["message:create"] {
   return async (...args) => {
-    const data = ClientEvents["message:create"].input.parse(args);
 
-    const [message, conversationId, tempId, parentMessageId] = data;
+    const [message, conversationId, tempId, parentMessageId] = args;
     const content = message.body.trim();
     if (!content) {
       return;
@@ -112,8 +109,7 @@ export function handleMessageRead(
   socket: ServerSocket,
 ): ClientToServerEvents["message:read"] {
   return async (...args) => {
-    const data = ClientEvents["message:read"].input.parse(args);
-    const [conversationId] = data;
+    const [conversationId] = args;
     const messageIds = await markMessagesAsRead(conversationId, user.id);
 
     if (messageIds.length >= 0)

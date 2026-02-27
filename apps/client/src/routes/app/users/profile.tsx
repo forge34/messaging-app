@@ -38,7 +38,7 @@ function RouteComponent() {
       <Card className="rounded-2xl shadow-sm border-none md:border md:shadow-md">
         <CardContent className="py-6 px-4 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
           {/* Larger avatar on mobile, standard on desktop */}
-          <Avatar className="h-24 w-24 md:h-28 md:h-28 ring-4 ring-background shadow-sm">
+          <Avatar className="h-24 w-24 md:h-28  ring-4 ring-background shadow-sm">
             <AvatarImage src={user?.imgUrl} />
             <AvatarFallback className="text-3xl">
               {user?.name?.slice(0, 2).toUpperCase()}
