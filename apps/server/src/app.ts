@@ -1,14 +1,13 @@
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
-import morgan from "morgan";
 import router from "./routes/index.js";
 import { PassportConfig } from "./config/passport.js";
 import passport from "passport";
-
+import { pinoHttp } from "pino-http";
 import compression from "compression";
 import z, { ZodError } from "zod";
-
+import { logger } from "./lib/logger.js";
 const app: Express = express();
 
 export const corsOptions: CorsOptions = {
@@ -16,10 +15,9 @@ export const corsOptions: CorsOptions = {
   credentials: true,
   allowedHeaders: ["Content-type"],
 };
-
+app.use(pinoHttp(logger));
 app.use(compression());
 app.use(cors(corsOptions));
-app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

@@ -1,5 +1,49 @@
 import { prisma } from "@chat/db/client";
+import { EventMap, EventObject } from "@chat/shared";
+import { logger } from "../lib/logger.js";
+import z from "zod";
 
+export function createSafeListener<
+  TGroup extends EventObject,
+  TKey extends keyof TGroup & string,
+>(eventGroup: TGroup, eventKey: TKey, handler: EventMap<TGroup>[TKey]) {
+  const eventDef = eventGroup[eventKey];
+
+  return (...args: unknown[]) => {
+    const result = eventDef.input.safeParse(args);
+
+    if (!result.success) {
+      logger.error(
+        {
+          event: eventDef.name,
+          payload: args,
+          validationErrors: z.treeifyError(result.error),
+        },
+        `[Validation Failed] ${eventDef.name}`,
+      );
+      return;
+    }
+
+    try {
+      const execution = (
+        handler as (
+          ...a: z.infer<TGroup[TKey]["input"]>
+        ) => void | Promise<void>
+      )(...(result.data as z.infer<TGroup[TKey]["input"]>));
+
+      if (execution instanceof Promise) {
+        execution.catch((err) => {
+          logger.error(
+            { err, event: eventDef.name },
+            "Async Handler Exception",
+          );
+        });
+      }
+    } catch (err) {
+      logger.error({ err, event: eventDef.name }, "Sync Handler Exception");
+    }
+  };
+}
 export async function markMessagesAsRead(
   conversationId: string,
   userId: string,

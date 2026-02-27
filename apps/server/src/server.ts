@@ -10,11 +10,14 @@ import {
   handleMessageRead,
 } from "./sockets/handlers.js";
 import {
+  ClientEvents,
   ClientToServerEvents,
   OnlineUsers,
   PublicUserSchema,
   ServerToClientEvents,
 } from "@chat/shared";
+import { logger } from "./lib/logger.js";
+import { createSafeListener } from "./sockets/helpers.js";
 
 const port = Number(process.env.PORT) || 3000;
 const server = createServer(app);
@@ -34,6 +37,11 @@ const onlineId: OnlineUsers = new Map();
 io.on("connection", async (socket) => {
   const req = socket.request as any;
   const user = req.user as PublicUserSchema;
+  logger.info({
+    socketId: socket.id,
+    msg: "Socket connected",
+    userName: user.name,
+  });
   const isUserOnline = onlineId.get(user.id);
 
   if (isUserOnline && isUserOnline.timerId) {
@@ -56,18 +64,47 @@ io.on("connection", async (socket) => {
   conversations.forEach((c) => {
     socket.join(c.id);
   });
+  socket.on(
+    "message:create",
+    createSafeListener(
+      ClientEvents,
+      "message:create",
+      handleMessageCreate(user, socket),
+    ),
+  );
 
-  const create = handleMessageCreate(user, socket);
-  socket.on("message:create", create);
-  socket.on("message:read", handleMessageRead(user, socket));
-  socket.on("message:reaction", handleMessageReaction(user, socket));
-  socket.on("typing", (conversationId: string, username: string) => {
-    socket.to(conversationId).emit("typing", username);
-  });
-  socket.on("typing:stop", (conversationId) => {
-    socket.to(conversationId).emit("typing:stop");
-  });
-  socket.on("disconnect", handleDisconnect(user, onlineId));
+  socket.on(
+    "message:read",
+    createSafeListener(
+      ClientEvents,
+      "message:read",
+      handleMessageRead(user, socket),
+    ),
+  );
+
+  socket.on(
+    "message:reaction",
+    createSafeListener(
+      ClientEvents,
+      "message:reaction",
+      handleMessageReaction(user, socket),
+    ),
+  );
+
+  socket.on(
+    "typing",
+    createSafeListener(ClientEvents, "typing", (conversationId, username) => {
+      socket.to(conversationId).emit("typing", username);
+    }),
+  );
+
+  socket.on(
+    "typing:stop",
+    createSafeListener(ClientEvents, "typing:stop", (conversationId) => {
+      socket.to(conversationId).emit("typing:stop");
+    }),
+  );
+  socket.on("disconnect", handleDisconnect(user, onlineId, socket));
 });
 
 if (process.env.NODE_ENV !== "test") {

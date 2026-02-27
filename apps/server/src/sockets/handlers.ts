@@ -8,6 +8,8 @@ import {
 } from "@chat/shared";
 import { io, ServerSocket } from "../server.js";
 import { markMessagesAsRead } from "./helpers.js";
+import { logger } from "../lib/logger.js";
+import { DisconnectReason } from "socket.io";
 
 export function handleMessageReaction(
   user: PublicUserSchema,
@@ -124,8 +126,15 @@ export function handleMessageRead(
 export function handleDisconnect(
   user: PublicUserSchema,
   onlineId: OnlineUsers,
+  socket : ServerSocket
 ) {
-  return () => {
+  return (reason : DisconnectReason) => {
+    logger.info({
+      socketId: socket.id,
+      msg: "Socket disconnected",
+      userName: user.name,
+      reason
+    });
     const timeout = setTimeout(async () => {
       onlineId.delete(user.id);
 

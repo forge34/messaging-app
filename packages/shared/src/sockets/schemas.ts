@@ -11,7 +11,7 @@ export function createEvent<TName extends string, TSchema extends ZodTuple>(
   return event;
 }
 
-export type EventMap<T extends Record<string, SocketEvent<string, ZodTuple>>> =
-  {
-    [k in keyof T]: (...args: z.infer<T[k]["input"]>) => void | Promise<void>;
-  };
+export type EventObject = Record<string, SocketEvent<string, ZodTuple>>;
+export type EventMap<T extends EventObject> = {
+  [k in keyof T]: (...args: z.infer<T[k]["input"]>) => void | Promise<void>;
+};
