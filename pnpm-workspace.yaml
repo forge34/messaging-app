@@ -10,10 +10,12 @@ ignoredBuiltDependencies:
   - prisma-zod-generator
 
 onlyBuiltDependencies:
+  - '@nestjs/core'
   - '@prisma/client'
   - '@prisma/engines'
   - esbuild
   - prisma
+  - unrs-resolver
 
 overrides:
   hono@<4.11.4: '>=4.11.4'

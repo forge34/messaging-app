@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev:packages": "pnpm --filter \"./packages/**\" run --parallel dev",
-    "dev:server": "pnpm --filter ./apps/server  dev",
+    "dev:server": "pnpm --filter ./apps/server  start:dev",
     "dev:client": "pnpm --filter ./apps/client dev",
     "build:packages": "pnpm --filter \"./packages/**\" run --r build",
     "build:shared": "pnpm --filter ./packages/shared/ build",
