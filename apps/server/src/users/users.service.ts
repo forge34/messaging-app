@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly Prisma: PrismaService) {}
 
   async users() {
-    return this.Prisma.client.user.findMany({
+    return this.Prisma.user.findMany({
       omit: {
         password: true,
       },
@@ -14,7 +14,7 @@ export class UsersService {
   }
 
   async user(id: string) {
-    return this.Prisma.client.user.findFirst({
+    return this.Prisma.user.findFirst({
       where: {
         id: id,
       },
