@@ -6,6 +6,7 @@ import { UsersService } from './users/users.service';
 import { PrismaService } from './prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { join } from 'path';
       envFilePath: join(process.cwd(), '../../.env'),
       isGlobal: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, PrismaService],
