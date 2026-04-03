@@ -13,7 +13,7 @@ export const PublicUserSchema = UserSchema.pick({
   imgUrl: true,
   bio: true,
   lastSeen: true,
-}).strict();
+});
 
 export type PublicUserSchema = z.infer<typeof PublicUserSchema>;
 
@@ -37,30 +37,28 @@ export const PublicMessageSchema = MessageSchema.pick({
   createdAt: true,
   status: true,
   parentMessageId: true,
-})
-  .extend({
-    author: PublicUserSchema,
-    messageReceipts: z.array(PublicMessageReceiptsSchema),
-    messageReactions: z.array(PublicMessageReactionsSchema),
-    isMine: z.boolean(),
-    isBookmarked: z.boolean(),
-    clientId: z.string().optional(),
-    deliveredAt: z.date().nullable().optional(),
-    parentMessage: MessageSchema.pick({
-      id: true,
-      conversationId: true,
-      authorId: true,
-      body: true,
-      createdAt: true,
-      status: true,
-    })
-      .extend({
-        author: PublicUserSchema.omit({ lastSeen: true }),
-      })
-      .optional()
-      .nullable(),
+}).extend({
+  author: PublicUserSchema,
+  messageReceipts: z.array(PublicMessageReceiptsSchema),
+  messageReactions: z.array(PublicMessageReactionsSchema),
+  isMine: z.boolean(),
+  isBookmarked: z.boolean(),
+  clientId: z.string().optional(),
+  deliveredAt: z.date().nullable().optional(),
+  parentMessage: MessageSchema.pick({
+    id: true,
+    conversationId: true,
+    authorId: true,
+    body: true,
+    createdAt: true,
+    status: true,
   })
-  .strict();
+    .extend({
+      author: PublicUserSchema.omit({ lastSeen: true }),
+    })
+    .optional()
+    .nullable(),
+});
 
 export type PublicMessageSchema = z.infer<typeof PublicMessageSchema>;
 
@@ -68,14 +66,12 @@ export const PublicConversationSchema = ConversationSchema.pick({
   id: true,
   createdAt: true,
   updatedAt: true,
-})
-  .extend({
-    users: z.array(PublicUserSchema),
-    messages: z.array(PublicMessageSchema),
-    title: z.string().nonempty(),
-    lastSeen: z.coerce.date().optional(),
-  })
-  .strict();
+}).extend({
+  users: z.array(PublicUserSchema),
+  messages: z.array(PublicMessageSchema),
+  title: z.string().nonempty(),
+  lastSeen: z.coerce.date().optional(),
+});
 
 export type PublicConversationSchema = z.infer<typeof PublicConversationSchema>;
 
