@@ -43,7 +43,7 @@ export class AuthController {
     const user = await this.authService.login(body.username, body.password);
     if (!user) throw new UnauthorizedException();
 
-    const token = await this.jwtService.signAsync({ id: user.id });
+    const token = await this.jwtService.signAsync({ ...user });
     res.cookie('jwt', token, cookieOptions);
     return { message: 'Login sucess' };
   }

@@ -44,6 +44,7 @@ export class AuthService {
         name: true,
         bio: true,
         imgUrl: true,
+        lastSeen: true,
       },
     });
 
@@ -53,7 +54,7 @@ export class AuthService {
     if (!matches) {
       return null;
     }
-    const { id, name, bio, imgUrl } = user;
-    return { id, name, bio, imgUrl };
+    const { id, name, bio, imgUrl, lastSeen } = user;
+    return { id, name, bio, imgUrl, lastSeen };
   }
 }
