@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { ConversationsModule } from './conversations/conversations.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
       isGlobal: true,
     }),
     AuthModule,
+    ConversationsModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, PrismaService, JwtStrategy],
