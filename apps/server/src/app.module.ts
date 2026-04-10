@@ -9,6 +9,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { ConversationsModule } from './conversations/conversations.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ConversationsModule } from './conversations/conversations.module';
     }),
     AuthModule,
     ConversationsModule,
+    ChatModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, PrismaService, JwtStrategy],

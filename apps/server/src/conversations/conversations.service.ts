@@ -43,8 +43,6 @@ export class ConversationsService {
         'Conversation must have at least 2 participants',
       );
 
-    console.log(conversation.messages);
-
     const mappedMessages = conversation.messages
       .map(({ authorId, bookmarkedBy, ...rest }) => {
         return {
