@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import {
+  ClientEvents,
   ClientToServerEvents,
   PublicMessageSchema,
   ServerToClientEvents,
@@ -16,6 +17,7 @@ import {
 import { type Request } from 'express';
 import { ChatService } from './chat.service';
 import { User } from '@chat/db/client';
+import { ChatZodValidationPipe } from './zod.pipe';
 export type TypedServer = Server<ClientToServerEvents, ServerToClientEvents>;
 export type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
@@ -48,7 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message:create')
   async onMessageCreate(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody()
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'message:create'))
     args: [
       message: PublicMessageSchema,
       conversationId: string,
@@ -72,7 +74,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message:read')
   async onMessageRead(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody() args: [conversationId: string],
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'message:read'))
+    args: [conversationId: string],
   ) {
     const req = socket.request as Request;
     const user = req.user as User;
@@ -83,7 +86,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message:reaction')
   async onMessageReaction(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody()
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'message:reaction'))
     args: [conversationId: string, messageId: string, emoji: string],
   ) {
     const req = socket.request as Request;
@@ -101,7 +104,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('typing')
   onTyping(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody() args: [conversationId: string, username: string],
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'typing'))
+    args: [conversationId: string, username: string],
   ) {
     const [conversationId, username] = args;
     socket.to(conversationId).emit('typing', username);
@@ -110,7 +114,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('typing:stop')
   onTypingStop(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody() args: [conversationId: string],
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'typing:stop'))
+    args: [conversationId: string],
   ) {
     const [conversationId] = args;
     socket.to(conversationId).emit('typing:stop');
@@ -119,7 +124,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('conversation:create')
   async onConversationCreate(
     @ConnectedSocket() socket: TypedSocket,
-    @MessageBody() args: [otherId: string],
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'conversation:create'))
+    args: [otherId: string],
   ) {
     const req = socket.request as Request;
     const user = req.user as User;
