@@ -1,10 +1,7 @@
 import z from "zod";
-import {
-  PublicConversationSchema,
-  PublicMessageSchema,
-} from "../schemas/publicSchemas.js";
 import { createEvent, EventMap } from "./schemas.js";
-
+import { PublicConversationSchema } from "../schemas/conversation-schema.js";
+import { PublicMessageSchema } from "../schemas/message-schema.js";
 
 export const ServerEvents = {
   "message:create": createEvent({

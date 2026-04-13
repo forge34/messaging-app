@@ -2,12 +2,12 @@ import z from "zod";
 import { createRoute } from "./routeConfig.js";
 import { LoginRequest, SignupRequest } from "../schemas/auth-schema.js";
 import {
-  ConversationListSchema,
-  FullUserSchema,
   PublicConversationSchema,
-  PublicMessageSchema,
-  PublicUserSchema,
-} from "../schemas/publicSchemas.js";
+  ConversationListSchema,
+} from "../schemas/conversation-schema.js";
+import { FullUserSchema } from "../schemas/full-user-schema.js";
+import { PublicMessageSchema } from "../schemas/message-schema.js";
+import { PublicUserSchema } from "../schemas/user-schema.js";
 
 const EmptyParamQueries = {
   params: z.object({}),
@@ -87,8 +87,7 @@ export const Routes = {
     path: "/users/me",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: PublicUserSchema.extend({
-    }),
+    responseData: PublicUserSchema.extend({}),
   }),
 
   getBookmarks: createRoute({
