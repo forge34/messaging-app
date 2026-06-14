@@ -7,73 +7,118 @@
 
 # Messaging App
 
-Messaging App is a real-time chat application built as part of [The Odin Project](https://www.theodinproject.com/) curriculum. This project demonstrates a full-stack messaging application where users can create accounts, log in, and exchange messages between users instantly using modern web technologies.
+Messaging App is a real-time communication system built around WebSocket-based event streaming. It allows authenticated users to exchange messages instantly, with support for message lifecycle tracking, presence detection, typing indicators, and read receipts.
 
-The frontend is built with React and Vite.
-The backend is built with Node.js/Express.
-Real-time communication using WebSockets (Socket.io).
+The application follows an event-driven architecture where the backend acts as the source of truth, ensuring consistent state synchronization across all connected clients in real time.
 
-## Table of Contents
+## Tech Stack
 
-- [Links](#links)
-- [Features](#features)
-- [Tools & Frameworks used](#tools--frameworks-used)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
+* **Frontend:** React, Vite, Tailwind CSS , Tanstack Query, Tanstack Router, Socket.io-client, Shadcn UI.
+* **Backend:** NestJS, Express, Socket.io, Passport (JWT authentication), bcryptjs.
+* **Database & ORM:** PostgreSQL, Prisma, Zod.
+* **Tooling:** pnpm, ESLint, Prettier, TypeScript, Docker.
 
-### Links
 
-- ~~[Live demo](https://forge-messaging-app.netlify.app/)~~ (currently offline)
-- [Backend API repository](https://github.com/forge34/messaging-app-backend)
+## Prerequisites
 
-## Features
+To run this project locally, ensure you have the following installed:
 
-- Register and log in securely.
-- Send and receive messages instantly with Socket.io.
-- Add users and manage conversations.
-- Fully usable on mobile, tablet, and desktop devices.
-
-### Tools & Frameworks used
-
-- **Frontend:** React, Vite, React Query, React Testing Library , Vitest
-- **Backend:** Express.js, Socket.io (see backend repo)
-- **Other:** TypeScript for type safety
-
-## Installation
-
-To run this project locally, follow these steps:
-
-1. **Clone the repository:**
-
-   ```sh
-   git clone https://github.com/forge34/messaging-app-frontend.git
-   cd messaging-app-frontend
-   ```
-
-2. **Install dependencies:**
-
-   ```sh
-   npm install
-   ```
-
-3. **Start the development server:**
-
-   ```sh
-   npm run dev
-   ```
-
-The app will typically be available at `http://localhost:5173` (default Vite port).
+* **Node.js** (v22 or newer recommended)
+* **pnpm** (v10.x or newer)
+* **Docker & Docker Compose** 
 
 ## Environment Variables
 
-(also see setup instructions on the backend repo)
+Create a `.env` file in the root of the project to configure your environment. Use the provided variables below:
 
-To connect the frontend to the backend API, you must create a `.env` file in the root of your project.  
-Below is an example of what it should look like:
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=messaging-app
+
+PORT=3000
+
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+SECRET="JWTSECRET"
 
 ```
-VITE_API=http://localhost:3000
+
+or `cp example.env .env` 
+
+## Local Development Setup
+
+1. **Clone the repository:**
+```sh
+git clone https://github.com/forge34/messaging-app-frontend.git
+cd messaging-app-frontend
+
 ```
+
+
+2. **Install dependencies:**
+```sh
+pnpm install
+
+```
+
+
+3. **Start the database container:**
+```sh
+docker compose up db -d
+
+```
+
+
+4. **Initialize the database:**
+Run Prisma migrations and generate the database client.
+```sh
+pnpm db:migrate
+pnpm db:generate
+
+```
+
+
+5. **Start the development servers:**
+This command spins up the client, server, and builds local packages in parallel.
+```sh
+pnpm dev
+
+```
+
+
+
+The client will be available at `http://localhost:5173` (Vite's default port), and the API server will be running at `http://localhost:3000`.
+
+## Available Scripts
+
+Run these commands from the root directory using `pnpm <command>`.
+
+| Command | Action |
+| --- | --- |
+| `dev` | Starts all apps and packages in development mode simultaneously. |
+| `build` | Builds all applications and packages for production. |
+| `db:generate` | Generates the Prisma Client inside `@chat/db`. |
+| `db:migrate` | Applies pending database migrations. |
+| `db:reset` | Drops the database and applies all migrations from scratch. |
+| `db:studio` | Opens Prisma Studio to view and edit database records visually. |
+| `dev:server` | Starts only the NestJS backend in watch mode. |
+| `dev:client` | Starts only the React frontend. |
+
+## Production & Docker
+
+The project includes a `compose.yaml` configuration to run the application using Docker containers.
+
+To start the production environment:
+
+```sh
+docker compose up -d
+
+```
+
+This configuration provisions:
+
+* A `db` service running PostgreSQL 18.2 with persistent volume storage (`pgdata`).
+* A `server` service pulling the frontend/backend container image from the GitHub Container Registry (`ghcr.io/forge34/messaging-app-frontend:latest`).
 
 - `VITE_API` should be set to the base URL of your backend API (for local development, this is usually `http://localhost:3000`, but it should match wherever your backend is running).
 - All environment variables used by Vite must be prefixed with `VITE_`.
