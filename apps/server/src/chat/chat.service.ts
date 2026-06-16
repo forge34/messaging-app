@@ -175,7 +175,6 @@ export class ChatService {
     otherId: string,
   ) {
     if (user.id === otherId) return;
-
     const otherUser = await this.prisma.user.findUnique({
       where: { id: otherId },
     });
@@ -183,7 +182,10 @@ export class ChatService {
 
     let conversation = await this.prisma.conversation.findFirst({
       where: {
-        users: { every: { id: { in: [user.id, otherId] } } },
+        AND: [
+          { users: { some: { id: user.id } } },
+          { users: { some: { id: otherId } } },
+        ],
       },
       select: conversationSelect,
     });

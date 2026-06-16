@@ -69,7 +69,13 @@ function RouteComponent() {
                         params: { conversationId: u.mutualConversation },
                       });
                     } else {
-                      socket.emit("conversation:create" ,u.id)
+                      socket.emit("conversation:create", u.id);
+                      socket.once("conversation:create", (conversation) => {
+                        navigate({
+                          to: "/app/conversations/$conversationId",
+                          params: { conversationId: conversation.id },
+                        });
+                      });
                     }
                   }}
                 >

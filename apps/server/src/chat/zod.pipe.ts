@@ -20,7 +20,8 @@ export class ChatZodValidationPipe<
     const schema = this.eventGroup[this.eventKey];
     if (!schema) return value;
 
-    const result = schema.input.safeParse(value);
+    const input = Array.isArray(value) ? value : [value];
+    const result = schema.input.safeParse(input);
 
     if (!result.success) {
       throw new BadRequestException(z.flattenError(result.error));
