@@ -25,6 +25,7 @@ export const FullUserSchema = UserSchema.omit({
       messageReceipts: true,
       messageReactions: true,
       parentMessage: true,
+      bookmarkedBy: true,
     }),
   ),
   bookmarks: z.array(
@@ -36,6 +37,7 @@ export const FullUserSchema = UserSchema.omit({
       messageReceipts: true,
       messageReactions: true,
       parentMessage: true,
+      bookmarkedBy: true,
     }),
   ),
 });

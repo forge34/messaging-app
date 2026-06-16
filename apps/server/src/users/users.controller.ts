@@ -42,7 +42,6 @@ export class UsersController {
     const { id } = params;
 
     const user = await this.userService.user(id);
-
     return { data: user };
   }
 
