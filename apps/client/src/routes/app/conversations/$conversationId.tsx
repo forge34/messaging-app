@@ -83,14 +83,16 @@ function RouteComponent() {
 
   useEffect(() => {
     let timeoutId: number;
-    function handleTyping(name: string) {
+    function handleTyping(name: string, typingConvId: string) {
+      if (typingConvId !== conversationId) return;
       setTyping({ typing: true, name });
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setTyping({ typing: false, name: "" });
       }, 3000);
     }
-    function handleTypingStop() {
+    function handleTypingStop(stoppedConvId: string) {
+      if (stoppedConvId !== conversationId) return;
       setTyping({ typing: false, name: "" });
     }
     if (!conversationId) return;

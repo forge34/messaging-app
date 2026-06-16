@@ -124,7 +124,7 @@ export class ChatService {
       .to(conversationId)
       .emit('message:create', conversationId, newMessage, tempId);
     socket.emit('message:create:confirm', conversationId, newMessage, tempId);
-    socket.to(conversationId).emit('typing:stop');
+    socket.to(conversationId).emit('typing:stop', conversationId);
   }
 
   async handleMessageRead(

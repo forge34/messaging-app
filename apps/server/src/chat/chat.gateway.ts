@@ -108,7 +108,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     args: [conversationId: string, username: string],
   ) {
     const [conversationId, username] = args;
-    socket.to(conversationId).emit('typing', username);
+    socket.to(conversationId).emit('typing', username, conversationId);
   }
 
   @SubscribeMessage('typing:stop')
@@ -118,7 +118,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     args: [conversationId: string],
   ) {
     const [conversationId] = args;
-    socket.to(conversationId).emit('typing:stop');
+    socket.to(conversationId).emit('typing:stop', conversationId);
   }
 
   @SubscribeMessage('conversation:create')

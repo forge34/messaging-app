@@ -26,12 +26,12 @@ export const ServerEvents = {
 
   typing: createEvent({
     name: "typing",
-    input: z.tuple([z.string()]),
+    input: z.tuple([z.string(), z.string()]),
   }),
 
   "typing:stop": createEvent({
     name: "typing:stop",
-    input: z.tuple([]),
+    input: z.tuple([z.string()]),
   }),
 
   "message:reaction": createEvent({
