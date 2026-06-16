@@ -35,7 +35,7 @@ export function MessageInput({
     return () => {
       return;
     };
-  }, [debouncedValue, user?.name, conversationId]);
+  }, [debouncedValue, user?.name, conversationId, value]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
