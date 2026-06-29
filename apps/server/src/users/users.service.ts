@@ -5,36 +5,48 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async users(currentUserId: string) {
-    const users = await this.prisma.user.findMany({
-      omit: {
-        password: true,
-      },
-    });
+  async users(currentUserId: string, cursor?: string, take = 20) {
+    return this.prisma.$transaction(async (tx) => {
+      const raws = await tx.user.findMany({
+        where: { id: { not: currentUserId } },
+        omit: { password: true },
+        take: take + 1,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+        orderBy: { id: 'asc' },
+      });
 
-    const conversations = await this.prisma.conversation.findMany({
-      include: {
-        users: true,
-      },
-    });
+      const hasMore = raws.length > take;
+      if (hasMore) raws.pop();
 
-    const mappedUsers = users.map((u) => {
-      const conversation = conversations.find((c) => {
-        return (
-          c.users.some((u1) => u1.id === u.id) &&
-          c.users.some((u2) => u2.id === currentUserId)
+      const userIds = raws.map((u) => u.id);
+
+      const conversations = await tx.conversation.findMany({
+        where: {
+          AND: [
+            { users: { some: { id: currentUserId } } },
+            { users: { some: { id: { in: userIds } } } },
+          ],
+        },
+        include: { users: { select: { id: true } } },
+      });
+
+      const users = raws.map((u) => {
+        const conv = conversations.find((c) =>
+          c.users.some((cu) => cu.id === u.id),
         );
+        return {
+          ...u,
+          isCurrent: false,
+          hasConversation: !!conv?.id,
+          mutualConversation: conv?.id,
+        };
       });
 
       return {
-        ...u,
-        isCurrent: u.id === currentUserId,
-        hasConversation: !!conversation?.id,
-        mutualConversation: conversation?.id,
+        users,
+        nextCursor: hasMore ? raws[raws.length - 1]?.id : undefined,
       };
     });
-
-    return mappedUsers;
   }
 
   async user(id: string) {

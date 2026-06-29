@@ -109,13 +109,20 @@ export const Routes = {
     path: "/users",
     method: "GET",
     requestBody: z.undefined(),
-    responseData: z.array(
-      PublicUserSchema.extend({
-        isCurrent: z.boolean(),
-        hasConversation: z.boolean(),
-        mutualConversation: z.string().optional(),
-      }),
-    ),
+    queries: z.object({
+      cursor: z.string().optional(),
+      take: z.coerce.number().optional().default(20),
+    }),
+    responseData: z.object({
+      users: z.array(
+        PublicUserSchema.extend({
+          isCurrent: z.boolean(),
+          hasConversation: z.boolean(),
+          mutualConversation: z.string().optional(),
+        }),
+      ),
+      nextCursor: z.string().optional(),
+    }),
   }),
 
   blockUser: createRoute({

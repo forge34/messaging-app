@@ -1,11 +1,11 @@
-import { Controller, Param, Req, UseGuards } from '@nestjs/common';
+import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Route } from '../common/route.decorator';
 import { Routes } from '@chat/shared';
 import { type Request } from 'express';
 import { User } from '@chat/db/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { type RequestParams } from '../common/helpers';
+import { type RequestParams, type RequestQueries } from '../common/helpers';
 
 @Controller('')
 export class UsersController {
@@ -13,11 +13,14 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Route(Routes.getUsers)
-  async getAllUsers(@Req() req: Request) {
+  async getAllUsers(
+    @Req() req: Request,
+    @Query() queries: RequestQueries<typeof Routes.getUsers>,
+  ) {
     const user = req.user as User;
     if (!user) return;
 
-    const data = await this.userService.users(user.id);
+    const data = await this.userService.users(user.id, queries.cursor, queries.take);
     return { data };
   }
 

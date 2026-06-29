@@ -1,26 +1,43 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { useBreakpoint } from "@/lib/hooks/use-match-media";
 import { getUsers } from "@/lib/queries/user";
 import { socket } from "@/lib/sockets";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Search, ArrowLeft } from "lucide-react";
+import { useCallback, useRef } from "react";
 
 export const Route = createFileRoute("/app/conversations/@me")({
   component: RouteComponent,
-  loader: async ({ context: { queryClient } }) => {
-    const data = await queryClient.ensureQueryData(getUsers());
-    return data;
-  },
 });
 
 function RouteComponent() {
-  const { data } = useQuery(getUsers());
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(getUsers());
   const navigate = useNavigate();
   const { md } = useBreakpoint();
-  const users = data?.data;
+  const users = data?.pages.flatMap((p) => p?.data?.users ?? []) ?? [];
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sentinelCallbackRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (observerRef.current) observerRef.current.disconnect();
+      if (!node) return;
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        },
+        { rootMargin: "200px" },
+      );
+      observerRef.current.observe(node);
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
+  );
 
   return (
     <div className="flex flex-col h-full">
@@ -46,8 +63,7 @@ function RouteComponent() {
           placeholder="Find people"
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {users?.map((u) => {
-            if (u.isCurrent) return null;
+          {users.map((u) => {
             return (
               <div
                 key={u.id}
@@ -85,6 +101,12 @@ function RouteComponent() {
             );
           })}
         </div>
+        <div ref={sentinelCallbackRef} className="h-4" />
+        {isFetchingNextPage && (
+          <div className="flex justify-center py-4">
+            <Spinner />
+          </div>
+        )}
       </div>
     </div>
   );

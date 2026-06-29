@@ -1,5 +1,5 @@
 import { Routes } from "@chat/shared";
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { apiFetch } from "../fetch-wrapper";
 
 export const getUserById = (id: string) =>
@@ -16,14 +16,14 @@ export const getUserById = (id: string) =>
   });
 
 export const getUsers = () =>
-  queryOptions({
+  infiniteQueryOptions({
     queryKey: ["users"],
-    queryFn: async () => {
-      return apiFetch(Routes.getUsers, {
-        headers: {
-          credentials: "include",
-        },
-        params : {}
-      });
-    },
+    queryFn: ({ pageParam }) =>
+      apiFetch(Routes.getUsers, {
+        headers: { credentials: "include" },
+        params: {},
+        queries: { cursor: pageParam as string | undefined, take: 20 },
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage?.data?.nextCursor,
   });
