@@ -1,4 +1,10 @@
-import { Body, Controller, Res, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Res,
+  UnauthorizedException,
+  HttpCode,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Route } from '../common/route.decorator';
 import { type RequestBody, Routes } from '@chat/shared';
@@ -35,6 +41,7 @@ export class AuthController {
     res.status(200);
     return { message: 'User account created successfully' };
   }
+  @HttpCode(200)
   @Route(Routes.login)
   async login(
     @Res({ passthrough: true }) res: Response,
