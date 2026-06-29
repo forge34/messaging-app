@@ -4,7 +4,6 @@ import {
   type ResponseSchema,
   type ServerToClientEvents,
 } from "@chat/shared";
-import { toast } from "sonner";
 import type z from "zod";
 
 export async function onConversatonCreate(
@@ -128,7 +127,6 @@ export async function onMessageCreate(
 
   if (!isMine) {
     if (!message.author) return;
-    toast.info("Message recieved from " + message.author.name);
     queryClient.setQueryData(
       ["conversations", conversationId],
       (oldData: z.infer<typeof Routes.getConversationById.responseSchema>) => {
