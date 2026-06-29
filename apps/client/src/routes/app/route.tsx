@@ -10,6 +10,10 @@ import {
   onMessageRead,
   onMesssageReaction,
 } from "@/lib/sockets/handlers";
+import {
+  onNotificationCreate,
+  onUnreadCount,
+} from "@/lib/sockets/notification-handlers";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -52,6 +56,8 @@ function RouteComponent() {
     socket.on("message:reaction", onMesssageReaction);
     socket.on("users:presence_update", handlePresenceUpdate);
     socket.on("conversation:create", onConversatonCreate);
+    socket.on("notification:create", onNotificationCreate);
+    socket.on("notification:unread_count", onUnreadCount);
 
     return () => {
       socket.off("message:create", onMessageCreate);
@@ -60,6 +66,8 @@ function RouteComponent() {
       socket.off("message:reaction", onMesssageReaction);
       socket.off("users:presence_update", handlePresenceUpdate);
       socket.off("conversation:create", onConversatonCreate);
+      socket.off("notification:create", onNotificationCreate);
+      socket.off("notification:unread_count", onUnreadCount);
     };
   });
 

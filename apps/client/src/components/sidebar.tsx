@@ -7,6 +7,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { NotificationBell } from "./notification-bell";
 import { NavItem } from "./nav-item";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/lib/queries/auth";
@@ -52,6 +53,7 @@ export function Sidebar() {
           icon={<Users className="w-5 h-5" />}
           onClick={closeSidebar}
         />
+        <NotificationBell />
         <NavItem
           to={UserProfileRoute.to}
           label="My Profile"
