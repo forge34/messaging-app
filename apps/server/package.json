@@ -13,12 +13,7 @@
     "start:debug": "nest start --exec \"node --experimental-require-module\" --debug --watch",
     "start:prod": "node --experimental-require-module dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "load-test": "k6 run load-tests/scenarios/mixed.js",
-    "load-test:auth": "k6 run load-tests/scenarios/auth.js",
-    "load-test:messaging": "k6 run load-tests/scenarios/messaging.js",
-    "load-test:soak": "k6 run load-tests/scenarios/soak.js",
-    "load-test:profile": "bash load-tests/run-profiling.sh",
-    "load-test:db-metrics": "bash load-tests/collect-db-metrics.sh"
+    "load-test:auth": "k6 run load-tests/scenarios/auth.js"
   },
   "dependencies": {
     "@chat/db": "workspace:*",
