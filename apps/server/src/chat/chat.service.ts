@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TypedServer, TypedSocket } from './chat.gateway';
 import { User } from '@chat/db/client';
 import { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
+import { NotificationsService } from '../notifications/notifications.service';
 
 type OnlineEntry = {
   socket: TypedSocket;
@@ -14,7 +15,10 @@ type OnlineEntry = {
 export class ChatService {
   private onlineUsers = new Map<string, OnlineEntry>();
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
   private async markMessagesAsRead(conversationId: string, userId: string) {
     const unreadMessages = await this.prisma.message.findMany({
       where: {
@@ -61,6 +65,8 @@ export class ChatService {
     const conversations = await this.prisma.conversation.findMany({
       where: { users: { some: { id: user.id } } },
     });
+
+    void socket.join(`user:${user.id}`);
 
     for (const c of conversations) {
       void socket.join(c.id);
@@ -125,6 +131,28 @@ export class ChatService {
       .emit('message:create', conversationId, newMessage, tempId);
     socket.emit('message:create:confirm', conversationId, newMessage, tempId);
     socket.to(conversationId).emit('typing:stop', conversationId);
+
+    const conversation = await this.prisma.conversation.findUnique({
+      where: { id: conversationId },
+      select: { users: { select: { id: true } } },
+    });
+    const recipientIds =
+      conversation?.users.map((u) => u.id).filter((id) => id !== user.id) ?? [];
+
+    for (const recipientId of recipientIds) {
+      const { notification, count } = await this.notificationsService.create(
+        recipientId,
+        'MESSAGE',
+        `New message from ${user.name}`,
+        createdMessage.body,
+        { conversationId, messageId: createdMessage.id },
+        user.id,
+      );
+
+      const room = `user:${recipientId}`;
+      socket.to(room).emit('notification:create', notification);
+      socket.to(room).emit('notification:unread_count', count);
+    }
   }
 
   async handleMessageRead(
@@ -167,6 +195,21 @@ export class ChatService {
     server
       ?.to(conversationId)
       .emit('message:reaction', conversationId, message);
+
+    if (message.authorId !== user.id) {
+      const { notification, count } = await this.notificationsService.create(
+        message.authorId,
+        'REACTION',
+        `${user.name} reacted to your message`,
+        emoji,
+        { conversationId, messageId: message.id },
+        user.id,
+      );
+
+      const room = `user:${message.authorId}`;
+      server.to(room).emit('notification:create', notification);
+      server.to(room).emit('notification:unread_count', count);
+    }
   }
 
   async handleConversationCreate(

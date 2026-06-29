@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { ConversationsModule } from './conversations/conversations.module';
 import { ChatModule } from './chat/chat.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ChatModule } from './chat/chat.module';
     AuthModule,
     ConversationsModule,
     ChatModule,
+    NotificationsModule,
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, PrismaService, JwtStrategy],
