@@ -14,6 +14,7 @@ function generatePath(path: string, params: Record<string, string>) {
 interface FetchOptions<T extends Route> {
   body?: z.infer<T["requestBody"]>;
   params: z.infer<T["params"]>;
+  queries?: z.infer<T["queries"]>;
   headers: RequestInit;
 }
 
@@ -30,13 +31,22 @@ export async function apiFetch<T extends Route>(
       data: z.infer<T["responseData"]> | undefined;
     }
 > {
-  const { body, headers, params } = options;
+  const { body, headers, params, queries } = options;
   const bodyData = route.requestBody.parse(body);
 
   if (!ApiURL) {
     throw new Error("Configuration Error: VITE_API_URL is not defined");
   }
   const fetchUrl = new URL(generatePath(route.path, params), ApiURL);
+
+  const queryData = route.queries.parse(queries ?? {});
+  for (const [key, value] of Object.entries(
+    queryData as Record<string, unknown>,
+  )) {
+    if (value !== undefined) {
+      fetchUrl.searchParams.set(key, String(value));
+    }
+  }
 
   const res = await fetch(fetchUrl, {
     ...headers,

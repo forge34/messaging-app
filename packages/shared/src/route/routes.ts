@@ -8,6 +8,7 @@ import {
 import { FullUserSchema } from "../schemas/full-user-schema.js";
 import { PublicMessageSchema } from "../schemas/message-schema.js";
 import { PublicUserSchema } from "../schemas/user-schema.js";
+import { PublicNotificationSchema } from "../schemas/notification-schema.js";
 
 const EmptyParamQueries = {
   params: z.object({}),
@@ -136,5 +137,41 @@ export const Routes = {
     }),
     requestBody: z.undefined(),
     responseData: FullUserSchema,
+  }),
+  getNotifications: createRoute({
+    ...EmptyParamQueries,
+    path: "/notifications",
+    method: "GET",
+    queries: z.object({
+      cursor: z.string().optional(),
+      take: z.coerce.number().optional().default(20),
+    }),
+    requestBody: z.undefined(),
+    responseData: z.object({
+      notifications: z.array(PublicNotificationSchema),
+      nextCursor: z.string().optional(),
+    }),
+  }),
+  markNotificationRead: createRoute({
+    ...EmptyParamQueries,
+    path: "/notifications/:id/read",
+    method: "POST",
+    params: z.object({ id: z.string().nonempty() }),
+    requestBody: z.undefined(),
+    responseData: z.undefined(),
+  }),
+  markAllNotificationsRead: createRoute({
+    ...EmptyParamQueries,
+    path: "/notifications/read-all",
+    method: "POST",
+    requestBody: z.undefined(),
+    responseData: z.undefined(),
+  }),
+  getUnreadNotificationCount: createRoute({
+    ...EmptyParamQueries,
+    path: "/notifications/unread-count",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: z.object({ count: z.number() }),
   }),
 } as const;

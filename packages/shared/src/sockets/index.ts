@@ -2,6 +2,7 @@ import z from "zod";
 import { createEvent, EventMap } from "./schemas.js";
 import { PublicConversationSchema } from "../schemas/conversation-schema.js";
 import { PublicMessageSchema } from "../schemas/message-schema.js";
+import { PublicNotificationSchema } from "../schemas/notification-schema.js";
 
 export const ServerEvents = {
   "message:create": createEvent({
@@ -47,6 +48,16 @@ export const ServerEvents = {
     name: "conversation:create",
     input: z.tuple([PublicConversationSchema]),
   }),
+
+  "notification:create": createEvent({
+    name: "notification:create",
+    input: z.tuple([PublicNotificationSchema]),
+  }),
+
+  "notification:unread_count": createEvent({
+    name: "notification:unread_count",
+    input: z.tuple([z.number()]),
+  }),
 } as const;
 
 export type ServerToClientEvents = EventMap<typeof ServerEvents>;
@@ -88,6 +99,11 @@ export const ClientEvents = {
   }),
   "conversation:create": createEvent({
     name: "conversation:create",
+    input: z.tuple([z.string()]),
+  }),
+
+  "notification:read": createEvent({
+    name: "notification:read",
     input: z.tuple([z.string()]),
   }),
 } as const;
