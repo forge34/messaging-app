@@ -14,6 +14,7 @@ import {
   onNotificationCreate,
   onUnreadCount,
 } from "@/lib/sockets/notification-handlers";
+import { getUnreadCount } from "@/lib/queries/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -27,12 +28,21 @@ export const Route = createFileRoute("/app")({
       throw redirect({ to: "/login" });
     }
   },
+  head: () => ({
+    meta: [{ title: "Chat App" }],
+  }),
 });
 
 function RouteComponent() {
   const { isSuccess } = useQuery(getMe());
   const { md } = useBreakpoint();
   const { setOnlineUsers } = useOnlineUsers();
+  const { data: unreadData } = useQuery(getUnreadCount());
+
+  useEffect(() => {
+    const count = unreadData?.data?.count ?? 0;
+    document.title = count > 0 ? `(${count}) Chat App` : "Chat App";
+  }, [unreadData]);
 
   useEffect(() => {
     if (isSuccess) {
