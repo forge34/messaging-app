@@ -40,7 +40,26 @@ async function captureViewport(browser, width, height, suffix) {
     console.log(`\n--- ${isMobile ? "Mobile (375×812)" : "Desktop (1920×1080)"} ---`);
     await page.goto(BASE, { waitUntil: "networkidle" });
     await page.waitForTimeout(1500);
-    await shot(page, `01-landing${suffix}`);
+
+    // Scroll through the page to trigger motion whileInView animations
+    await page.evaluate(async () => {
+      const scrollHeight = document.body.scrollHeight;
+      const vh = window.innerHeight;
+      for (let y = 0; y < scrollHeight; y += vh) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 150));
+      }
+      // Back to top
+      window.scrollTo(0, 0);
+      await new Promise((r) => setTimeout(r, 300));
+    });
+
+    // Full page — captures all sections after animations have fired
+    await page.screenshot({ path: join(OUTPUT, `01-landing${suffix}.png`), fullPage: true });
+    console.log(`  ✓ 01-landing${suffix}.png (full page)`);
+
+    // Hero section only (first viewport)
+    await shot(page, `01-landing-hero${suffix}`);
 
     // ── 2. Login ──
     await login(page);
