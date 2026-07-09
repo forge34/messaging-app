@@ -1,4 +1,3 @@
-
 generator zod {
   provider = "prisma-zod-generator"
   output   = "../src/generated/"
@@ -26,15 +25,15 @@ model User {
   messages Message[] @relation("UserMessages")
   lastSeen DateTime?
 
-  bookmarks        Message[]          @relation("UserBookmarks")
-  conversations    Conversation[]
-  bio              String             @default("")
-  imgUrl           String
-  blockedBy        User[]             @relation("blocked")
-  messageReceipts  MessageReceipt[]
-  messageReactions MessageReactions[]
-  notifications    Notification[]     @relation("UserNotifications")
-  actorNotifications Notification[]   @relation("ActorNotifications")
+  bookmarks          Message[]          @relation("UserBookmarks")
+  conversations      Conversation[]
+  bio                String             @default("")
+  imgUrl             String
+  blockedBy          User[]             @relation("blocked")
+  messageReceipts    MessageReceipt[]
+  messageReactions   MessageReactions[]
+  notifications      Notification[]     @relation("UserNotifications")
+  actorNotifications Notification[]     @relation("ActorNotifications")
 }
 
 model Message {
@@ -53,6 +52,9 @@ model Message {
   parentMessageId  String?
   parentMessage    Message?           @relation(name: "parentMessage", fields: [parentMessageId], references: [id])
   replies          Message[]          @relation(name: "parentMessage")
+
+  @@index([authorId])
+  @@index([conversationId, createdAt])
 }
 
 model MessageReceipt {
