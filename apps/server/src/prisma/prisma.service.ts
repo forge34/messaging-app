@@ -2,12 +2,19 @@ import { createAdapterWithPool, PrismaClient } from '@chat/db/client';
 import { Injectable, Logger } from '@nestjs/common';
 
 const POOL_SIZE = parseInt(process.env.DATABASE_POOL_SIZE || '50', 10);
+const SLOW_QUERY_THRESHOLD_MS = parseInt(
+  process.env.SLOW_QUERY_THRESHOLD_MS || '100',
+  10,
+);
 
 @Injectable()
 export class PrismaService extends PrismaClient {
   private readonly logger = new Logger('Prisma');
 
   constructor() {
+    const isProfiling = process.env.PROFILE === '1';
+    const isDev = process.env.NODE_ENV === 'development';
+
     const adapter = createAdapterWithPool({
       databaseUrl: process.env.DATABASE_URL,
       maxPoolSize: POOL_SIZE,
@@ -16,24 +23,35 @@ export class PrismaService extends PrismaClient {
     super({
       adapter,
       log:
-        process.env.PROFILE === '1'
+        isProfiling || isDev
           ? [
               { emit: 'event', level: 'query' },
-              { emit: 'stdout', level: 'warn' },
-              { emit: 'stdout', level: 'error' },
+              { emit: 'event', level: 'warn' },
+              { emit: 'event', level: 'error' },
             ]
           : undefined,
     });
 
     this.logger.log(`Database pool size: ${POOL_SIZE}`);
+    this.logger.log(`Slow query threshold: ${SLOW_QUERY_THRESHOLD_MS}ms`);
 
-    if (process.env.PROFILE === '1') {
+    if (isProfiling || isDev) {
       this.$on('query' as never, (e: any) => {
-        if (e.duration > 100) {
-          this.logger.warn(
-            `SLOW QUERY ${e.duration}ms — ${e.query.slice(0, 200)}`,
-          );
+        const msg = `(${e.duration}ms) ${e.query}`;
+
+        if (e.duration > SLOW_QUERY_THRESHOLD_MS) {
+          this.logger.warn(`SLOW QUERY — ${msg}`);
+        } else {
+          this.logger.debug(msg);
         }
+      });
+
+      this.$on('warn' as never, (e: any) => {
+        this.logger.warn(e.message);
+      });
+
+      this.$on('error' as never, (e: any) => {
+        this.logger.error(e.message);
       });
     }
   }
