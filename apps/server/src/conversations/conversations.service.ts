@@ -72,7 +72,9 @@ export class ConversationsService {
       baseConversationSchema,
     ).selectKeys;
 
-    const messagesSelect = parseZodSchema(baseMessageSchema).selectKeys;
+    const { author, createdAt, body, status, id } =
+      parseZodSchema(baseMessageSchema).selectKeys;
+    const messagesSelect = { author, createdAt, body, status, id };
 
     const conversations = await this.prisma.conversation.findMany({
       where: {
@@ -80,7 +82,14 @@ export class ConversationsService {
       },
       select: {
         ...conversationListSelect,
-        messages: { select: messagesSelect },
+        messages: {
+          select: messagesSelect,
+
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
       },
     });
 
