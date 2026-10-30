@@ -1,10 +1,10 @@
+import { randomBytes } from 'node:crypto';
 import { spawn, spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import http from 'node:http';
 import net from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import dotenv from 'dotenv';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '../../..');
@@ -27,8 +27,7 @@ async function loadTestEnv() {
 }
 
 function randomSecret() {
-  const bytes = crypto.getRandomValues(new Uint8Array(24));
-  return 'lt-' + Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
+  return 'lt-' + randomBytes(24).toString('hex');
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -109,7 +108,7 @@ async function waitForHealth(port, timeoutMs = 45000) {
   while (Date.now() < deadline) {
     try {
       const res = await httpGet(url);
-      if (res >= 200 && res < 500) return true;
+      if (res >= 200 && res < 400) return true;
     } catch {}
     await sleep(500);
   }
@@ -134,7 +133,7 @@ async function startServer(testEnv, secret) {
     PORT: port,
     NODE_ENV: 'test',
   };
-  const child = spawn('pnpm', ['--filter', 'server', 'start:prod'], { cwd: REPO_ROOT, env });
+  const child = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: SERVER_DIR, env });
   child.stdout.on('data', (d) => process.stdout.write(`[server] ${d}`));
   child.stderr.on('data', (d) => process.stderr.write(`[server] ${d}`));
   if (!(await waitForHealth(port))) {

@@ -7,6 +7,7 @@
     "build": "pnpm db:generate && tsc -p tsconfig.json",
     "db:push": "pnpm prisma db push",
     "db:reset": "pnpm prisma migrate reset",
+    "db:migrate:reset": "prisma migrate reset --force",
     "db:generate": "pnpm prisma generate",
     "db:migrate": "pnpm prisma migrate dev",
     "db:studio": "pnpm prisma studio",
