@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { spawn, spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import http from 'node:http';
 import net from 'node:net';
 import path from 'node:path';
@@ -70,17 +71,25 @@ async function ensureDb(testEnv) {
     log(`test DB reachable at ${host}:${port}`);
   } else {
     log(`test DB not reachable at ${host}:${port}, starting compose db...`);
-    const code = await run('docker', ['compose', 'up', 'db', '-d'], { cwd: REPO_ROOT });
+    const code = await run('docker', ['compose', '--env-file', '.test.env', 'up', 'db', '-d'], { cwd: REPO_ROOT });
     if (code !== 0) throw new Error('failed to start compose db service');
     if (!(await waitForTcp(host, port, 90000))) {
       throw new Error(`compose db did not become ready at ${host}:${port}`);
     }
   }
   const adminUrl = `postgresql://postgres:postgres@${host}:${port}/postgres`;
-  const r = spawnSync('psql', [adminUrl, '-c', `CREATE DATABASE ${testEnv.POSTGRES_DB}`], { stdio: 'pipe' });
-  const out = `${r.stdout}${r.stderr}`;
-  if (r.status !== 0 && !out.toLowerCase().includes('already exists')) {
-    throw new Error(`failed to create test database ${testEnv.POSTGRES_DB}: ${out}`);
+  const maxAttempts = 30;
+  let lastErr = '';
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const r = spawnSync('psql', [adminUrl, '-v', 'ON_ERROR_STOP=1', '-c', `CREATE DATABASE "${testEnv.POSTGRES_DB}"`], { stdio: 'pipe' });
+    const out = `${r.stdout}${r.stderr}`;
+    if (r.status === 0 || out.toLowerCase().includes('already exists')) break;
+    lastErr = out;
+    if (attempt === maxAttempts) {
+      throw new Error(`failed to create test database ${testEnv.POSTGRES_DB}: ${out}`);
+    }
+    log(`postgres not accepting connections yet (attempt ${attempt}/${maxAttempts}), retrying...`);
+    await sleep(1000);
   }
   log(`test database ${testEnv.POSTGRES_DB} ready`);
 }
@@ -125,7 +134,8 @@ function httpGet(url) {
 
 async function startServer(testEnv, secret) {
   const port = testEnv.PORT || '3001';
-  log(`starting server on port ${port} (test database)...`);
+  const entry = existsSync(path.join(SERVER_DIR, 'dist/main.js')) ? path.join(SERVER_DIR, 'dist/main.js') : path.join(SERVER_DIR, 'dist/src/main.js');
+  log(`starting server on port ${port} (test database) from ${path.relative(SERVER_DIR, entry)}...`);
   const env = {
     ...process.env,
     DATABASE_URL: testEnv.DATABASE_URL,
@@ -133,7 +143,7 @@ async function startServer(testEnv, secret) {
     PORT: port,
     NODE_ENV: 'test',
   };
-  const child = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: SERVER_DIR, env });
+  const child = spawn('node', ['--experimental-require-module', entry], { cwd: SERVER_DIR, env });
   child.stdout.on('data', (d) => process.stdout.write(`[server] ${d}`));
   child.stderr.on('data', (d) => process.stderr.write(`[server] ${d}`));
   if (!(await waitForHealth(port))) {
@@ -147,8 +157,8 @@ async function startServer(testEnv, secret) {
 async function runK6(scenario, testEnv, extraArgs) {
   const args = [
     'run',
-    `--env BASE_URL=http://localhost:${testEnv.PORT}`,
-    `--env WS_URL=ws://localhost:${testEnv.PORT}`,
+    '--env', `BASE_URL=http://localhost:${testEnv.PORT}`,
+    '--env', `WS_URL=ws://localhost:${testEnv.PORT}`,
     path.join('load-tests/scenarios', `${scenario}.js`),
     ...extraArgs,
   ];
