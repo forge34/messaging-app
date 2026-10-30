@@ -15,6 +15,10 @@
     "db:migrate": "pnpm --filter @chat/db db:migrate",
     "db:reset": "pnpm --filter @chat/db db:reset",
     "db:studio": "pnpm --filter @chat/db db:studio",
+    "load-test:auth": "pnpm --filter ./apps/server load-test:auth",
+    "load-test:messaging": "pnpm --filter ./apps/server load-test:messaging",
+    "load-test:setup": "pnpm --filter ./apps/server load-test:setup",
+    "load-test:all": "pnpm --filter ./apps/server load-test:all",
     "dev": "pnpm --parallel run dev",
     "build": "pnpm -r run build"
   },
