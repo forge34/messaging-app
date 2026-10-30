@@ -37,6 +37,10 @@ pnpm dev
 | `pnpm db:generate` | Regenerate Prisma client |
 | `pnpm db:reset` | Drop + re-migrate database |
 | `pnpm db:studio` | Open Prisma Studio |
+| `pnpm load-test:auth` | Run k6 auth load test on the test DB (port 5433, server on 3001) |
+| `pnpm load-test:messaging` | Run k6 WebSocket messaging load test on the test DB |
+| `pnpm load-test:setup` | Start test DB + server for manual testing (no k6 run) |
+| `pnpm load-test:all` | Run auth + messaging load tests sequentially |
 
 ## Commit Convention
 Conventional commits with optional scope matching existing history:

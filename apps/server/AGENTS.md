@@ -36,6 +36,23 @@ src/
 - Run from apps/server: no script wired yet, but `test/app.e2e-spec.ts` and `test/jest-e2e.json` exist
 - No unit tests currently; add with `@nestjs/testing` if needed
 
+## Load Testing
+k6 scenarios in `load-tests/scenarios/`, run via `load-tests/orchestrator.mjs`.
+| Command | Action |
+|---|---|
+| `pnpm load-test:auth` | Auth flow load test (HTTP signup/login) |
+| `pnpm load-test:messaging` | WebSocket messaging load test (50 VUs, 5m) |
+| `pnpm load-test:setup` | Start test DB + server on 3001 for manual testing |
+| `pnpm load-test:all` | Run auth, then messaging, against one server instance |
+
+How it works (from repo root, all against the isolated test DB):
+1. Ensures compose `db` is up on port 5433 (`docker compose --env-file .test.env up db -d`)
+2. Creates database `messaging-app-test` and runs `prisma migrate reset --force` against it
+3. Starts the built server (`dist`) on port 3001 with `NODE_ENV=test` + test `DATABASE_URL`/`SECRET` injected into the process env
+4. Runs k6 with `BASE_URL`/`WS_URL` overridden to `localhost:3001`
+- **Prereqs**: `.test.env`, Docker, k6 — pass `--build` to force a fresh build first (default reuses existing `dist`)
+- Dev DB on 5432 and its data are never touched
+
 ## Security
 - JWT secret from `process.env.SECRET` — never hardcode or commit
 - Passwords hashed with bcryptjs (10 salt rounds) before storing
