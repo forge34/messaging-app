@@ -22,12 +22,16 @@ pnpm dev
 
 ## Environment Variables (.env)
 
-| Variable       | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| `DATABASE_URL` | PostgreSQL connection string                         |
-| `SECRET`       | JWT signing secret                                   |
-| `PORT`         | Server port (default 3000)                           |
-| `VITE_API_URL` | Client to server URL (default <http://localhost:3000>) |
+| Variable          | Description                                                |
+| ----------------- | ---------------------------------------------------------- |
+| `DATABASE_URL`    | PostgreSQL connection string                               |
+| `SECRET`          | JWT signing secret                                         |
+| `PORT`            | Server port (default 3000)                                 |
+| `NODE_ENV`        | `development` \| `test` \| `production` (default `development`) |
+| `CLIENT_URL`      | Allowed CORS origin for the client                         |
+| `LOG_LEVEL`       | Pino level (default `debug` in dev, `info` otherwise)      |
+| `PROFILE`         | Set to `1` to log Prisma queries / slow requests           |
+| `VITE_API_URL`    | Client to server URL (default <http://localhost:3000>)     |
 
 ## Global Scripts
 
