@@ -318,14 +318,6 @@ node --check apps/server/load-tests/orchestrator.mjs
 
 - [ ] **Step 3: Commit**
 
-- [ ] **Step 2: Verify syntax**
-
-```bash
-node --check apps/server/load-tests/orchestrator.mjs
-```
-
-- [ ] **Step 3: Commit**
-
 ---
 
 ### Task 4: Wire orchestrator into package scripts
