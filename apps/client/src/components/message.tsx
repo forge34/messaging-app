@@ -228,12 +228,14 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                   : "bg-secondary text-secondary-foreground rounded-tl-none",
               )}
             >
-              <h3
-                className="text-md font-semibold"
-                style={{ color: getAuthorColor(message.author.name) }}
-              >
-                {message.author.name}
-              </h3>
+              {!message.attachment && (
+                <h3
+                  className="text-md font-semibold"
+                  style={{ color: getAuthorColor(message.author.name) }}
+                >
+                  {message.author.name}
+                </h3>
+              )}
               {message.attachment && (
                 <img
                   src={message.attachment.url}
