@@ -221,7 +221,8 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
             <div
               id={message.id}
               className={cn(
-                "rounded-2xl py-2 px-4 shadow-sm",
+                "rounded-2xl shadow-sm",
+                message.attachment ? "p-1" : "py-2 px-4",
                 message.isMine
                   ? "bg-primary text-primary-foreground rounded-tr-none"
                   : "bg-secondary text-secondary-foreground rounded-tl-none",
@@ -249,11 +250,21 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                 />
               )}
               {message.body && (
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                <p
+                  className={cn(
+                    "text-sm leading-relaxed whitespace-pre-wrap",
+                    message.attachment && "px-2 pt-1",
+                  )}
+                >
                   {message.body}
                 </p>
               )}
-              <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
+              <div
+                className={cn(
+                  "text-[10px] mt-1 flex items-center gap-1 opacity-70",
+                  message.attachment && "px-2",
+                )}
+              >
                 <span>{formatTime(message.createdAt.toString())}</span>
                 {message.isMine && <StatusIcon status={message.status} />}
               </div>
