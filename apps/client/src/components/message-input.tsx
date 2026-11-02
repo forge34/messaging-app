@@ -52,15 +52,15 @@ export function MessageInput({
   const stickerInputRef = useRef<HTMLInputElement>(null);
   const user = data?.data;
 
-  const pending = isUploading || attachment !== null || uploadSticker.isPending;
+  const uploading = isUploading || uploadSticker.isPending;
 
   useEffect(() => {
-    if (!value.trim() || pending || !user?.name) return;
+    if (!value.trim() || uploading || !user?.name) return;
     socket.emit("typing", conversationId, user?.name);
     return () => {
       return;
     };
-  }, [debouncedValue, user?.name, conversationId, value, pending]);
+  }, [debouncedValue, user?.name, conversationId, value, uploading]);
 
   async function handleImageSelect(file: File | undefined) {
     if (!file) return;
@@ -99,6 +99,7 @@ export function MessageInput({
 
     const message: Partial<PublicMessageSchema> = {
       body: content,
+      clientId: tempId,
       status: "PENDING",
       author: user,
       createdAt,
@@ -292,7 +293,7 @@ export function MessageInput({
         <button
           type="button"
           onClick={() => imageInputRef.current?.click()}
-          disabled={pending}
+          disabled={uploading}
           className="hover:text-primary transition-colors disabled:opacity-50"
           aria-label="Attach image"
         >
@@ -302,7 +303,7 @@ export function MessageInput({
           <PopoverTrigger asChild>
             <button
               type="button"
-              disabled={pending}
+              disabled={uploading}
               className="hover:text-primary transition-colors disabled:opacity-50"
               aria-label="Open sticker picker"
             >
@@ -382,7 +383,7 @@ export function MessageInput({
         {(value.trim() || attachment) && (
           <button
             type="submit"
-            disabled={pending}
+            disabled={uploading}
             className="text-primary disabled:opacity-50 ml-1"
             aria-label="Send message"
           >
