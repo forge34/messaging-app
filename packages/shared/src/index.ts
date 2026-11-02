@@ -6,6 +6,7 @@ export * from "./schemas/message-schema.js";
 export * from "./schemas/conversation-schema.js";
 export * from "./schemas/full-user-schema.js";
 export * from "./schemas/notification-schema.js";
+export * from "./schemas/upload-schema.js";
 export * from "./helpers.js";
 export * from "./sockets/schemas.js";
 export * from "./sockets/index.js";

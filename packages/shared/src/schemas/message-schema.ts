@@ -1,6 +1,26 @@
-import { MessageReceiptSchema, MessageReactionsSchema, MessageSchema } from "@chat/db/schemas";
+import {
+  MessageReceiptSchema,
+  MessageReactionsSchema,
+  MessageSchema,
+  MessageAttachmentSchema,
+} from "@chat/db/schemas";
 import z from "zod";
 import { PublicUserSchema } from "./user-schema.js";
+
+export const PublicMessageAttachmentSchema = MessageAttachmentSchema.pick({
+  id: true,
+  type: true,
+  url: true,
+  publicId: true,
+  format: true,
+  width: true,
+  height: true,
+  bytes: true,
+});
+
+export type PublicMessageAttachmentSchema = z.infer<
+  typeof PublicMessageAttachmentSchema
+>;
 
 export const PublicMessageReceiptsSchema = MessageReceiptSchema;
 
@@ -30,6 +50,7 @@ export const baseMessageSchema = MessageSchema.pick({
   parentMessageId: true,
 }).extend({
   author: PublicUserSchema,
+  attachment: PublicMessageAttachmentSchema.nullable().optional(),
   messageReceipts: z.array(PublicMessageReceiptsSchema),
   messageReactions: z.array(PublicMessageReactionsSchema),
   deliveredAt: z.date().nullable().optional(),
@@ -44,6 +65,7 @@ export const baseMessageSchema = MessageSchema.pick({
   })
     .extend({
       author: PublicUserSchema.omit({ lastSeen: true }),
+      attachment: PublicMessageAttachmentSchema.nullable().optional(),
     })
     .optional()
     .nullable(),
