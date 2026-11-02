@@ -1,5 +1,5 @@
 import { createAdapterWithPool, PrismaClient } from '@chat/db/client';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 
 const POOL_SIZE = parseInt(process.env.DATABASE_POOL_SIZE || '50', 10);
 const SLOW_QUERY_THRESHOLD_MS = parseInt(
@@ -8,7 +8,7 @@ const SLOW_QUERY_THRESHOLD_MS = parseInt(
 );
 
 @Injectable()
-export class PrismaService extends PrismaClient {
+export class PrismaService extends PrismaClient implements OnModuleDestroy {
   private readonly logger = new Logger('Prisma');
 
   constructor() {
@@ -54,5 +54,9 @@ export class PrismaService extends PrismaClient {
         this.logger.error(e.message);
       });
     }
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
   }
 }

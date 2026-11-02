@@ -72,9 +72,9 @@ export class ConversationsService {
       baseConversationSchema,
     ).selectKeys;
 
-    const { author, createdAt, body, status, id } =
+    const { author, createdAt, body, status, id, attachment } =
       parseZodSchema(baseMessageSchema).selectKeys;
-    const messagesSelect = { author, createdAt, body, status, id };
+    const messagesSelect = { author, createdAt, body, status, id, attachment };
 
     const conversations = await this.prisma.conversation.findMany({
       where: {
@@ -108,6 +108,7 @@ export class ConversationsService {
               author: last.author,
               status: last.status,
               createdAt: last.createdAt,
+              attachment: last.attachment,
             }
           : null;
 

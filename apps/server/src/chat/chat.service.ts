@@ -101,20 +101,35 @@ export class ChatService {
     parentMessageId?: string | null,
   ) {
     const content = message.body?.trim();
-    if (!content) return;
+    const attachment = message.attachment ?? null;
+    if (!content && !attachment) return;
 
     const createdMessage = await this.prisma.message.create({
       include: {
         author: true,
         parentMessage: { include: { author: true } },
+        attachment: true,
       },
       data: {
-        body: content,
+        body: content ?? '',
         conversationId,
         authorId: user.id,
         status: 'DELIVERED',
         deliveredAt: new Date().toISOString(),
         parentMessageId: parentMessageId ?? null,
+        ...(attachment && {
+          attachment: {
+            create: {
+              type: attachment.type,
+              url: attachment.url,
+              publicId: attachment.publicId,
+              format: attachment.format,
+              width: attachment.width ?? null,
+              height: attachment.height ?? null,
+              bytes: attachment.bytes ?? null,
+            },
+          },
+        }),
       },
     });
 
@@ -144,7 +159,7 @@ export class ChatService {
         recipientId,
         'MESSAGE',
         `New message from ${user.name}`,
-        createdMessage.body,
+        createdMessage.body || null,
         { conversationId, messageId: createdMessage.id },
         user.id,
       );
@@ -189,6 +204,7 @@ export class ChatService {
         author: true,
         messageReactions: true,
         messageReceipts: true,
+        attachment: true,
         parentMessage: { include: { author: true } },
       },
     });
@@ -283,6 +299,18 @@ const conversationSelect = {
       parentMessage: {
         include: {
           author: { select: { id: true, name: true, imgUrl: true, bio: true } },
+        },
+      },
+      attachment: {
+        select: {
+          id: true,
+          type: true,
+          url: true,
+          publicId: true,
+          format: true,
+          width: true,
+          height: true,
+          bytes: true,
         },
       },
     },
