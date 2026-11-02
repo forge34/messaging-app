@@ -237,39 +237,42 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                 </h3>
               )}
               {message.attachment && (
-                <img
-                  src={message.attachment.url}
-                  alt="Attachment"
-                  style={
-                    message.attachment.width && message.attachment.height
-                      ? {
-                          aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
-                        }
-                      : undefined
-                  }
-                  className="block w-full max-w-72 sm:max-w-[360px] h-auto max-h-[55svh] rounded-lg object-cover"
-                  loading="lazy"
-                />
+                <div className="relative w-full max-w-72 sm:max-w-[360px]">
+                  <img
+                    src={message.attachment.url}
+                    alt="Attachment"
+                    style={
+                      message.attachment.width && message.attachment.height
+                        ? {
+                            aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
+                          }
+                        : undefined
+                    }
+                    className="block w-full h-auto max-h-[55svh] rounded-lg object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-1.5 right-2 flex items-center gap-1 rounded-full bg-black/45 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm">
+                    <span>{formatTime(message.createdAt.toString())}</span>
+                    {message.isMine && <StatusIcon status={message.status} />}
+                  </div>
+                </div>
               )}
               {message.body && (
                 <p
                   className={cn(
                     "text-sm leading-relaxed whitespace-pre-wrap",
-                    message.attachment && "px-2 pt-1",
+                    message.attachment ? "px-2 pt-1 pb-0.5" : "mt-1",
                   )}
                 >
                   {message.body}
                 </p>
               )}
-              <div
-                className={cn(
-                  "text-[10px] mt-1 flex items-center gap-1 opacity-70",
-                  message.attachment && "px-2",
-                )}
-              >
-                <span>{formatTime(message.createdAt.toString())}</span>
-                {message.isMine && <StatusIcon status={message.status} />}
-              </div>
+              {!message.attachment && (
+                <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
+                  <span>{formatTime(message.createdAt.toString())}</span>
+                  {message.isMine && <StatusIcon status={message.status} />}
+                </div>
+              )}
             </div>
           )}
         </Link>
