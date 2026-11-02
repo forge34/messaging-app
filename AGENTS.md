@@ -32,6 +32,9 @@ pnpm dev
 | `LOG_LEVEL`       | Pino level (default `debug` in dev, `info` otherwise)      |
 | `PROFILE`         | Set to `1` to log Prisma queries / slow requests           |
 | `VITE_API_URL`    | Client to server URL (default <http://localhost:3000>)     |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud for message attachments (optional; uploads return 503 without it) |
+| `CLOUDINARY_API_KEY`    | Cloudinary API key, used to sign direct uploads            |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret, used to sign direct uploads — never expose or commit |
 
 ## Global Scripts
 
