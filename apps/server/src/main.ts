@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { SocketIoAdapter } from './chat/io-adapter';
-import { ProfilingInterceptor } from './common/profiling.interceptor';
 import { Logger } from 'nestjs-pino';
 
 export const corsOptions: CorsOptions = {
@@ -17,10 +16,6 @@ async function bootstrap() {
     cors: corsOptions,
     bufferLogs: true,
   });
-
-  if (process.env.PROFILE === '1') {
-    app.useGlobalInterceptors(new ProfilingInterceptor());
-  }
 
   app.useWebSocketAdapter(new SocketIoAdapter(app));
   app.use(cookieParser());

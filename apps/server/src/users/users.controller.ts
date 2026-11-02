@@ -20,7 +20,11 @@ export class UsersController {
     const user = req.user as User;
     if (!user) return;
 
-    const data = await this.userService.users(user.id, queries.cursor, queries.take);
+    const data = await this.userService.users(
+      user.id,
+      queries.cursor,
+      queries.take,
+    );
     return { data };
   }
 
