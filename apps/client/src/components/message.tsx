@@ -202,9 +202,14 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
               <img
                 src={message.attachment.url}
                 alt="Sticker"
-                width={message.attachment.width ?? 160}
-                height={message.attachment.height ?? 160}
-                className="max-w-40 max-h-40 object-contain"
+                style={
+                  message.attachment.width && message.attachment.height
+                    ? {
+                        aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
+                      }
+                    : undefined
+                }
+                className="w-28 h-auto max-h-24 sm:w-40 sm:max-h-40 object-contain"
                 loading="lazy"
               />
               <div className="text-[10px] flex items-center gap-1 opacity-70">
@@ -232,9 +237,14 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                 <img
                   src={message.attachment.url}
                   alt="Attachment"
-                  width={message.attachment.width ?? undefined}
-                  height={message.attachment.height ?? undefined}
-                  className="max-w-72 max-h-96 rounded-lg object-cover"
+                  style={
+                    message.attachment.width && message.attachment.height
+                      ? {
+                          aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
+                        }
+                      : undefined
+                  }
+                  className="block w-full max-w-72 sm:max-w-[360px] h-auto max-h-[55svh] rounded-lg object-cover"
                   loading="lazy"
                 />
               )}
