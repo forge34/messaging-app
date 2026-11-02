@@ -139,7 +139,11 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                   {parentMessage.author.name}
                 </p>
                 <p className="text-xs opacity-70 line-clamp-2 leading-snug">
-                  {parentMessage.body}
+                  {parentMessage.attachment
+                    ? parentMessage.attachment.type === "STICKER"
+                      ? "Sticker"
+                      : "Photo"
+                    : parentMessage.body}
                 </p>
               </div>
             </div>
@@ -193,29 +197,58 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
           hash={message.id}
           className="block cursor-default transition-transform active:scale-[0.98]"
         >
-          <div
-            id={message.id}
-            className={cn(
-              "rounded-2xl py-2 px-4 shadow-sm",
-              message.isMine
-                ? "bg-primary text-primary-foreground rounded-tr-none"
-                : "bg-secondary text-secondary-foreground rounded-tl-none",
-            )}
-          >
-            <h3
-              className="text-md font-semibold"
-              style={{ color: getAuthorColor(message.author.name) }}
-            >
-              {message.author.name}
-            </h3>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-              {message.body}
-            </p>
-            <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
-              <span>{formatTime(message.createdAt.toString())}</span>
-              {message.isMine && <StatusIcon status={message.status} />}
+          {message.attachment?.type === "STICKER" ? (
+            <div className="flex flex-col items-end gap-0.5">
+              <img
+                src={message.attachment.url}
+                alt="Sticker"
+                width={message.attachment.width ?? 160}
+                height={message.attachment.height ?? 160}
+                className="max-w-40 max-h-40 object-contain"
+                loading="lazy"
+              />
+              <div className="text-[10px] flex items-center gap-1 opacity-70">
+                <span>{formatTime(message.createdAt.toString())}</span>
+                {message.isMine && <StatusIcon status={message.status} />}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              id={message.id}
+              className={cn(
+                "rounded-2xl py-2 px-4 shadow-sm",
+                message.isMine
+                  ? "bg-primary text-primary-foreground rounded-tr-none"
+                  : "bg-secondary text-secondary-foreground rounded-tl-none",
+              )}
+            >
+              <h3
+                className="text-md font-semibold"
+                style={{ color: getAuthorColor(message.author.name) }}
+              >
+                {message.author.name}
+              </h3>
+              {message.attachment && (
+                <img
+                  src={message.attachment.url}
+                  alt="Attachment"
+                  width={message.attachment.width ?? undefined}
+                  height={message.attachment.height ?? undefined}
+                  className="max-w-72 max-h-96 rounded-lg object-cover"
+                  loading="lazy"
+                />
+              )}
+              {message.body && (
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                  {message.body}
+                </p>
+              )}
+              <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
+                <span>{formatTime(message.createdAt.toString())}</span>
+                {message.isMine && <StatusIcon status={message.status} />}
+              </div>
+            </div>
+          )}
         </Link>
         {reactionsMap && Object.keys(reactionsMap).length > 0 && (
           <div
