@@ -139,7 +139,11 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                   {parentMessage.author.name}
                 </p>
                 <p className="text-xs opacity-70 line-clamp-2 leading-snug">
-                  {parentMessage.body}
+                  {parentMessage.attachment
+                    ? parentMessage.attachment.type === "STICKER"
+                      ? "Sticker"
+                      : "Photo"
+                    : parentMessage.body}
                 </p>
               </div>
             </div>
@@ -193,29 +197,84 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
           hash={message.id}
           className="block cursor-default transition-transform active:scale-[0.98]"
         >
-          <div
-            id={message.id}
-            className={cn(
-              "rounded-2xl py-2 px-4 shadow-sm",
-              message.isMine
-                ? "bg-primary text-primary-foreground rounded-tr-none"
-                : "bg-secondary text-secondary-foreground rounded-tl-none",
-            )}
-          >
-            <h3
-              className="text-md font-semibold"
-              style={{ color: getAuthorColor(message.author.name) }}
-            >
-              {message.author.name}
-            </h3>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-              {message.body}
-            </p>
-            <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
-              <span>{formatTime(message.createdAt.toString())}</span>
-              {message.isMine && <StatusIcon status={message.status} />}
+          {message.attachment?.type === "STICKER" ? (
+            <div className="flex flex-col items-end gap-0.5">
+              <img
+                src={message.attachment.url}
+                alt="Sticker"
+                style={
+                  message.attachment.width && message.attachment.height
+                    ? {
+                        aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
+                      }
+                    : undefined
+                }
+                className="w-28 h-auto max-h-24 sm:w-40 sm:max-h-40 object-contain"
+                loading="lazy"
+              />
+              <div className="text-[10px] flex items-center gap-1 opacity-70">
+                <span>{formatTime(message.createdAt.toString())}</span>
+                {message.isMine && <StatusIcon status={message.status} />}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              id={message.id}
+              className={cn(
+                "rounded-2xl shadow-sm",
+                message.attachment ? "p-1" : "py-2 px-4",
+                message.isMine
+                  ? "bg-primary text-primary-foreground rounded-tr-none"
+                  : "bg-secondary text-secondary-foreground rounded-tl-none",
+              )}
+            >
+              {!message.attachment && (
+                <h3
+                  className="text-md font-semibold"
+                  style={{ color: getAuthorColor(message.author.name) }}
+                >
+                  {message.author.name}
+                </h3>
+              )}
+              {message.attachment && (
+                <div className="relative w-full max-w-72 sm:max-w-[360px]">
+                  <img
+                    src={message.attachment.url}
+                    alt="Attachment"
+                    style={
+                      message.attachment.width && message.attachment.height
+                        ? {
+                            aspectRatio: `${message.attachment.width} / ${message.attachment.height}`,
+                          }
+                        : undefined
+                    }
+                    className="block w-full h-auto max-h-[55svh] rounded-lg object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-1.5 right-2 flex items-center gap-1 rounded-full bg-black/45 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm">
+                    <span>{formatTime(message.createdAt.toString())}</span>
+                    {message.isMine && <StatusIcon status={message.status} />}
+                  </div>
+                </div>
+              )}
+              {message.body && (
+                <p
+                  className={cn(
+                    "text-sm leading-relaxed whitespace-pre-wrap",
+                    message.attachment ? "px-2 pt-1 pb-0.5" : "mt-1",
+                  )}
+                >
+                  {message.body}
+                </p>
+              )}
+              {!message.attachment && (
+                <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
+                  <span>{formatTime(message.createdAt.toString())}</span>
+                  {message.isMine && <StatusIcon status={message.status} />}
+                </div>
+              )}
+            </div>
+          )}
         </Link>
         {reactionsMap && Object.keys(reactionsMap).length > 0 && (
           <div

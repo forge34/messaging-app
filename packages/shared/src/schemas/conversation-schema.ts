@@ -30,6 +30,7 @@ export const conversationListExtra = z.object({
     createdAt: true,
     status: true,
     author: true,
+    attachment: true,
   }).nullable(),
   lastMessageAt: z.coerce.date().nullable(),
   otherUser: PublicUserSchema,

@@ -9,6 +9,11 @@ import { FullUserSchema } from "../schemas/full-user-schema.js";
 import { PublicMessageSchema } from "../schemas/message-schema.js";
 import { PublicUserSchema } from "../schemas/user-schema.js";
 import { PublicNotificationSchema } from "../schemas/notification-schema.js";
+import {
+  PublicStickerSchema,
+  UploadSignatureRequest,
+  UploadSignatureResponse,
+} from "../schemas/upload-schema.js";
 
 const EmptyParamQueries = {
   params: z.object({}),
@@ -180,5 +185,21 @@ export const Routes = {
     method: "GET",
     requestBody: z.undefined(),
     responseData: z.object({ count: z.number() }),
+  }),
+
+  createUploadSignature: createRoute({
+    ...EmptyParamQueries,
+    path: "/uploads/sign",
+    method: "POST",
+    requestBody: UploadSignatureRequest,
+    responseData: UploadSignatureResponse,
+  }),
+
+  listStickers: createRoute({
+    ...EmptyParamQueries,
+    path: "/uploads/stickers",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: z.array(PublicStickerSchema),
   }),
 } as const;

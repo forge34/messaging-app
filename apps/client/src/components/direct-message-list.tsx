@@ -76,7 +76,11 @@ export function DirectMessageList({
                     <span className="font-medium">
                       {lastMessage.author.name}:{" "}
                     </span>
-                    {lastMessage.body}
+                    {lastMessage.body ||
+                      (lastMessage.attachment &&
+                        (lastMessage.attachment.type === "STICKER"
+                          ? "Sticker"
+                          : "Photo"))}
                   </div>
                 )}
               </div>

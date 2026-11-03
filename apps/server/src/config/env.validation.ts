@@ -14,6 +14,9 @@ const envSchema = z.object({
   PROFILE: z.enum(['0', '1']).default('0'),
   DATABASE_POOL_SIZE: z.coerce.number().int().positive().optional(),
   SLOW_QUERY_THRESHOLD_MS: z.coerce.number().int().positive().optional(),
+  CLOUDINARY_CLOUD_NAME: z.string().min(1).optional(),
+  CLOUDINARY_API_KEY: z.string().min(1).optional(),
+  CLOUDINARY_API_SECRET: z.string().min(1).optional(),
 });
 
 export function validateEnv(config: Record<string, unknown>) {

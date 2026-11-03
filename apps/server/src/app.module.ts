@@ -12,6 +12,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { ConversationsModule } from './conversations/conversations.module';
 import { ChatModule } from './chat/chat.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { UploadsModule } from './uploads/uploads.module';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
 import { createLoggerConfig } from './common/logger.config';
 import { validateEnv } from './config/env.validation';
@@ -28,6 +29,7 @@ import { LoggerModule } from 'nestjs-pino';
     ConversationsModule,
     ChatModule,
     NotificationsModule,
+    UploadsModule,
     LoggerModule.forRootAsync({ useFactory: createLoggerConfig }),
   ],
   controllers: [AppController, UsersController],

@@ -18,7 +18,9 @@ src/
 ├── chat/              — Socket.io gateway, chat service, Zod validation pipe
 ├── common/            — @Route() decorator, interceptors, helpers, Zod pipe
 ├── conversations/     — REST controller/service for conversations
+├── notifications/     — REST controller/service for notifications
 ├── prisma/            — Prisma service wrapper (re-exports @chat/db/client)
+├── uploads/           — Signed Cloudinary direct-upload endpoints (images, stickers)
 ├── users/             — REST controller/service for users
 ├── app.module.ts      — Root module
 └── main.ts            — Entry point (cookie-parser, CORS, JWT cookie setup)

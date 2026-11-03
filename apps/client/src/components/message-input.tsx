@@ -1,16 +1,32 @@
 import { socket } from "@/lib/sockets";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { Input } from "./ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Routes, type PublicMessageSchema } from "@chat/shared";
 import { getMe } from "@/lib/queries/auth";
 import z from "zod";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import { Smile, X } from "lucide-react";
+import {
+  Paperclip,
+  Smile,
+  Sticker,
+  X,
+  LoaderCircle,
+  Plus,
+  SendHorizontal,
+} from "lucide-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "motion/react";
+import { getStickers } from "@/lib/queries/stickers";
+import {
+  stickerToAttachment,
+  uploadAttachment,
+  useUploadSticker,
+  type AttachmentMeta,
+} from "@/lib/mutations/uploads";
+import { toast } from "sonner";
 
 interface MessageInputProps {
   conversationId: string;
@@ -24,23 +40,59 @@ export function MessageInput({
   onClearParent,
 }: MessageInputProps) {
   const [value, setValue] = useState("");
+  const [attachment, setAttachment] = useState<AttachmentMeta | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const { data } = useQuery(getMe());
+  const stickers = useQuery(getStickers());
+  const uploadSticker = useUploadSticker();
   const queryClient = useQueryClient();
   const debouncedValue = useDebounce(value, 1000);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const stickerInputRef = useRef<HTMLInputElement>(null);
   const user = data?.data;
 
+  const uploading = isUploading || uploadSticker.isPending;
+
   useEffect(() => {
-    if (!value.trim() || !user?.name) return;
+    if (!value.trim() || uploading || !user?.name) return;
     socket.emit("typing", conversationId, user?.name);
     return () => {
       return;
     };
-  }, [debouncedValue, user?.name, conversationId, value]);
+  }, [debouncedValue, user?.name, conversationId, value, uploading]);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleImageSelect(file: File | undefined) {
+    if (!file) return;
+    setIsUploading(true);
+    setUploadProgress(0);
+    try {
+      const meta = await uploadAttachment("IMAGE", file, (percent) =>
+        setUploadProgress(percent),
+      );
+      setAttachment(meta);
+    } catch (error) {
+      if (!(error instanceof Error && error.message === "invalid file")) {
+        toast.error("Failed to upload image");
+      }
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(null);
+    }
+  }
+
+  async function handleStickerSelect(file: File | undefined) {
+    if (!file) return;
+    try {
+      await uploadSticker.mutateAsync(file);
+    } catch {
+      toast.error("Failed to upload sticker");
+    }
+  }
+
+  function buildAndSend(attachmentMeta?: AttachmentMeta) {
     const content = value.trim();
-    if (!content) return;
+    if (!content && !attachmentMeta) return;
 
     const tempId = `temp-${Date.now()}`;
     const createdAt = new Date();
@@ -52,6 +104,9 @@ export function MessageInput({
       author: user,
       createdAt,
       isMine: true,
+      ...(attachmentMeta && {
+        attachment: { ...attachmentMeta, id: "" },
+      }),
       ...(parentMessage && { parentMessageId: parentMessage.id }),
     };
 
@@ -85,7 +140,7 @@ export function MessageInput({
             if (conv.id === conversationId) {
               return {
                 ...conv,
-                lastMessage: message,
+                lastMessage: message as PublicMessageSchema,
                 lastMessageAt: createdAt,
               };
             }
@@ -103,7 +158,17 @@ export function MessageInput({
       parentMessageId,
     );
     setValue("");
+    setAttachment(null);
     onClearParent?.();
+  }
+
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+    buildAndSend(attachment ?? undefined);
+  }
+
+  function handleStickerClick(attachmentMeta: AttachmentMeta) {
+    buildAndSend(attachmentMeta);
   }
 
   const onEmojiClick = (emojiData: { emoji: string }) => {
@@ -135,7 +200,11 @@ export function MessageInput({
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                  {parentMessage.body}
+                  {parentMessage.attachment
+                    ? parentMessage.attachment.type === "STICKER"
+                      ? "Sticker"
+                      : "Photo"
+                    : parentMessage.body}
                 </p>
               </div>
               <Button
@@ -151,6 +220,49 @@ export function MessageInput({
         )}
       </AnimatePresence>
 
+      <AnimatePresence initial={false}>
+        {(uploadProgress !== null || attachment) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="px-6 py-2 border-t border-border bg-muted/50 backdrop-blur-sm"
+          >
+            {uploadProgress !== null ? (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+                <span>Uploading {uploadProgress}%</span>
+                <div className="flex-1 h-1 rounded-full bg-background overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </div>
+            ) : (
+              attachment && (
+                <div className="flex items-center gap-2">
+                  <img
+                    src={attachment.url}
+                    alt="Attachment preview"
+                    className="h-14 w-14 rounded-md object-cover"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 rounded-full"
+                    onClick={() => setAttachment(null)}
+                  >
+                    <X size={14} />
+                  </Button>
+                </div>
+              )
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <form
         className="flex flex-row py-2 px-6 mb-2"
         onSubmit={(e) => {
@@ -158,6 +270,95 @@ export function MessageInput({
         }}
       >
         <input type="submit" hidden />
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          className="hidden"
+          onChange={(e) => {
+            void handleImageSelect(e.target.files?.[0]);
+            e.target.value = "";
+          }}
+        />
+        <input
+          ref={stickerInputRef}
+          type="file"
+          accept="image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            void handleStickerSelect(e.target.files?.[0]);
+            e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => imageInputRef.current?.click()}
+          disabled={uploading}
+          className="hover:text-primary transition-colors disabled:opacity-50"
+          aria-label="Attach image"
+        >
+          <Paperclip size={22} />
+        </button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              disabled={uploading}
+              className="hover:text-primary transition-colors disabled:opacity-50"
+              aria-label="Open sticker picker"
+            >
+              <Sticker size={22} className="mx-2" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent side="top" className="w-fit p-2">
+            <div className="max-h-72 max-w-xs overflow-y-auto grid grid-cols-4 gap-1.5">
+              {stickers.data?.data?.length ? (
+                stickers.data.data.map((sticker) => (
+                  <button
+                    type="button"
+                    key={sticker.publicId}
+                    onClick={() =>
+                      handleStickerClick(stickerToAttachment(sticker))
+                    }
+                    className="rounded-md p-1 hover:bg-muted transition-colors"
+                  >
+                    <img
+                      src={sticker.url}
+                      alt={`Sticker ${sticker.format}`}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 object-contain"
+                      loading="lazy"
+                    />
+                  </button>
+                ))
+              ) : (
+                <p className="col-span-4 p-2 text-xs text-muted-foreground">
+                  {stickers.isPending
+                    ? "Loading stickers..."
+                    : "No stickers yet"}
+                </p>
+              )}
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="my-2 w-full"
+              disabled={uploadSticker.isPending}
+              onClick={() => stickerInputRef.current?.click()}
+            >
+              {uploadSticker.isPending ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+              ) : (
+                <Plus size={14} />
+              )}
+              {uploadSticker.isPending
+                ? "Uploading sticker..."
+                : "Add stickers"}
+            </Button>
+          </PopoverContent>
+        </Popover>
         <Popover>
           <PopoverTrigger asChild>
             <button className="hover:text-primary transition-colors">
@@ -179,6 +380,16 @@ export function MessageInput({
           autoComplete="off"
           className="outline-none focus:outline-none border-none focus:border-none"
         />
+        {(value.trim() || attachment) && (
+          <button
+            type="submit"
+            disabled={uploading}
+            className="text-primary disabled:opacity-50 ml-1"
+            aria-label="Send message"
+          >
+            <SendHorizontal size={24} />
+          </button>
+        )}
       </form>
     </div>
   );

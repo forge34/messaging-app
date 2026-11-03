@@ -52,9 +52,31 @@ model Message {
   parentMessageId  String?
   parentMessage    Message?           @relation(name: "parentMessage", fields: [parentMessageId], references: [id])
   replies          Message[]          @relation(name: "parentMessage")
+  attachment       MessageAttachment?
 
   @@index([authorId])
   @@index([conversationId, createdAt])
+}
+
+model MessageAttachment {
+  id        String         @id @default(cuid())
+  messageId String         @unique
+  type      AttachmentType
+  url       String
+  publicId  String         @unique
+  format    String
+  width     Int?
+  height    Int?
+  bytes     Int?
+  createdAt DateTime       @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum AttachmentType {
+  IMAGE
+  STICKER
+  VIDEO
 }
 
 model MessageReceipt {
