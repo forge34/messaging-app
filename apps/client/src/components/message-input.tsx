@@ -5,7 +5,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Routes, type PublicMessageSchema } from "@chat/shared";
 import { getMe } from "@/lib/queries/auth";
 import z from "zod";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import {
   Paperclip,
   Smile,
@@ -34,6 +33,9 @@ interface MessageInputProps {
   onClearParent?: () => void;
 }
 
+const TYPING_EMIT_INTERVAL_MS = 2000;
+const TYPING_STOP_DELAY_MS = 3000;
+
 export function MessageInput({
   conversationId,
   parentMessage,
@@ -47,20 +49,51 @@ export function MessageInput({
   const stickers = useQuery(getStickers());
   const uploadSticker = useUploadSticker();
   const queryClient = useQueryClient();
-  const debouncedValue = useDebounce(value, 1000);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const stickerInputRef = useRef<HTMLInputElement>(null);
   const user = data?.data;
 
   const uploading = isUploading || uploadSticker.isPending;
+  const lastTypingEmitRef = useRef(0);
+  const isTypingRef = useRef(false);
+  const typingStopTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
-    if (!value.trim() || uploading || !user?.name) return;
-    socket.emit("typing", conversationId, user?.name);
-    return () => {
+    if (!value.trim() || uploading || !user?.name) {
+      if (isTypingRef.current) {
+        isTypingRef.current = false;
+        clearTimeout(typingStopTimerRef.current);
+        socket.emit("typing:stop", conversationId);
+      }
       return;
-    };
-  }, [debouncedValue, user?.name, conversationId, value, uploading]);
+    }
+
+    if (Date.now() - lastTypingEmitRef.current >= TYPING_EMIT_INTERVAL_MS) {
+      lastTypingEmitRef.current = Date.now();
+      isTypingRef.current = true;
+      socket.emit("typing", conversationId, user.name);
+    }
+
+    clearTimeout(typingStopTimerRef.current);
+    typingStopTimerRef.current = setTimeout(() => {
+      isTypingRef.current = false;
+      lastTypingEmitRef.current = 0;
+      socket.emit("typing:stop", conversationId);
+    }, TYPING_STOP_DELAY_MS);
+  }, [value, uploading, user?.name, conversationId]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(typingStopTimerRef.current);
+      if (isTypingRef.current) {
+        isTypingRef.current = false;
+        socket.emit("typing:stop", conversationId);
+      }
+    },
+    [conversationId],
+  );
 
   async function handleImageSelect(file: File | undefined) {
     if (!file) return;
