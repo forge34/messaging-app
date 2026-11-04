@@ -79,19 +79,15 @@ export async function apiFetch<T extends Route>(
   }
   let errorData: ApiErrorResponse = {};
 
-  try {
-    const rawJson: unknown = await res.json();
-
-    if (typeof rawJson === "object" && rawJson !== null) {
-      const candidate = rawJson as ApiErrorResponse;
-      errorData = {
-        message: candidate.message,
-        messages: candidate.messages,
-        fields: candidate.fields,
-        status: res.status,
-      };
-    }
-  } catch {
+  if (typeof parsedJson === "object" && parsedJson !== null) {
+    const candidate = parsedJson as ApiErrorResponse;
+    errorData = {
+      message: candidate.message,
+      messages: candidate.messages,
+      fields: candidate.fields,
+      status: res.status,
+    };
+  } else {
     errorData = { message: res.statusText, status: res.status };
   }
 
