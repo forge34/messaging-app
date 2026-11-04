@@ -23,8 +23,8 @@ export const useCreateConversation = () => {
     onSuccess: async (data) => {
       if (!data) return;
 
-      toast.success("Conversaton created");
-      await queryClient.refetchQueries({ queryKey: ["conversatons"] });
+      toast.success("Conversation created");
+      await queryClient.refetchQueries({ queryKey: ["conversations"] });
       if (data.data?.id) {
         navigate({
           to: ConversatonIdRoute.to,
