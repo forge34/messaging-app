@@ -57,14 +57,11 @@ function RouteComponent() {
   }, [isSuccess]);
 
   useEffect(() => {
-    function handlePresenceUpdate(onlineIds: string[]) {
-      setOnlineUsers(onlineIds);
-    }
     socket.on("message:create", onMessageCreate);
     socket.on("message:create:confirm", onMessageConfirm);
     socket.on("message:read", onMessageRead);
     socket.on("message:reaction", onMesssageReaction);
-    socket.on("users:presence_update", handlePresenceUpdate);
+    socket.on("users:presence_update", setOnlineUsers);
     socket.on("conversation:create", onConversatonCreate);
     socket.on("notification:create", onNotificationCreate);
     socket.on("notification:unread_count", onUnreadCount);
@@ -74,12 +71,12 @@ function RouteComponent() {
       socket.off("message:create:confirm", onMessageConfirm);
       socket.off("message:read", onMessageRead);
       socket.off("message:reaction", onMesssageReaction);
-      socket.off("users:presence_update", handlePresenceUpdate);
+      socket.off("users:presence_update", setOnlineUsers);
       socket.off("conversation:create", onConversatonCreate);
       socket.off("notification:create", onNotificationCreate);
       socket.off("notification:unread_count", onUnreadCount);
     };
-  });
+  }, [setOnlineUsers]);
 
   return (
     <main className="flex flex-row w-full h-screen">
