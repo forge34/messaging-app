@@ -1,4 +1,5 @@
 import { MessageCircle, Smile } from "lucide-react";
+import { relativeTime } from "@/lib/format";
 
 type NotificationItemProps = {
   id: string;
@@ -9,18 +10,6 @@ type NotificationItemProps = {
   createdAt: Date | string;
   onClick: () => void;
 };
-
-function timeAgo(date: Date | string) {
-  const dateObj = typeof date === "string" ? new Date(date) : date;
-  const seconds = Math.floor((Date.now() - dateObj.getTime()) / 1000);
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
 
 export function NotificationItem({
   type,
@@ -59,7 +48,7 @@ export function NotificationItem({
         )}
       </div>
       <span className="text-xs text-muted-foreground shrink-0 mt-0.5">
-        {timeAgo(createdAt)}
+        {relativeTime(createdAt)}
       </span>
     </button>
   );

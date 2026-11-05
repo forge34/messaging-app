@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import type { PublicMessageSchema } from "@chat/shared";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
@@ -8,19 +7,13 @@ import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
 import { useMemo } from "react";
 import { socket } from "@/lib/sockets";
-import { scrollHighlightIntoView } from "@/lib/utils";
+import { scrollHighlightIntoView, cn } from "@/lib/utils";
+import { formatTime, messagePreview } from "@/lib/format";
 
 interface MessageProps {
   message: PublicMessageSchema;
   onReply?: (message: PublicMessageSchema) => void;
 }
-
-const formatTime = (date: string) => {
-  const now = new Date(date);
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
 
 const getAuthorColor = (name: string) => {
   let hash = 0;
@@ -67,7 +60,7 @@ const TimeStatus = ({
       className,
     )}
   >
-    <span>{formatTime(createdAt.toString())}</span>
+    <span>{formatTime(createdAt)}</span>
     {isMine && <StatusIcon status={status} />}
   </div>
 );
@@ -144,11 +137,7 @@ export function Message({ message, onReply }: MessageProps) {
                   {parentMessage.author.name}
                 </p>
                 <p className="text-xs opacity-70 line-clamp-2 leading-snug">
-                  {parentMessage.attachment
-                    ? parentMessage.attachment.type === "STICKER"
-                      ? "Sticker"
-                      : "Photo"
-                    : parentMessage.body}
+                  {messagePreview(parentMessage)}
                 </p>
               </div>
             </div>

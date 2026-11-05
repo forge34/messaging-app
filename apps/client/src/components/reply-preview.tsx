@@ -2,6 +2,7 @@ import type { PublicMessageSchema } from "@chat/shared";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "./ui/button";
+import { messagePreview } from "@/lib/format";
 
 interface ReplyPreviewProps {
   parentMessage?: PublicMessageSchema;
@@ -33,11 +34,7 @@ export function ReplyPreview({ parentMessage, onClear }: ReplyPreviewProps) {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                {parentMessage.attachment
-                  ? parentMessage.attachment.type === "STICKER"
-                    ? "Sticker"
-                    : "Photo"
-                  : parentMessage.body}
+                {messagePreview(parentMessage)}
               </p>
             </div>
             <Button

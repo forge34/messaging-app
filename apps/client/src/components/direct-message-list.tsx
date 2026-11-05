@@ -6,6 +6,7 @@ import { Route as ConversationIdRoute } from "../routes/app/conversations/$conve
 import { Button } from "./ui/button";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 import { useOnlineUsers } from "@/lib/context/online-users.tsx";
+import { formatTime, messagePreview } from "@/lib/format";
 
 export function DirectMessageList({
   conversations,
@@ -62,13 +63,7 @@ export function DirectMessageList({
                     {title}
                   </span>
                   <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {new Date(lastMessageAt || createdAt).toLocaleTimeString(
-                      [],
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      },
-                    )}
+                    {formatTime(new Date(lastMessageAt || createdAt))}
                   </span>
                 </div>
                 {lastMessage && (
@@ -76,11 +71,7 @@ export function DirectMessageList({
                     <span className="font-medium">
                       {lastMessage.author.name}:{" "}
                     </span>
-                    {lastMessage.body ||
-                      (lastMessage.attachment &&
-                        (lastMessage.attachment.type === "STICKER"
-                          ? "Sticker"
-                          : "Photo"))}
+                    {messagePreview(lastMessage)}
                   </div>
                 )}
               </div>

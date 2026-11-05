@@ -18,6 +18,7 @@ import { Route as ConversationRoute } from "./route.tsx";
 import { useBreakpoint } from "@/lib/hooks/use-match-media.tsx";
 import { getMe } from "@/lib/queries/auth.ts";
 import { useOnlineUsers } from "@/lib/context/online-users.tsx";
+import { lastSeenText } from "@/lib/format";
 import type { PublicMessageSchema } from "@chat/shared";
 
 export const Route = createFileRoute("/app/conversations/$conversationId")({
@@ -29,26 +30,6 @@ export const Route = createFileRoute("/app/conversations/$conversationId")({
     return data;
   },
 });
-
-function getLastSeenText(lastSeen?: Date | null) {
-  if (!lastSeen) return null;
-
-  const date = new Date(lastSeen);
-  const diffMs = Date.now() - date.getTime();
-
-  const seconds = Math.floor(diffMs / 1000);
-  if (seconds < 60) return "Last seen just now";
-
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60)
-    return `Last seen ${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Last seen ${hours} hour${hours > 1 ? "s" : ""} ago`;
-
-  const days = Math.floor(hours / 24);
-  return `Last seen ${days} day${days > 1 ? "s" : ""} ago`;
-}
 
 function RouteComponent() {
   const { conversationId } = Route.useParams();
@@ -103,7 +84,7 @@ function RouteComponent() {
   const otherUser = conversation?.users.find((u) => u.id !== currentUser?.id);
   if (!otherUser) return;
 
-  const lastSeenText = getLastSeenText(otherUser?.lastSeen);
+  const lastSeenTextValue = lastSeenText(otherUser?.lastSeen);
   const OnlineText = isOnline(otherUser.id!) ? "Online" : null;
   return (
     <AnimatedRoute
@@ -127,9 +108,9 @@ function RouteComponent() {
             {conversation?.title}
           </h3>
 
-          {(OnlineText || lastSeenText) && (
+          {(OnlineText || lastSeenTextValue) && (
             <span className="text-xs text-muted-foreground truncate">
-              {OnlineText || lastSeenText}
+              {OnlineText || lastSeenTextValue}
             </span>
           )}
         </div>
