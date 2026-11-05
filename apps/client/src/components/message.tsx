@@ -6,15 +6,13 @@ import { Check, CheckCheck, Clock, Smile, Reply } from "lucide-react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
-import { useState, type Ref } from "react";
+import { useMemo } from "react";
 import { socket } from "@/lib/sockets";
-import type { MessageRefMap } from "@/routes/app/conversations/$conversationId";
+import { scrollHighlightIntoView } from "@/lib/utils";
 
 interface MessageProps {
   message: PublicMessageSchema;
   onReply?: (message: PublicMessageSchema) => void;
-  ref: Ref<HTMLDivElement>;
-  refMap: MessageRefMap;
 }
 
 const formatTime = (date: string) => {
@@ -52,8 +50,29 @@ const StatusIcon = ({
   }
 };
 
-export function Message({ message, onReply, ref, refMap }: MessageProps) {
-  const [isHovered, setIsHovered] = useState(false);
+const TimeStatus = ({
+  createdAt,
+  status,
+  isMine,
+  className,
+}: {
+  createdAt: Date;
+  status: "PENDING" | "DELIVERED" | "READ";
+  isMine: boolean;
+  className?: string;
+}) => (
+  <div
+    className={cn(
+      "text-[10px] flex items-center gap-1 opacity-70",
+      className,
+    )}
+  >
+    <span>{formatTime(createdAt.toString())}</span>
+    {isMine && <StatusIcon status={status} />}
+  </div>
+);
+
+export function Message({ message, onReply }: MessageProps) {
   const onEmojiClick = (emojiData: { emoji: string }) => {
     socket.emit(
       "message:reaction",
@@ -63,34 +82,22 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
     );
   };
 
-  const reactionsMap = message.messageReactions?.reduce(
-    (acc: Record<string, number>, reaction) => {
-      acc[reaction.emoji] = (acc[reaction.emoji] || 0) + 1;
-      return acc;
-    },
-    {},
+  const reactionsMap = useMemo(
+    () =>
+      message.messageReactions?.reduce(
+        (acc: Record<string, number>, reaction) => {
+          acc[reaction.emoji] = (acc[reaction.emoji] || 0) + 1;
+          return acc;
+        },
+        {},
+      ),
+    [message.messageReactions],
   );
 
   const parentMessage = message?.parentMessage;
 
-  function scrollIntoView(id: string) {
-    const el = refMap.get(id);
-    if (!el) return;
-
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    requestAnimationFrame(() => {
-      el.classList.add("highlight");
-
-      setTimeout(() => {
-        el.classList.remove("highlight");
-      }, 1000);
-    });
-  }
-
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -99,9 +106,7 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
         "group relative flex flex-row gap-2 mb-4 w-full px-4",
         message.isMine ? "flex-row-reverse" : "flex-row",
       )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => scrollIntoView(message.id)}
+      onClick={() => scrollHighlightIntoView(message.id)}
       id={message.id}
     >
       <img
@@ -120,7 +125,7 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
           <div
             onClick={(ev) => {
               ev.stopPropagation();
-              scrollIntoView(parentMessage.id);
+              scrollHighlightIntoView(parentMessage.id);
             }}
             className={cn(
               "mb-1 rounded-xl px-3 py-2 backdrop-blur-sm",
@@ -151,9 +156,8 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
         )}
         <div
           className={cn(
-            "flex-col absolute top-0 transition-opacity duration-200 flex gap-1",
+            "flex-col absolute top-0 transition-opacity duration-200 flex gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto",
             message.isMine ? "right-full mr-2" : "left-full ml-2",
-            isHovered ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
           <Button
@@ -212,14 +216,14 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                 className="w-28 h-auto max-h-24 sm:w-40 sm:max-h-40 object-contain"
                 loading="lazy"
               />
-              <div className="text-[10px] flex items-center gap-1 opacity-70">
-                <span>{formatTime(message.createdAt.toString())}</span>
-                {message.isMine && <StatusIcon status={message.status} />}
-              </div>
+              <TimeStatus
+                createdAt={message.createdAt}
+                status={message.status}
+                isMine={message.isMine}
+              />
             </div>
           ) : (
             <div
-              id={message.id}
               className={cn(
                 "rounded-2xl shadow-sm",
                 message.attachment ? "p-1" : "py-2 px-4",
@@ -251,10 +255,12 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                     className="block w-full h-auto max-h-[55svh] rounded-lg object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute bottom-1.5 right-2 flex items-center gap-1 rounded-full bg-black/45 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm">
-                    <span>{formatTime(message.createdAt.toString())}</span>
-                    {message.isMine && <StatusIcon status={message.status} />}
-                  </div>
+                  <TimeStatus
+                    className="absolute bottom-1.5 right-2 rounded-full bg-black/45 px-2 py-0.5 text-white"
+                    createdAt={message.createdAt}
+                    status={message.status}
+                    isMine={message.isMine}
+                  />
                 </div>
               )}
               {message.body && (
@@ -268,10 +274,12 @@ export function Message({ message, onReply, ref, refMap }: MessageProps) {
                 </p>
               )}
               {!message.attachment && (
-                <div className="text-[10px] mt-1 flex items-center gap-1 opacity-70">
-                  <span>{formatTime(message.createdAt.toString())}</span>
-                  {message.isMine && <StatusIcon status={message.status} />}
-                </div>
+                <TimeStatus
+                  className="mt-1"
+                  createdAt={message.createdAt}
+                  status={message.status}
+                  isMine={message.isMine}
+                />
               )}
             </div>
           )}
