@@ -89,10 +89,10 @@ export async function onMessageCreate(
   ...args: Parameters<ServerToClientEvents["message:create"]>
 ) {
   const [conversationId, message] = args;
-  const user = queryClient.getQueryData(["user"]) as ResponseSchema<
-    typeof Routes.getCurrentUser
-  >;
-  const isMine = message.authorId === user.data?.id;
+  const user = queryClient.getQueryData(["user"]) as
+    | ResponseSchema<typeof Routes.getCurrentUser>
+    | undefined;
+  const isMine = message.authorId === user?.data?.id;
 
   queryClient.setQueryData(
     ["conversations"],
