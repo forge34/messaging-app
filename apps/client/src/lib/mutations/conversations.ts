@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Routes } from "@chat/shared";
 import { toast } from "sonner";
-import { queryClient } from "@/main";
+import { queryClient } from "@/lib/query-client";
 import { Route as ConversatonIdRoute } from "../../routes/app/conversations/$conversationId.tsx";
 import { apiFetch } from "../fetch-wrapper.ts";
 import { useNavigate } from "@tanstack/react-router";

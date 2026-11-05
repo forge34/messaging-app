@@ -1,4 +1,4 @@
-import { queryClient } from "@/main";
+import { queryClient } from "@/lib/query-client";
 import type { ServerToClientEvents } from "@chat/shared";
 import { toast } from "sonner";
 

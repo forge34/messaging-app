@@ -1,18 +1,12 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
 import "./index.css";
 import { ErrorComponent } from "./components/error-component";
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      throwOnError: true,
-    },
-  },
-});
+import { queryClient } from "./lib/query-client";
 
 const router = createRouter({
   routeTree,
