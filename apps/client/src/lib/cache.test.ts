@@ -39,7 +39,7 @@ const message: Message = {
 
 const detail = (id: string, messages: Message[]): DetailResponse => ({
   message: "ok",
-  status: 200,
+  code: 200,
   data: {
     id,
     title: null,
@@ -68,7 +68,7 @@ const listItem = (id: string): ConversationListItem =>
 
 const list = (ids: string[]): ListResponse => ({
   message: "ok",
-  status: 200,
+  code: 200,
   data: ids.map(listItem),
 });
 

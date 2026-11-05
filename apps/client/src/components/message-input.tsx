@@ -1,10 +1,11 @@
 import { socket } from "@/lib/sockets";
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { Input } from "./ui/input";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Routes, type PublicMessageSchema } from "@chat/shared";
+import { useQuery } from "@tanstack/react-query";
+import { type PublicMessageSchema } from "@chat/shared";
 import { getMe } from "@/lib/queries/auth";
-import z from "zod";
+import { appendMessage, moveConversationToFront } from "@/lib/cache";
+import type { Message } from "@/lib/cache";
 import {
   Paperclip,
   Smile,
@@ -48,7 +49,6 @@ export function MessageInput({
   const { data } = useQuery(getMe());
   const stickers = useQuery(getStickers());
   const uploadSticker = useUploadSticker();
-  const queryClient = useQueryClient();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const stickerInputRef = useRef<HTMLInputElement>(null);
   const user = data?.data;
@@ -143,45 +143,10 @@ export function MessageInput({
       ...(parentMessage && { parentMessageId: parentMessage.id }),
     };
 
-    queryClient.setQueryData(
-      ["conversations", conversationId],
-      (oldData: z.infer<typeof Routes.getConversationById.responseSchema>) => {
-        if (!oldData.data) return;
-        const newConversation = {
-          ...oldData.data,
-          messages: [...oldData.data.messages, message as PublicMessageSchema],
-        };
-        return {
-          ...oldData,
-          data: newConversation,
-        };
-      },
-    );
+    const optimistic = message as unknown as Message;
+    appendMessage(conversationId, optimistic);
+    moveConversationToFront(conversationId, optimistic, createdAt);
 
-    queryClient.setQueryData(
-      ["conversations"],
-      (
-        oldData: z.infer<
-          typeof Routes.getCurrentUserConversations.responseSchema
-        >,
-      ) => {
-        const conversations = oldData.data;
-        if (!conversations) return [];
-        return {
-          ...oldData,
-          data: conversations.map((conv) => {
-            if (conv.id === conversationId) {
-              return {
-                ...conv,
-                lastMessage: message as PublicMessageSchema,
-                lastMessageAt: createdAt,
-              };
-            }
-            return conv;
-          }),
-        };
-      },
-    );
     const parentMessageId = parentMessage ? parentMessage.id : undefined;
     socket.emit(
       "message:create",
