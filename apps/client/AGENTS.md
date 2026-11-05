@@ -15,7 +15,7 @@ React 19 SPA with Vite 7, Tanstack Router (file-based routing), Tanstack Query (
 ```
 src/routes/
 ├── __root.tsx              — Root layout (sidebar, theme provider)
-├── index.tsx               — Redirect to /app
+├── index.tsx               — Landing page (deferred to components/landing-page.tsx)
 ├── _auth/                  — Auth-required (redirects to login if unauthenticated)
 │   ├── route.tsx
 │   ├── login.tsx

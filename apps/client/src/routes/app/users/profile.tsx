@@ -14,9 +14,9 @@ import { useBreakpoint } from "@/lib/hooks/use-match-media";
 export const Route = createFileRoute("/app/users/profile")({
   component: RouteComponent,
   loader: async ({ context: { queryClient } }) => {
-    const data = await queryClient.ensureQueryData(getMe());
-    if (!data?.data) return;
-    await queryClient.ensureQueryData(getUserById(data?.data?.id));
+    const me = await queryClient.ensureQueryData(getMe());
+    const id = me?.data?.id;
+    if (id) await queryClient.ensureQueryData(getUserById(id));
   },
 });
 
