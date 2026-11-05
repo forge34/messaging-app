@@ -7,9 +7,6 @@ export const getUserById = (id: string) =>
     queryKey: ["user", id],
     queryFn: async () => {
       return apiFetch(Routes.getUserById, {
-        headers: {
-          credentials: "include",
-        },
         params: { id },
       });
     },
@@ -20,7 +17,6 @@ export const getUsers = () =>
     queryKey: ["users"],
     queryFn: ({ pageParam }) =>
       apiFetch(Routes.getUsers, {
-        headers: { credentials: "include" },
         params: {},
         queries: { cursor: pageParam as string | undefined, take: 20 },
       }),

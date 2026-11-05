@@ -7,7 +7,6 @@ export function useMarkNotificationRead() {
   return useMutation({
     mutationFn: (id: string) =>
       apiFetch(Routes.markNotificationRead, {
-        headers: { credentials: "include" },
         params: { id },
       }),
     onSuccess: () => {
@@ -21,7 +20,6 @@ export function useMarkAllNotificationsRead() {
   return useMutation({
     mutationFn: () =>
       apiFetch(Routes.markAllNotificationsRead, {
-        headers: { credentials: "include" },
         params: {},
       }),
     onSuccess: () => {

@@ -7,9 +7,6 @@ export const getCurrentUserConversations = () =>
     queryKey: ["conversations"],
     queryFn: async () => {
       return apiFetch(Routes.getCurrentUserConversations, {
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },
@@ -20,9 +17,6 @@ export const GetConversationById = (id: string) =>
     queryKey: ["conversations", id],
     queryFn: async () => {
       return apiFetch(Routes.getConversationById, {
-        headers: {
-          credentials: "include",
-        },
         params: {
           id,
         },

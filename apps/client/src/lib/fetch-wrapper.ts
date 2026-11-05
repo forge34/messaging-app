@@ -15,7 +15,6 @@ interface FetchOptions<T extends Route> {
   body?: z.infer<T["requestBody"]>;
   params: z.infer<T["params"]>;
   queries?: z.infer<T["queries"]>;
-  headers: RequestInit;
 }
 
 const ApiURL = import.meta.env.VITE_API_URL as string;
@@ -31,7 +30,7 @@ export async function apiFetch<T extends Route>(
       data: z.infer<T["responseData"]> | undefined;
     }
 > {
-  const { body, headers, params, queries } = options;
+  const { body, params, queries } = options;
   const bodyData = route.requestBody.parse(body);
 
   if (!ApiURL) {
@@ -49,7 +48,7 @@ export async function apiFetch<T extends Route>(
   }
 
   const res = await fetch(fetchUrl, {
-    ...headers,
+    credentials: "include",
     method: route.method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(bodyData),

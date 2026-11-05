@@ -8,9 +8,6 @@ export const getMe = () =>
     queryKey: ["user"],
     queryFn: async () => {
       return apiFetch(Routes.getCurrentUser, {
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },

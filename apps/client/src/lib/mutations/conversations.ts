@@ -14,9 +14,6 @@ export const useCreateConversation = () => {
         body: {
           otherId,
         },
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },

@@ -7,9 +7,6 @@ export const getStickers = () =>
     queryKey: ["stickers"],
     queryFn: async () => {
       return apiFetch(Routes.listStickers, {
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },

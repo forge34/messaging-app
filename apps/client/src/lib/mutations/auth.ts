@@ -13,9 +13,6 @@ export function useLogin() {
     mutationFn: async (body: { username: string; password: string }) => {
       return apiFetch(Routes.login, {
         body,
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },
@@ -45,9 +42,6 @@ export function useLogout() {
     mutationFn: async () => {
       return apiFetch(Routes.logout, {
         body: {},
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },
@@ -80,9 +74,6 @@ export function useSignup() {
     }) => {
       return apiFetch(Routes.signup, {
         body,
-        headers: {
-          credentials: "include",
-        },
         params: {},
       });
     },

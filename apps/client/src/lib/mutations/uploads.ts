@@ -25,9 +25,6 @@ async function requestUploadSignature(
       fileType: file.type as (typeof IMAGE_MIME_TYPES)[number],
       sizeBytes: file.size,
     },
-    headers: {
-      credentials: "include",
-    },
     params: {},
   });
 

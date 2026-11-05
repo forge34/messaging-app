@@ -7,7 +7,6 @@ export const getNotifications = () =>
     queryKey: ["notifications"],
     queryFn: ({ pageParam }) =>
       apiFetch(Routes.getNotifications, {
-        headers: { credentials: "include" },
         params: {},
         queries: { cursor: pageParam as string | undefined, take: 20 },
       }),
@@ -20,7 +19,6 @@ export const getUnreadCount = () =>
     queryKey: ["notifications", "unread-count"],
     queryFn: () =>
       apiFetch(Routes.getUnreadNotificationCount, {
-        headers: { credentials: "include" },
         params: {},
       }),
     refetchInterval: 30_000,
