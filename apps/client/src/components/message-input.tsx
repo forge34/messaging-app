@@ -117,7 +117,7 @@ export function MessageInput({
       />
 
       <form
-        className="flex flex-row py-2 px-6 mb-2"
+        className="flex flex-row py-2 px-4 mb-2 gap-2"
         onSubmit={(e) => {
           handleSubmit(e);
         }}
@@ -176,7 +176,7 @@ export function MessageInput({
           name="message-input"
           type="text"
           autoComplete="off"
-          className="outline-none focus:outline-none border-none focus:border-none"
+          className="outline-none focus:outline-none border-none focus:border-none w-full"
         />
         {(value.trim() || image.attachment) && (
           <button
