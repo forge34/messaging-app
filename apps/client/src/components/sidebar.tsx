@@ -1,8 +1,6 @@
 import {
   MessageCircle,
-  Users,
   User,
-  Settings,
   LogOut,
   Menu,
   X,
@@ -47,23 +45,11 @@ export function Sidebar() {
           icon={<MessageCircle className="w-5 h-5" />}
           onClick={closeSidebar}
         />
-        <NavItem
-          to="."
-          label="Channels"
-          icon={<Users className="w-5 h-5" />}
-          onClick={closeSidebar}
-        />
         <NotificationBell />
         <NavItem
           to={UserProfileRoute.to}
           label="My Profile"
           icon={<User className="w-5 h-5" />}
-          onClick={closeSidebar}
-        />
-        <NavItem
-          to="."
-          label="Settings"
-          icon={<Settings className="w-5 h-5" />}
           onClick={closeSidebar}
         />
       </div>

@@ -73,6 +73,7 @@ function RouteComponent() {
           <div className="w-full md:w-auto mt-4 md:mt-0">
             <Button
               variant="outline"
+              disabled
               className="w-full md:w-auto gap-2 rounded-xl"
             >
               <Pencil className="h-4 w-4" />
@@ -151,6 +152,7 @@ function RouteComponent() {
                   <Button
                     size="sm"
                     variant="ghost"
+                    disabled
                     className="text-destructive hover:bg-destructive/10"
                   >
                     Unblock
