@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -49,8 +49,27 @@ export class UsersService {
     });
   }
 
-  async user(id: string) {
-    return this.prisma.user.findFirst({
+  async publicUser(id: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        imgUrl: true,
+        bio: true,
+        lastSeen: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async myProfile(id: string) {
+    const user = await this.prisma.user.findFirst({
       where: {
         id: id,
       },
@@ -69,9 +88,15 @@ export class UsersService {
         conversations: true,
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
-  async getBookmarks(id: string) {
+  async getBookmarks(userId: string) {
     const user = await this.prisma.user.findFirst({
       select: {
         id: true,
@@ -93,7 +118,7 @@ export class UsersService {
       },
 
       where: {
-        id: id,
+        id: userId,
       },
     });
 
@@ -101,7 +126,7 @@ export class UsersService {
 
     const bookmarks = user.bookmarks.map(
       ({ author, id, body, createdAt, status, conversationId, authorId }) => {
-        const isMine = author.id === id;
+        const isMine = author.id === userId;
         return {
           id,
           body,

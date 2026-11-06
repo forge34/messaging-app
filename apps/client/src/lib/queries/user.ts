@@ -12,6 +12,16 @@ export const getUserById = (id: string) =>
     },
   });
 
+export const getMyProfile = () =>
+  queryOptions({
+    queryKey: ["user", "me", "profile"],
+    queryFn: async () => {
+      return apiFetch(Routes.getMyProfile, {
+        params: {},
+      });
+    },
+  });
+
 export const getUsers = () =>
   infiniteQueryOptions({
     queryKey: ["users"],

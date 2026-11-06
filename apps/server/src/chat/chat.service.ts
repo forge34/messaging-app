@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TypedServer, TypedSocket } from './chat.gateway';
 import { User } from '@chat/db/client';
 import { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
 import { NotificationsService } from '../notifications/notifications.service';
+import { assertConversationMember } from '../common/conversation-access';
 
 type OnlineEntry = {
   socket: TypedSocket;
@@ -104,6 +105,19 @@ export class ChatService {
     const attachment = message.attachment ?? null;
     if (!content && !attachment) return;
 
+    await assertConversationMember(this.prisma, user.id, conversationId);
+
+    if (parentMessageId) {
+      const parentMessage = await this.prisma.message.findFirst({
+        where: { id: parentMessageId, conversationId },
+        select: { id: true },
+      });
+
+      if (!parentMessage) {
+        throw new NotFoundException('Parent message not found');
+      }
+    }
+
     const createdMessage = await this.prisma.message.create({
       include: {
         author: true,
@@ -175,6 +189,8 @@ export class ChatService {
     user: User,
     conversationId: string,
   ) {
+    await assertConversationMember(this.prisma, user.id, conversationId);
+
     const messageIds = await this.markMessagesAsRead(conversationId, user.id);
     if (messageIds.length >= 0)
       socket
@@ -189,6 +205,17 @@ export class ChatService {
     user: User,
     server: TypedServer,
   ) {
+    await assertConversationMember(this.prisma, user.id, conversationId);
+
+    const existingMessage = await this.prisma.message.findFirst({
+      where: { id: messageId, conversationId },
+      select: { id: true },
+    });
+
+    if (!existingMessage) {
+      throw new NotFoundException('Message not found');
+    }
+
     const message = await this.prisma.message.update({
       where: { id: messageId },
       data: {

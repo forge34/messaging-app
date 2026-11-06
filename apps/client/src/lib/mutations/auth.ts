@@ -5,6 +5,7 @@ import { ApiError } from "../error";
 import { useNavigate } from "@tanstack/react-router";
 import { Route as MeRoute } from "../../routes/app/conversations/@me.tsx";
 import { apiFetch } from "../fetch-wrapper.ts";
+import { socket } from "../sockets";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -45,14 +46,15 @@ export function useLogout() {
         params: {},
       });
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       if (!data) return;
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      socket.disconnect();
+      queryClient.removeQueries();
     },
     onSettled: async (data) => {
       if (!data) return;
       toast.success(data.message);
-      navigate({ to: "/" });
+      navigate({ to: "/", reloadDocument: true });
     },
     onError: (err) => {
       if (err instanceof ApiError) {

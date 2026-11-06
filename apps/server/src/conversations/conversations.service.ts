@@ -11,12 +11,17 @@ import { baseConversationSchema, baseMessageSchema } from '@chat/shared';
 export class ConversationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async delete(id: string) {
-    await this.prisma.conversation.delete({
+  async delete(id: string, userId: string) {
+    const result = await this.prisma.conversation.deleteMany({
       where: {
         id,
+        users: { some: { id: userId } },
       },
     });
+
+    if (result.count === 0) {
+      throw new NotFoundException(`Invalid conversation id: ${id}`);
+    }
   }
 
   async getConversationById(id: string, userId: string) {
@@ -29,6 +34,7 @@ export class ConversationsService {
     const conversation = await this.prisma.conversation.findFirst({
       where: {
         id,
+        users: { some: { id: userId } },
       },
       select: { ...conversationSelect, messages: { select: messagesSelect } },
     });
