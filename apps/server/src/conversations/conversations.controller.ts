@@ -14,9 +14,11 @@ export class ConversationsController {
   @UseGuards(JwtAuthGuard)
   @Route(Routes.deleteConversation)
   async deleteConversation(
-    @Param() params: RequestParams<typeof Routes.getConversationById>,
+    @Req() req: Request,
+    @Param() params: RequestParams<typeof Routes.deleteConversation>,
   ) {
-    await this.conversationsService.delete(params.id);
+    const { id: userId } = req.user as User;
+    await this.conversationsService.delete(params.id, userId);
   }
   @UseGuards(JwtAuthGuard)
   @Route(Routes.getCurrentUserConversations)

@@ -11,12 +11,16 @@ import { type RequestBody, Routes } from '@chat/shared';
 import { type CookieOptions, type Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
-const cookieOptions: CookieOptions = {
+const baseCookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  maxAge: 1000 * 60 * 60 * 24 * 3,
   path: '/',
+};
+
+const cookieOptions: CookieOptions = {
+  ...baseCookieOptions,
+  maxAge: 1000 * 60 * 60 * 24 * 3,
 };
 
 @Controller('')
@@ -53,5 +57,12 @@ export class AuthController {
     const token = await this.jwtService.signAsync({ ...user });
     res.cookie('jwt', token, cookieOptions);
     return { message: 'Login sucess' };
+  }
+
+  @HttpCode(200)
+  @Route(Routes.logout)
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt', baseCookieOptions);
+    return { message: 'Logged out' };
   }
 }

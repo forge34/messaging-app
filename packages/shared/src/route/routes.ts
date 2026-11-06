@@ -57,8 +57,8 @@ export const Routes = {
   }),
   deleteConversation: createRoute({
     ...EmptyParamQueries,
-    path: "/conversation",
-    method: "POST",
+    path: "/conversation/:id",
+    method: "DELETE",
     requestBody: z.undefined(),
     params: z.object({ id: z.string().nonempty() }),
     responseData: z.undefined(),
@@ -94,6 +94,14 @@ export const Routes = {
     method: "GET",
     requestBody: z.undefined(),
     responseData: PublicUserSchema.extend({}),
+  }),
+
+  getMyProfile: createRoute({
+    ...EmptyParamQueries,
+    path: "/users/me/profile",
+    method: "GET",
+    requestBody: z.undefined(),
+    responseData: FullUserSchema,
   }),
 
   getBookmarks: createRoute({
@@ -148,7 +156,7 @@ export const Routes = {
       id: z.string(),
     }),
     requestBody: z.undefined(),
-    responseData: FullUserSchema,
+    responseData: PublicUserSchema,
   }),
   getNotifications: createRoute({
     ...EmptyParamQueries,

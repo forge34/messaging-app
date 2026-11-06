@@ -35,6 +35,15 @@ export class UsersController {
 
     return { data: user };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Route(Routes.getMyProfile)
+  async getMyProfile(@Req() req: Request) {
+    const user = req.user as User;
+    const profile = await this.userService.myProfile(user.id);
+
+    return { data: profile };
+  }
   @UseGuards(JwtAuthGuard)
   @Route(Routes.getBookmarks)
   async getBookmarks(@Req() req: Request) {
@@ -48,7 +57,7 @@ export class UsersController {
   async getUserByid(@Param() params: RequestParams<typeof Routes.getUserById>) {
     const { id } = params;
 
-    const user = await this.userService.user(id);
+    const user = await this.userService.publicUser(id);
     return { data: user };
   }
 

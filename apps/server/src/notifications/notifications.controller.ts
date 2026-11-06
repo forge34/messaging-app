@@ -29,9 +29,11 @@ export class NotificationsController {
   @UseGuards(JwtAuthGuard)
   @Route(Routes.markNotificationRead)
   async markNotificationRead(
+    @Req() req: Request,
     @Param() params: RequestParams<typeof Routes.markNotificationRead>,
   ) {
-    await this.notificationsService.markRead(params.id);
+    const { id: userId } = req.user as User;
+    await this.notificationsService.markRead(params.id, userId);
   }
 
   @UseGuards(JwtAuthGuard)

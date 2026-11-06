@@ -37,7 +37,7 @@ export class NotificationsGateway {
     if (!user) return;
 
     const [notificationId] = args;
-    await this.notificationsService.markRead(notificationId);
+    await this.notificationsService.markRead(notificationId, user.id);
 
     const count = await this.notificationsService.getUnreadCount(user.id);
     this.server.to(`user:${user.id}`).emit('notification:unread_count', count);

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getUserById } from "@/lib/queries/user";
+import { getMyProfile } from "@/lib/queries/user";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Pencil, Ban, Bookmark } from "lucide-react";
@@ -14,9 +14,8 @@ import { useBreakpoint } from "@/lib/hooks/use-match-media";
 export const Route = createFileRoute("/app/users/profile")({
   component: RouteComponent,
   loader: async ({ context: { queryClient } }) => {
-    const me = await queryClient.ensureQueryData(getMe());
-    const id = me?.data?.id;
-    if (id) await queryClient.ensureQueryData(getUserById(id));
+    await queryClient.ensureQueryData(getMe());
+    await queryClient.ensureQueryData(getMyProfile());
   },
 });
 
@@ -24,7 +23,7 @@ function RouteComponent() {
   const { md } = useBreakpoint();
   const { data: getMeData } = useQuery(getMe());
   const currentUser = getMeData?.data;
-  const { data, isLoading } = useQuery(getUserById(currentUser?.id ?? ""));
+  const { data, isLoading } = useQuery(getMyProfile());
 
   if (!currentUser || isLoading)
     return <div className="p-6">Loading profile...</div>;
