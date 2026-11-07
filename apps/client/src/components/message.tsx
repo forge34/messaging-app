@@ -1,7 +1,7 @@
 import type { PublicMessageSchema } from "@chat/shared";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { Check, CheckCheck, Clock, Smile, Reply } from "lucide-react";
+import { Check, CheckCheck, Clock, Smile, Reply, Star } from "lucide-react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
@@ -49,11 +49,13 @@ const TimeStatus = ({
   createdAt,
   status,
   isMine,
+  isBookmarked,
   className,
 }: {
   createdAt: Date;
   status: "PENDING" | "DELIVERED" | "READ";
   isMine: boolean;
+  isBookmarked?: boolean;
   className?: string;
 }) => (
   <div
@@ -63,6 +65,13 @@ const TimeStatus = ({
     )}
   >
     <span>{formatTime(createdAt)}</span>
+    {isBookmarked && (
+      <Star
+        size={12}
+        aria-label="Bookmarked"
+        className="fill-amber-400 text-amber-400"
+      />
+    )}
     {isMine && <StatusIcon status={status} />}
   </div>
 );
@@ -222,6 +231,7 @@ export function Message({ message, onReply }: MessageProps) {
                     createdAt={message.createdAt}
                     status={message.status}
                     isMine={message.isMine}
+                    isBookmarked={message.isBookmarked}
                   />
                 </div>
               ) : (
@@ -262,6 +272,7 @@ export function Message({ message, onReply }: MessageProps) {
                         createdAt={message.createdAt}
                         status={message.status}
                         isMine={message.isMine}
+                        isBookmarked={message.isBookmarked}
                       />
                     </div>
                   )}
@@ -281,6 +292,7 @@ export function Message({ message, onReply }: MessageProps) {
                       createdAt={message.createdAt}
                       status={message.status}
                       isMine={message.isMine}
+                      isBookmarked={message.isBookmarked}
                     />
                   )}
                 </div>
