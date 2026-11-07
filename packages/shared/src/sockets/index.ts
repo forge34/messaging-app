@@ -15,6 +15,16 @@ export const ServerEvents = {
     input: z.tuple([z.string(), z.array(z.string())]),
   }),
 
+  "message:delete": createEvent({
+    name: "message:delete",
+    input: z.tuple([z.string(), z.string()]),
+  }),
+
+  "message:bookmark": createEvent({
+    name: "message:bookmark",
+    input: z.tuple([z.string(), z.string(), z.boolean()]),
+  }),
+
   "message:create:confirm": createEvent({
     name: "message:create:confirm",
     input: z.tuple([z.string(), PublicMessageSchema.partial(), z.string()]),
@@ -71,6 +81,16 @@ export const ClientEvents = {
   "message:read": createEvent({
     name: "message:read",
     input: z.tuple([z.string()]),
+  }),
+
+  "message:delete": createEvent({
+    name: "message:delete",
+    input: z.tuple([z.string(), z.string()]),
+  }),
+
+  "message:bookmark": createEvent({
+    name: "message:bookmark",
+    input: z.tuple([z.string(), z.string()]),
   }),
 
   typing: createEvent({
