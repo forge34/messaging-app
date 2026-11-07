@@ -154,7 +154,12 @@ describe('ChatService conversation access control', () => {
       data: { bookmarkedBy: { connect: { id: 'u1' } } },
     });
     expect(server.to).toHaveBeenCalledWith('user:u1');
-    expect(server.emit).toHaveBeenCalledWith('message:bookmark', 'c1', 'm1', true);
+    expect(server.emit).toHaveBeenCalledWith(
+      'message:bookmark',
+      'c1',
+      'm1',
+      true,
+    );
   });
 
   it('removes an existing bookmark for the user', async () => {
