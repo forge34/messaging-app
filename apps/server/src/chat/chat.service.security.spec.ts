@@ -6,17 +6,23 @@ import type { NotificationsService } from '../notifications/notifications.servic
 import { ChatService } from './chat.service';
 
 describe('ChatService conversation access control', () => {
+  const conversationFindFirst = jest.fn();
+  const messageCreate = jest.fn();
+  const messageFindFirst = jest.fn();
+  const messageFindMany = jest.fn();
+  const messageUpdate = jest.fn();
+
   const prisma = {
     conversation: {
-      findFirst: jest.fn(),
+      findFirst: conversationFindFirst,
       findUnique: jest.fn(),
       findMany: jest.fn(),
     },
     message: {
-      create: jest.fn(),
-      findFirst: jest.fn(),
-      findMany: jest.fn(),
-      update: jest.fn(),
+      create: messageCreate,
+      findFirst: messageFindFirst,
+      findMany: messageFindMany,
+      update: messageUpdate,
       updateMany: jest.fn(),
     },
     messageReceipt: {
@@ -52,7 +58,7 @@ describe('ChatService conversation access control', () => {
   });
 
   it('does not create a message when the sender is not a member', async () => {
-    jest.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
+    conversationFindFirst.mockResolvedValue(null);
 
     await expect(
       service.handleMessageCreate(
@@ -64,29 +70,27 @@ describe('ChatService conversation access control', () => {
       ),
     ).rejects.toThrow(NotFoundException);
 
-    expect(prisma.message.create).not.toHaveBeenCalled();
+    expect(messageCreate).not.toHaveBeenCalled();
   });
 
   it('does not mark messages read when the user is not a member', async () => {
-    jest.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
+    conversationFindFirst.mockResolvedValue(null);
 
-    await expect(
-      service.handleMessageRead(socket, user, 'c1'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.handleMessageRead(socket, user, 'c1')).rejects.toThrow(
+      NotFoundException,
+    );
 
-    expect(prisma.message.findMany).not.toHaveBeenCalled();
+    expect(messageFindMany).not.toHaveBeenCalled();
   });
 
   it('does not react to a message outside the conversation', async () => {
-    jest
-      .mocked(prisma.conversation.findFirst)
-      .mockResolvedValue({ id: 'c1' } as never);
-    jest.mocked(prisma.message.findFirst).mockResolvedValue(null);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    messageFindFirst.mockResolvedValue(null);
 
     await expect(
       service.handleMessageReaction('c1', 'm1', '👍', user, server),
     ).rejects.toThrow(NotFoundException);
 
-    expect(prisma.message.update).not.toHaveBeenCalled();
+    expect(messageUpdate).not.toHaveBeenCalled();
   });
 });

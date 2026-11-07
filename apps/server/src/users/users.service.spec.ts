@@ -3,9 +3,11 @@ import type { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from './users.service';
 
 describe('UsersService profile boundaries', () => {
+  const findFirst = jest.fn();
+
   const prisma = {
     user: {
-      findFirst: jest.fn(),
+      findFirst,
     },
   } as unknown as PrismaService;
 
@@ -24,10 +26,10 @@ describe('UsersService profile boundaries', () => {
       lastSeen: null,
     };
 
-    jest.mocked(prisma.user.findFirst).mockResolvedValue(publicUser as never);
+    findFirst.mockResolvedValue(publicUser as never);
 
     await expect(service.publicUser('u1')).resolves.toEqual(publicUser);
-    expect(prisma.user.findFirst).toHaveBeenCalledWith({
+    expect(findFirst).toHaveBeenCalledWith({
       where: { id: 'u1' },
       select: {
         id: true,
@@ -40,7 +42,7 @@ describe('UsersService profile boundaries', () => {
   });
 
   it('throws when a public profile does not exist', async () => {
-    jest.mocked(prisma.user.findFirst).mockResolvedValue(null);
+    findFirst.mockResolvedValue(null);
 
     await expect(service.publicUser('missing')).rejects.toThrow(
       NotFoundException,
@@ -48,7 +50,7 @@ describe('UsersService profile boundaries', () => {
   });
 
   it('marks a bookmark as mine based on the current user id', async () => {
-    jest.mocked(prisma.user.findFirst).mockResolvedValue({
+    findFirst.mockResolvedValue({
       id: 'u1',
       name: 'Alice',
       imgUrl: '',
@@ -75,7 +77,7 @@ describe('UsersService profile boundaries', () => {
 
     expect(bookmarks).toHaveLength(1);
     expect(bookmarks[0]?.isMine).toBe(true);
-    expect(prisma.user.findFirst).toHaveBeenCalledWith(
+    expect(findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: 'u1' },
       }),
