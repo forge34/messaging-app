@@ -42,19 +42,6 @@ export const Routes = {
     requestBody: z.object({}).strict(),
     responseData: z.undefined(),
   }),
-  createConversation: createRoute({
-    ...EmptyParamQueries,
-    path: "/conversation",
-    method: "POST",
-    requestBody: z.object({
-      otherId: z.string().nonempty(),
-    }),
-    responseData: PublicConversationSchema.pick({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    }),
-  }),
   deleteConversation: createRoute({
     ...EmptyParamQueries,
     path: "/conversation/:id",

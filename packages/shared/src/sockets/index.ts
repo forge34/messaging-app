@@ -10,11 +10,6 @@ export const ServerEvents = {
     input: z.tuple([z.string(), PublicMessageSchema.partial(), z.string()]),
   }),
 
-  "message:delete": createEvent({
-    name: "message:delete",
-    input: z.tuple([z.string(), z.string()]),
-  }),
-
   "message:read": createEvent({
     name: "message:read",
     input: z.tuple([z.string(), z.array(z.string())]),
@@ -71,11 +66,6 @@ export const ClientEvents = {
       z.string(),
       z.string().nullable().optional(),
     ]),
-  }),
-
-  "message:delete": createEvent({
-    name: "message:delete",
-    input: z.tuple([z.string(), z.string()]),
   }),
 
   "message:read": createEvent({
