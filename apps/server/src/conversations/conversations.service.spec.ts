@@ -3,10 +3,13 @@ import type { PrismaService } from '../prisma/prisma.service';
 import { ConversationsService } from './conversations.service';
 
 describe('ConversationsService access control', () => {
+  const findFirst = jest.fn();
+  const deleteMany = jest.fn();
+
   const prisma = {
     conversation: {
-      findFirst: jest.fn(),
-      deleteMany: jest.fn(),
+      findFirst,
+      deleteMany,
     },
   } as unknown as PrismaService;
 
@@ -28,13 +31,11 @@ describe('ConversationsService access control', () => {
       messages: [],
     };
 
-    jest
-      .mocked(prisma.conversation.findFirst)
-      .mockResolvedValue(conversation as never);
+    findFirst.mockResolvedValue(conversation as never);
 
     await service.getConversationById('c1', 'u1');
 
-    expect(prisma.conversation.findFirst).toHaveBeenCalledWith(
+    expect(findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
           id: 'c1',
@@ -45,7 +46,7 @@ describe('ConversationsService access control', () => {
   });
 
   it('returns not found when the user is not a conversation member', async () => {
-    jest.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
+    findFirst.mockResolvedValue(null);
 
     await expect(service.getConversationById('c1', 'u3')).rejects.toThrow(
       NotFoundException,
@@ -53,13 +54,11 @@ describe('ConversationsService access control', () => {
   });
 
   it('scopes deletes to the requesting user', async () => {
-    jest
-      .mocked(prisma.conversation.deleteMany)
-      .mockResolvedValue({ count: 1 });
+    deleteMany.mockResolvedValue({ count: 1 });
 
     await service.delete('c1', 'u1');
 
-    expect(prisma.conversation.deleteMany).toHaveBeenCalledWith({
+    expect(deleteMany).toHaveBeenCalledWith({
       where: {
         id: 'c1',
         users: { some: { id: 'u1' } },
@@ -68,9 +67,7 @@ describe('ConversationsService access control', () => {
   });
 
   it('returns not found when deleting a conversation the user cannot access', async () => {
-    jest
-      .mocked(prisma.conversation.deleteMany)
-      .mockResolvedValue({ count: 0 });
+    deleteMany.mockResolvedValue({ count: 0 });
 
     await expect(service.delete('c1', 'u3')).rejects.toThrow(NotFoundException);
   });

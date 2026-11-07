@@ -3,9 +3,11 @@ import type { PrismaService } from '../prisma/prisma.service';
 import { assertConversationMember } from './conversation-access';
 
 describe('assertConversationMember', () => {
+  const findFirst = jest.fn();
+
   const prisma = {
     conversation: {
-      findFirst: jest.fn(),
+      findFirst,
     },
   } as unknown as PrismaService;
 
@@ -14,15 +16,13 @@ describe('assertConversationMember', () => {
   });
 
   it('accepts a member of the conversation', async () => {
-    jest
-      .mocked(prisma.conversation.findFirst)
-      .mockResolvedValue({ id: 'c1' } as never);
+    findFirst.mockResolvedValue({ id: 'c1' } as never);
 
     await expect(
       assertConversationMember(prisma, 'u1', 'c1'),
     ).resolves.toBeUndefined();
 
-    expect(prisma.conversation.findFirst).toHaveBeenCalledWith({
+    expect(findFirst).toHaveBeenCalledWith({
       where: {
         id: 'c1',
         users: { some: { id: 'u1' } },
@@ -32,10 +32,10 @@ describe('assertConversationMember', () => {
   });
 
   it('rejects a non-member', async () => {
-    jest.mocked(prisma.conversation.findFirst).mockResolvedValue(null);
+    findFirst.mockResolvedValue(null);
 
-    await expect(
-      assertConversationMember(prisma, 'u2', 'c1'),
-    ).rejects.toThrow(NotFoundException);
+    await expect(assertConversationMember(prisma, 'u2', 'c1')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 });

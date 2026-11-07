@@ -3,9 +3,11 @@ import type { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from './notifications.service';
 
 describe('NotificationsService ownership', () => {
+  const updateMany = jest.fn();
+
   const prisma = {
     notification: {
-      updateMany: jest.fn(),
+      updateMany,
     },
   } as unknown as PrismaService;
 
@@ -16,22 +18,18 @@ describe('NotificationsService ownership', () => {
   });
 
   it('marks a notification read only when it belongs to the user', async () => {
-    jest
-      .mocked(prisma.notification.updateMany)
-      .mockResolvedValue({ count: 1 });
+    updateMany.mockResolvedValue({ count: 1 });
 
     await service.markRead('n1', 'u1');
 
-    expect(prisma.notification.updateMany).toHaveBeenCalledWith({
+    expect(updateMany).toHaveBeenCalledWith({
       where: { id: 'n1', userId: 'u1' },
-      data: { readAt: expect.any(Date) },
+      data: { readAt: expect.any(Date) as unknown as Date },
     });
   });
 
   it('rejects a notification owned by another user', async () => {
-    jest
-      .mocked(prisma.notification.updateMany)
-      .mockResolvedValue({ count: 0 });
+    updateMany.mockResolvedValue({ count: 0 });
 
     await expect(service.markRead('n1', 'u2')).rejects.toThrow(
       NotFoundException,
