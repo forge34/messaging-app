@@ -4,7 +4,9 @@ import {
   markMessagesRead,
   moveConversationToFront,
   prependNewConversation,
+  removeMessage,
   replaceTempMessage,
+  setMessageBookmark,
   updateMessageReactions,
   type ConversationDetail,
   type Message,
@@ -79,6 +81,21 @@ export async function onMessageRead(
 ) {
   const [conversationId, messageIds] = args;
   markMessagesRead(conversationId, messageIds);
+}
+
+export async function onMessageDelete(
+  ...args: Parameters<ServerToClientEvents["message:delete"]>
+) {
+  const [conversationId, messageId] = args;
+  removeMessage(conversationId, messageId);
+}
+
+export async function onMessageBookmark(
+  ...args: Parameters<ServerToClientEvents["message:bookmark"]>
+) {
+  const [conversationId, messageId, bookmarked] = args;
+  setMessageBookmark(conversationId, messageId, bookmarked);
+  queryClient.invalidateQueries({ queryKey: ["user", "me", "profile"] });
 }
 
 export async function onMessageConfirm(

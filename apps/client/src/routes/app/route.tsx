@@ -5,8 +5,10 @@ import { getMe } from "@/lib/queries/auth";
 import { socket } from "@/lib/sockets";
 import {
   onConversatonCreate,
+  onMessageBookmark,
   onMessageConfirm,
   onMessageCreate,
+  onMessageDelete,
   onMessageRead,
   onMesssageReaction,
 } from "@/lib/sockets/handlers";
@@ -60,6 +62,8 @@ function RouteComponent() {
     socket.on("message:create", onMessageCreate);
     socket.on("message:create:confirm", onMessageConfirm);
     socket.on("message:read", onMessageRead);
+    socket.on("message:delete", onMessageDelete);
+    socket.on("message:bookmark", onMessageBookmark);
     socket.on("message:reaction", onMesssageReaction);
     socket.on("users:presence_update", setOnlineUsers);
     socket.on("conversation:create", onConversatonCreate);
@@ -70,6 +74,8 @@ function RouteComponent() {
       socket.off("message:create", onMessageCreate);
       socket.off("message:create:confirm", onMessageConfirm);
       socket.off("message:read", onMessageRead);
+      socket.off("message:delete", onMessageDelete);
+      socket.off("message:bookmark", onMessageBookmark);
       socket.off("message:reaction", onMesssageReaction);
       socket.off("users:presence_update", setOnlineUsers);
       socket.off("conversation:create", onConversatonCreate);
