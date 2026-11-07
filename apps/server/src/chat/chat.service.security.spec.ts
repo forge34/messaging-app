@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { User } from '@chat/db/client';
 import type { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
 import type { PrismaService } from '../prisma/prisma.service';
@@ -11,6 +11,7 @@ describe('ChatService conversation access control', () => {
   const messageFindFirst = jest.fn();
   const messageFindMany = jest.fn();
   const messageUpdate = jest.fn();
+  const messageDelete = jest.fn();
 
   const prisma = {
     conversation: {
@@ -24,6 +25,7 @@ describe('ChatService conversation access control', () => {
       findMany: messageFindMany,
       update: messageUpdate,
       updateMany: jest.fn(),
+      delete: messageDelete,
     },
     messageReceipt: {
       createMany: jest.fn(),
@@ -92,5 +94,88 @@ describe('ChatService conversation access control', () => {
     ).rejects.toThrow(NotFoundException);
 
     expect(messageUpdate).not.toHaveBeenCalled();
+  });
+
+  it('does not delete a message when the user is not a member', async () => {
+    conversationFindFirst.mockResolvedValue(null);
+
+    await expect(
+      service.handleMessageDelete('c1', 'm1', user, server),
+    ).rejects.toThrow(NotFoundException);
+
+    expect(messageDelete).not.toHaveBeenCalled();
+  });
+
+  it('does not delete a message authored by another user', async () => {
+    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    messageFindFirst.mockResolvedValue({ authorId: 'u2' } as never);
+
+    await expect(
+      service.handleMessageDelete('c1', 'm1', user, server),
+    ).rejects.toThrow(ForbiddenException);
+
+    expect(messageDelete).not.toHaveBeenCalled();
+  });
+
+  it('deletes an own message and notifies the conversation', async () => {
+    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    messageFindFirst.mockResolvedValue({ authorId: 'u1' } as never);
+    messageDelete.mockResolvedValue({} as never);
+
+    await service.handleMessageDelete('c1', 'm1', user, server);
+
+    expect(messageDelete).toHaveBeenCalledWith({ where: { id: 'm1' } });
+    expect(server.to).toHaveBeenCalledWith('c1');
+    expect(server.emit).toHaveBeenCalledWith('message:delete', 'c1', 'm1');
+  });
+
+  it('does not bookmark a message when the user is not a member', async () => {
+    conversationFindFirst.mockResolvedValue(null);
+
+    await expect(
+      service.handleMessageBookmark('c1', 'm1', user, server),
+    ).rejects.toThrow(NotFoundException);
+
+    expect(messageUpdate).not.toHaveBeenCalled();
+  });
+
+  it('bookmarks a message for the user and notifies their sockets', async () => {
+    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    messageFindFirst.mockResolvedValue({
+      id: 'm1',
+      bookmarkedBy: [],
+    } as never);
+    messageUpdate.mockResolvedValue({} as never);
+
+    await service.handleMessageBookmark('c1', 'm1', user, server);
+
+    expect(messageUpdate).toHaveBeenCalledWith({
+      where: { id: 'm1' },
+      data: { bookmarkedBy: { connect: { id: 'u1' } } },
+    });
+    expect(server.to).toHaveBeenCalledWith('user:u1');
+    expect(server.emit).toHaveBeenCalledWith('message:bookmark', 'c1', 'm1', true);
+  });
+
+  it('removes an existing bookmark for the user', async () => {
+    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    messageFindFirst.mockResolvedValue({
+      id: 'm1',
+      bookmarkedBy: [{ id: 'u1' }],
+    } as never);
+    messageUpdate.mockResolvedValue({} as never);
+
+    await service.handleMessageBookmark('c1', 'm1', user, server);
+
+    expect(messageUpdate).toHaveBeenCalledWith({
+      where: { id: 'm1' },
+      data: { bookmarkedBy: { disconnect: { id: 'u1' } } },
+    });
+    expect(server.emit).toHaveBeenCalledWith(
+      'message:bookmark',
+      'c1',
+      'm1',
+      false,
+    );
   });
 });
