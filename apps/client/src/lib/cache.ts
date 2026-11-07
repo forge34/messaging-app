@@ -121,6 +121,39 @@ export function markMessagesRead(
   );
 }
 
+export function removeMessage(
+  conversationId: string,
+  messageId: string,
+  qc = queryClient,
+) {
+  updateConversationDetail(
+    conversationId,
+    (conversation) => ({
+      ...conversation,
+      messages: conversation.messages.filter((m) => m.id !== messageId),
+    }),
+    qc,
+  );
+}
+
+export function setMessageBookmark(
+  conversationId: string,
+  messageId: string,
+  bookmarked: boolean,
+  qc = queryClient,
+) {
+  updateConversationDetail(
+    conversationId,
+    (conversation) => ({
+      ...conversation,
+      messages: conversation.messages.map((m) =>
+        m.id === messageId ? { ...m, isBookmarked: bookmarked } : m,
+      ),
+    }),
+    qc,
+  );
+}
+
 export function updateMessageReactions(
   conversationId: string,
   message: Message,

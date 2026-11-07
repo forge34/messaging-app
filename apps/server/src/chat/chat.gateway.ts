@@ -83,6 +83,40 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await this.chatService.handleMessageRead(socket, user, conversationId);
   }
 
+  @SubscribeMessage('message:delete')
+  async onMessageDelete(
+    @ConnectedSocket() socket: TypedSocket,
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'message:delete'))
+    args: [conversationId: string, messageId: string],
+  ) {
+    const req = socket.request as Request;
+    const user = req.user as User;
+    const [conversationId, messageId] = args;
+    await this.chatService.handleMessageDelete(
+      conversationId,
+      messageId,
+      user,
+      this.server,
+    );
+  }
+
+  @SubscribeMessage('message:bookmark')
+  async onMessageBookmark(
+    @ConnectedSocket() socket: TypedSocket,
+    @MessageBody(new ChatZodValidationPipe(ClientEvents, 'message:bookmark'))
+    args: [conversationId: string, messageId: string],
+  ) {
+    const req = socket.request as Request;
+    const user = req.user as User;
+    const [conversationId, messageId] = args;
+    await this.chatService.handleMessageBookmark(
+      conversationId,
+      messageId,
+      user,
+      this.server,
+    );
+  }
+
   @SubscribeMessage('message:reaction')
   async onMessageReaction(
     @ConnectedSocket() socket: TypedSocket,
