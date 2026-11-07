@@ -194,6 +194,7 @@ export function Message({ message, onReply }: MessageProps) {
                   side="top"
                   align={message.isMine ? "end" : "start"}
                   className="w-auto p-0 border-none shadow-xl"
+                  onFocusOutside={(event) => event.preventDefault()}
                 >
                   <EmojiPicker
                     theme={Theme.AUTO}
