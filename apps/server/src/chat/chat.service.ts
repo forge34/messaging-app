@@ -350,10 +350,10 @@ export class ChatService {
     }
 
     const mappedMessages = conversation.messages
-      .map((msg) => ({
+      .map(({ bookmarkedBy, ...msg }) => ({
         ...msg,
         isMine: msg.authorId === user.id,
-        isBookmarked: msg.bookmarkedBy.some(({ id }) => id === user.id),
+        isBookmarked: bookmarkedBy.some(({ id }) => id === user.id),
       }))
       .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 
@@ -385,7 +385,7 @@ const conversationSelect = {
       status: true,
       createdAt: true,
       author: { select: { id: true, bio: true, name: true, imgUrl: true } },
-      bookmarkedBy: true,
+      bookmarkedBy: { select: { id: true } },
       messageReceipts: true,
       messageReactions: true,
       parentMessageId: true,
