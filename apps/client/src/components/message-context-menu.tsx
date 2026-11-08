@@ -62,7 +62,9 @@ export function MessageContextMenu({
   return (
     <>
       <ContextMenu>
-        <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+        <ContextMenuTrigger asChild disabled={!message.id}>
+          {children}
+        </ContextMenuTrigger>
         <ContextMenuContent className="w-48">
           <ContextMenuItem onSelect={() => onReply?.(message)}>
             <Reply />
