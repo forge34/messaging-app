@@ -55,3 +55,11 @@ export function messagePreview(message: {
   if (!message.attachment) return null;
   return message.attachment.type === "STICKER" ? "Sticker" : "Photo";
 }
+
+export function formatDateTime(date: Date | string) {
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(dateObj);
+}

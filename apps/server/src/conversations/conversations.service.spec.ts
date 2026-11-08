@@ -71,4 +71,40 @@ describe('ConversationsService access control', () => {
 
     await expect(service.delete('c1', 'u3')).rejects.toThrow(NotFoundException);
   });
+
+  it('does not expose who bookmarked a message', async () => {
+    const conversation = {
+      id: 'c1',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      users: [
+        { id: 'u1', name: 'Alice', imgUrl: '', bio: '', lastSeen: null },
+        { id: 'u2', name: 'Bob', imgUrl: '', bio: '', lastSeen: null },
+      ],
+      messages: [
+        {
+          id: 'm1',
+          body: 'hello',
+          authorId: 'u2',
+          conversationId: 'c1',
+          status: 'DELIVERED',
+          createdAt: new Date(),
+          author: { id: 'u2', name: 'Bob', imgUrl: '', bio: '' },
+          bookmarkedBy: [{ id: 'u1' }, { id: 'u2' }],
+          messageReceipts: [],
+          messageReactions: [],
+          parentMessageId: null,
+          parentMessage: null,
+          attachment: null,
+        },
+      ],
+    };
+
+    findFirst.mockResolvedValue(conversation as never);
+
+    const result = await service.getConversationById('c1', 'u1');
+
+    expect(result.messages[0].isBookmarked).toBe(true);
+    expect(result.messages[0]).not.toHaveProperty('bookmarkedBy');
+  });
 });

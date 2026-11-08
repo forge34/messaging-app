@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TypedServer, TypedSocket } from './chat.gateway';
 import { User } from '@chat/db/client';
@@ -198,6 +202,68 @@ export class ChatService {
         .emit('message:read', conversationId, messageIds);
   }
 
+  async handleMessageDelete(
+    conversationId: string,
+    messageId: string,
+    user: User,
+    server: TypedServer,
+  ) {
+    await assertConversationMember(this.prisma, user.id, conversationId);
+
+    const message = await this.prisma.message.findFirst({
+      where: { id: messageId, conversationId },
+      select: { authorId: true },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    if (message.authorId !== user.id) {
+      throw new ForbiddenException('You can only delete your own messages');
+    }
+
+    await this.prisma.message.delete({ where: { id: messageId } });
+
+    server.to(conversationId).emit('message:delete', conversationId, messageId);
+  }
+
+  async handleMessageBookmark(
+    conversationId: string,
+    messageId: string,
+    user: User,
+    server: TypedServer,
+  ) {
+    await assertConversationMember(this.prisma, user.id, conversationId);
+
+    const message = await this.prisma.message.findFirst({
+      where: { id: messageId, conversationId },
+      select: {
+        id: true,
+        bookmarkedBy: { where: { id: user.id }, select: { id: true } },
+      },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    const bookmarked = message.bookmarkedBy.length === 0;
+
+    await this.prisma.message.update({
+      where: { id: messageId },
+      data: {
+        bookmarkedBy: bookmarked
+          ? { connect: { id: user.id } }
+          : { disconnect: { id: user.id } },
+      },
+    });
+
+    server
+      .to(`user:${user.id}`)
+      .emit('message:bookmark', conversationId, messageId, bookmarked);
+  }
+
   async handleMessageReaction(
     conversationId: string,
     messageId: string,
@@ -284,10 +350,10 @@ export class ChatService {
     }
 
     const mappedMessages = conversation.messages
-      .map((msg) => ({
+      .map(({ bookmarkedBy, ...msg }) => ({
         ...msg,
         isMine: msg.authorId === user.id,
-        isBookmarked: msg.bookmarkedBy.some(({ id }) => id === user.id),
+        isBookmarked: bookmarkedBy.some(({ id }) => id === user.id),
       }))
       .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 
@@ -319,7 +385,7 @@ const conversationSelect = {
       status: true,
       createdAt: true,
       author: { select: { id: true, bio: true, name: true, imgUrl: true } },
-      bookmarkedBy: true,
+      bookmarkedBy: { select: { id: true } },
       messageReceipts: true,
       messageReactions: true,
       parentMessageId: true,

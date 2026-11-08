@@ -29,7 +29,10 @@ export class ConversationsService {
       baseConversationSchema,
     ).selectKeys;
 
-    const messagesSelect = parseZodSchema(baseMessageSchema).selectKeys;
+    const messagesSelect = {
+      ...parseZodSchema(baseMessageSchema).selectKeys,
+      bookmarkedBy: { select: { id: true } },
+    };
 
     const conversation = await this.prisma.conversation.findFirst({
       where: {
@@ -50,18 +53,12 @@ export class ConversationsService {
       );
 
     const mappedMessages = conversation.messages
-      .map(({ authorId, bookmarkedBy, ...rest }) => {
-        return {
-          ...rest,
-          authorId,
-          bookmarkedBy,
-          isMine: authorId === userId,
-          isBookmarked:
-            bookmarkedBy.findIndex(({ id }) => id === userId) >= 0
-              ? true
-              : false,
-        };
-      })
+      .map(({ authorId, bookmarkedBy, ...rest }) => ({
+        ...rest,
+        authorId,
+        isMine: authorId === userId,
+        isBookmarked: bookmarkedBy.some(({ id }) => id === userId),
+      }))
       .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
     const mapped = {
       ...conversation,

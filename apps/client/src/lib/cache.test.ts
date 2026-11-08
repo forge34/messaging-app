@@ -6,7 +6,9 @@ import {
   markMessagesRead,
   moveConversationToFront,
   prependNewConversation,
+  removeMessage,
   replaceTempMessage,
+  setMessageBookmark,
   updateMessageReactions,
 } from "./cache";
 import type { ConversationDetail, ConversationListItem, Message } from "./cache";
@@ -181,6 +183,40 @@ describe("updateMessageReactions", () => {
     const data = qc.getQueryData<DetailResponse>(["conversations", "c1"]);
     expect(data?.data?.messages[0]).toStrictEqual(reacted);
     expect(data?.data?.messages[1].id).toBe("m2");
+  });
+});
+
+describe("removeMessage", () => {
+  test("removes only the matching message and keeps the rest", () => {
+    const other = { ...message, id: "m2" };
+    qc.setQueryData(["conversations", "c1"], detail("c1", [message, other]));
+
+    removeMessage("c1", "m1", qc);
+
+    const data = qc.getQueryData<DetailResponse>(["conversations", "c1"]);
+    expect(data?.data?.messages).toHaveLength(1);
+    expect(data?.data?.messages[0].id).toBe("m2");
+  });
+
+  test("no-ops when detail cache is empty", () => {
+    qc.removeQueries({ queryKey: ["conversations", "c1"] });
+
+    removeMessage("c1", "m1", qc);
+
+    expect(qc.getQueryData(["conversations", "c1"])).toBeUndefined();
+  });
+});
+
+describe("setMessageBookmark", () => {
+  test("updates bookmarked state only on matching message id", () => {
+    const other = { ...message, id: "m2" };
+    qc.setQueryData(["conversations", "c1"], detail("c1", [message, other]));
+
+    setMessageBookmark("c1", "m2", true, qc);
+
+    const data = qc.getQueryData<DetailResponse>(["conversations", "c1"]);
+    expect(data?.data?.messages[0].isBookmarked).toBeUndefined();
+    expect(data?.data?.messages[1].isBookmarked).toBe(true);
   });
 });
 

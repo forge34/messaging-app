@@ -67,14 +67,6 @@ export const Routes = {
     requestBody: z.undefined(),
     responseData: PublicConversationSchema,
   }),
-  bookmarkMessage: createRoute({
-    ...EmptyParamQueries,
-    path: "/message/:id/bookmark",
-    method: "POST",
-    params: z.object({ id: z.string().nonempty() }),
-    requestBody: z.undefined(),
-    responseData: z.undefined(),
-  }),
   getCurrentUser: createRoute({
     ...EmptyParamQueries,
     path: "/users/me",

@@ -54,7 +54,6 @@ export const baseMessageSchema = MessageSchema.pick({
   messageReceipts: z.array(PublicMessageReceiptsSchema),
   messageReactions: z.array(PublicMessageReactionsSchema),
   deliveredAt: z.date().nullable().optional(),
-  bookmarkedBy: z.array(PublicUserSchema),
   parentMessage: MessageSchema.pick({
     id: true,
     conversationId: true,
