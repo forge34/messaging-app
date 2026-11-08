@@ -180,32 +180,34 @@ export function Message({ message, onReply }: MessageProps) {
                 <Reply size={16} />
               </Button>
 
-              <Popover open={reactionOpen} onOpenChange={setReactionOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="h-8 w-8 rounded-full shadow-sm"
+              {message.id && (
+                <Popover open={reactionOpen} onOpenChange={setReactionOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="h-8 w-8 rounded-full shadow-sm"
+                    >
+                      <Smile size={16} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="top"
+                    align={message.isMine ? "end" : "start"}
+                    className="w-auto p-0 border-none shadow-xl"
+                    onFocusOutside={(event) => event.preventDefault()}
                   >
-                    <Smile size={16} />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  side="top"
-                  align={message.isMine ? "end" : "start"}
-                  className="w-auto p-0 border-none shadow-xl"
-                  onFocusOutside={(event) => event.preventDefault()}
-                >
-                  <EmojiPicker
-                    theme={Theme.AUTO}
-                    onEmojiClick={onEmojiClick}
-                    skinTonesDisabled
-                    searchDisabled
-                    height={350}
-                    width={300}
-                  />
-                </PopoverContent>
-              </Popover>
+                    <EmojiPicker
+                      theme={Theme.AUTO}
+                      onEmojiClick={onEmojiClick}
+                      skinTonesDisabled
+                      searchDisabled
+                      height={350}
+                      width={300}
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
 
             <Link
