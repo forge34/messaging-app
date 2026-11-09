@@ -1,4 +1,5 @@
 import z, { ZodTuple } from "zod";
+import type { SocketAck } from "./errors.js";
 
 export interface SocketEvent<TName extends string, TSchema extends ZodTuple> {
   name: TName;
@@ -12,6 +13,14 @@ export function createEvent<TName extends string, TSchema extends ZodTuple>(
 }
 
 export type EventObject = Record<string, SocketEvent<string, ZodTuple>>;
+
+export type EventArgs<
+  T extends EventObject,
+  K extends keyof T,
+> = z.infer<T[K]["input"]>;
+
 export type EventMap<T extends EventObject> = {
-  [k in keyof T]: (...args: z.infer<T[k]["input"]>) => void | Promise<void>;
+  [K in keyof T]: (
+    ...args: [...EventArgs<T, K>, ack?: SocketAck<unknown>]
+  ) => void | Promise<void>;
 };

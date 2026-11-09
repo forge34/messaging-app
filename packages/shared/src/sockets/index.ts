@@ -1,8 +1,11 @@
 import z from "zod";
-import { createEvent, EventMap } from "./schemas.js";
+import { createEvent, EventArgs, EventMap } from "./schemas.js";
+import { SocketErrorPayloadSchema } from "./errors.js";
 import { PublicConversationSchema } from "../schemas/conversation-schema.js";
 import { PublicMessageSchema } from "../schemas/message-schema.js";
 import { PublicNotificationSchema } from "../schemas/notification-schema.js";
+
+export * from "./errors.js";
 
 export const ServerEvents = {
   "message:create": createEvent({
@@ -63,6 +66,11 @@ export const ServerEvents = {
     name: "notification:unread_count",
     input: z.tuple([z.number()]),
   }),
+
+  "socket:error": createEvent({
+    name: "socket:error",
+    input: z.tuple([SocketErrorPayloadSchema]),
+  }),
 } as const;
 
 export type ServerToClientEvents = EventMap<typeof ServerEvents>;
@@ -119,3 +127,8 @@ export const ClientEvents = {
 } as const;
 
 export type ClientToServerEvents = EventMap<typeof ClientEvents>;
+
+export type ClientEventArgs<E extends keyof typeof ClientEvents> = EventArgs<
+  typeof ClientEvents,
+  E
+>;
