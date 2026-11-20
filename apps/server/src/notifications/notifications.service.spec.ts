@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import { NotificationsService } from './notifications.service';
+import type { PrismaService } from '../prisma/prisma.service.js';
+import { NotificationsService } from './notifications.service.js';
 
 describe('NotificationsService ownership', () => {
   const updateMany = jest.fn();

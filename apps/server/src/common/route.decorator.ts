@@ -8,8 +8,8 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { ZodValidationPipe } from './zod.pipe';
-import { RouteResponseInterceptor } from './route.interceptor';
+import { ZodValidationPipe } from './zod.pipe.js';
+import { RouteResponseInterceptor } from './route.interceptor.js';
 
 const methodDecorator = {
   POST: Post,

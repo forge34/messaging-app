@@ -4,7 +4,7 @@ import { parse } from 'cookie';
 import passport from 'passport';
 import { NextFunction, Response } from 'express';
 import { IncomingMessage } from 'http';
-import { corsOptions } from '../main';
+import { corsOptions } from '../main.js';
 
 interface EngineRequest extends IncomingMessage {
   _query: Record<string, string>;
@@ -13,10 +13,11 @@ interface EngineRequest extends IncomingMessage {
 
 export class SocketIoAdapter extends IoAdapter {
   createIOServer(port: number, options?: ServerOptions): Server {
-    const server: Server = super.createIOServer(port, {
+    const serverOptions: ServerOptions = {
       ...options,
       cors: corsOptions,
-    });
+    } as ServerOptions;
+    const server: Server = super.createIOServer(port, serverOptions);
 
     server.engine.use(
       (req: EngineRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { Prisma } from '@chat/db/client';
 import { PublicNotificationSchema } from '@chat/shared';
 import type z from 'zod';

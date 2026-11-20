@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import { ConversationsService } from './conversations.service';
+import type { PrismaService } from '../prisma/prisma.service.js';
+import { ConversationsService } from './conversations.service.js';
 
 describe('ConversationsService access control', () => {
   const findFirst = jest.fn();

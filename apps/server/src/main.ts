@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 import cookieParser from 'cookie-parser';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
-import { SocketIoAdapter } from './chat/io-adapter';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface.js';
+import { SocketIoAdapter } from './chat/io-adapter.js';
 import { Logger } from 'nestjs-pino';
 
 export const corsOptions: CorsOptions = {
@@ -23,4 +23,4 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 }
 
-bootstrap();
+await bootstrap();

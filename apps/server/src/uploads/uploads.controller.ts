@@ -1,9 +1,9 @@
 import { Body, Controller, HttpCode, UseGuards } from '@nestjs/common';
-import { UploadsService } from './uploads.service';
-import { Route } from '../common/route.decorator';
+import { UploadsService } from './uploads.service.js';
+import { Route } from '../common/route.decorator.js';
 import { Routes } from '@chat/shared';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { type RequestBody } from '../common/helpers';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { type RequestBody } from '../common/helpers.js';
 
 @Controller('')
 export class UploadsController {

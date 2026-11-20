@@ -1,9 +1,9 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { User } from '@chat/db/client';
 import type { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { NotificationsService } from '../notifications/notifications.service';
-import { ChatService } from './chat.service';
+import type { PrismaService } from '../prisma/prisma.service.js';
+import type { NotificationsService } from '../notifications/notifications.service.js';
+import { ChatService } from './chat.service.js';
 
 describe('ChatService conversation access control', () => {
   const conversationFindFirst = jest.fn();

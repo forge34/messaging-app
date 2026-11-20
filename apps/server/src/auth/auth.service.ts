@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import bcrypt from 'bcryptjs';
 import { AvatarGenerator } from 'random-avatar-generator';
 

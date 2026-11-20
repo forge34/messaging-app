@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import { assertConversationMember } from './conversation-access';
+import type { PrismaService } from '../prisma/prisma.service.js';
+import { assertConversationMember } from './conversation-access.js';
 
 describe('assertConversationMember', () => {
   const findFirst = jest.fn();

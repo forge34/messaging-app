@@ -3,12 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { TypedServer, TypedSocket } from './chat.gateway';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { TypedServer, TypedSocket } from './chat.gateway.js';
 import { User } from '@chat/db/client';
 import { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
-import { NotificationsService } from '../notifications/notifications.service';
-import { assertConversationMember } from '../common/conversation-access';
+import { NotificationsService } from '../notifications/notifications.service.js';
+import { assertConversationMember } from '../common/conversation-access.js';
 
 type OnlineEntry = {
   socket: TypedSocket;

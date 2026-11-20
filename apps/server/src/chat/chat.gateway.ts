@@ -15,9 +15,9 @@ import {
   ServerToClientEvents,
 } from '@chat/shared';
 import { type Request } from 'express';
-import { ChatService } from './chat.service';
+import { ChatService } from './chat.service.js';
 import { User } from '@chat/db/client';
-import { ChatZodValidationPipe } from './zod.pipe';
+import { ChatZodValidationPipe } from './zod.pipe.js';
 export type TypedServer = Server<ClientToServerEvents, ServerToClientEvents>;
 export type TypedSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 

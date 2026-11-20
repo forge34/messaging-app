@@ -1,10 +1,10 @@
 import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
-import { NotificationsService } from './notifications.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Route } from '../common/route.decorator';
+import { NotificationsService } from './notifications.service.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { Route } from '../common/route.decorator.js';
 import { Routes } from '@chat/shared';
 import { type Request } from 'express';
-import { type RequestParams, type RequestQueries } from '../common/helpers';
+import { type RequestParams, type RequestQueries } from '../common/helpers.js';
 import { User } from '@chat/db/client';
 
 @Controller('')

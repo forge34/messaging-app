@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ServiceUnavailableException } from '@nestjs/common';
-import { UploadsService } from './uploads.service';
+import { UploadsService } from './uploads.service.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 jest.mock('cloudinary', () => ({

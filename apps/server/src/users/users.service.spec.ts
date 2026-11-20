@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import { UsersService } from './users.service';
+import type { PrismaService } from '../prisma/prisma.service.js';
+import { UsersService } from './users.service.js';
 
 describe('UsersService profile boundaries', () => {
   const findFirst = jest.fn();

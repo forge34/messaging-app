@@ -1,11 +1,11 @@
 import { Controller, Param, Query, Req, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { Route } from '../common/route.decorator';
+import { UsersService } from './users.service.js';
+import { Route } from '../common/route.decorator.js';
 import { Routes } from '@chat/shared';
 import { type Request } from 'express';
 import { User } from '@chat/db/client';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { type RequestParams, type RequestQueries } from '../common/helpers';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { type RequestParams, type RequestQueries } from '../common/helpers.js';
 
 @Controller('')
 export class UsersController {

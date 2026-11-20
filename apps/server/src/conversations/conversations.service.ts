@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { parseZodSchema } from 'zod-key-parser';
 import { baseConversationSchema, baseMessageSchema } from '@chat/shared';
 

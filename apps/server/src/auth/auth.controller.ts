@@ -5,8 +5,8 @@ import {
   UnauthorizedException,
   HttpCode,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Route } from '../common/route.decorator';
+import { AuthService } from './auth.service.js';
+import { Route } from '../common/route.decorator.js';
 import { type RequestBody, Routes } from '@chat/shared';
 import { type CookieOptions, type Response } from 'express';
 import { JwtService } from '@nestjs/jwt';

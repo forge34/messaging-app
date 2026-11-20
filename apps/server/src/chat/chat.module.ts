@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ChatService } from './chat.service';
-import { ChatGateway } from './chat.gateway';
-import { NotificationsModule } from '../notifications/notifications.module';
+import { ChatService } from './chat.service.js';
+import { ChatGateway } from './chat.gateway.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
   imports: [NotificationsModule],
