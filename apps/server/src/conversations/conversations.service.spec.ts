@@ -1,10 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { ConversationsService } from './conversations.service.js';
+import { describe, vi, beforeEach, it, expect } from 'vitest';
 
 describe('ConversationsService access control', () => {
-  const findFirst = jest.fn();
-  const deleteMany = jest.fn();
+  const findFirst = vi.fn();
+  const deleteMany = vi.fn();
 
   const prisma = {
     conversation: {
@@ -16,7 +17,7 @@ describe('ConversationsService access control', () => {
   const service = new ConversationsService(prisma);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('scopes conversation reads to the requesting user', async () => {
@@ -31,7 +32,7 @@ describe('ConversationsService access control', () => {
       messages: [],
     };
 
-    findFirst.mockResolvedValue(conversation as never);
+    findFirst.mockResolvedValue(conversation);
 
     await service.getConversationById('c1', 'u1');
 
@@ -100,7 +101,7 @@ describe('ConversationsService access control', () => {
       ],
     };
 
-    findFirst.mockResolvedValue(conversation as never);
+    findFirst.mockResolvedValue(conversation);
 
     const result = await service.getConversationById('c1', 'u1');
 

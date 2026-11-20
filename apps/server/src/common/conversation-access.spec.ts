@@ -1,9 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { assertConversationMember } from './conversation-access.js';
+import { describe, vi, beforeEach, it, expect } from 'vitest';
 
 describe('assertConversationMember', () => {
-  const findFirst = jest.fn();
+  const findFirst = vi.fn();
 
   const prisma = {
     conversation: {
@@ -12,11 +13,11 @@ describe('assertConversationMember', () => {
   } as unknown as PrismaService;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('accepts a member of the conversation', async () => {
-    findFirst.mockResolvedValue({ id: 'c1' } as never);
+    findFirst.mockResolvedValue({ id: 'c1' });
 
     await expect(
       assertConversationMember(prisma, 'u1', 'c1'),

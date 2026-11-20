@@ -2,16 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ServiceUnavailableException } from '@nestjs/common';
 import { UploadsService } from './uploads.service.js';
 import { v2 as cloudinary } from 'cloudinary';
+import { describe, vi, beforeEach, afterEach, it, expect } from 'vitest';
 
-jest.mock('cloudinary', () => ({
+vi.mock('cloudinary', () => ({
   v2: {
-    config: jest.fn(),
-    utils: { api_sign_request: jest.fn(() => 'mocked-signature') },
-    api: { resources_by_tag: jest.fn() },
+    config: vi.fn(),
+    utils: { api_sign_request: vi.fn(() => 'mocked-signature') },
+    api: { resources_by_tag: vi.fn() },
   },
 }));
 
-const mockedApi = cloudinary.api as jest.Mocked<typeof cloudinary.api>;
+const mockedApi = vi.mocked(cloudinary.api);
+const mockedSign = vi.mocked(cloudinary.utils.api_sign_request);
 
 const ORIGINAL_ENV = { ...process.env };
 
@@ -29,7 +31,7 @@ describe('UploadsService', () => {
     process.env.CLOUDINARY_API_SECRET = 'test-secret';
 
     mockedApi.resources_by_tag.mockReset();
-    (cloudinary.utils.api_sign_request as jest.Mock).mockClear();
+    mockedSign.mockClear();
   });
 
   afterEach(() => {
@@ -50,9 +52,7 @@ describe('UploadsService', () => {
     it('signs image uploads into the images folder without tags', () => {
       const result = service.createUploadSignature('IMAGE');
 
-      const signedCall = (cloudinary.utils.api_sign_request as jest.Mock).mock
-        .calls[0] as unknown;
-      const [signedParams, apiSecret] = signedCall as [
+      const [signedParams, apiSecret] = mockedSign.mock.calls[0] as unknown as [
         Record<string, string>,
         string,
       ];
@@ -76,9 +76,11 @@ describe('UploadsService', () => {
       expect(result.params.folder).toBe('chat/stickers');
       expect(result.params.tags).toBe('sticker');
 
-      const signedCall = (cloudinary.utils.api_sign_request as jest.Mock).mock
-        .calls[0] as unknown;
-      const [signedParams] = signedCall as [Record<string, string>];
+      const [signedParams] = mockedSign.mock.calls[0] as unknown as [
+        Record<string, string>,
+        string,
+      ];
+
       expect(signedParams.tags).toBe('sticker');
       expect(signedParams.folder).toBe('chat/stickers');
     });
@@ -97,7 +99,9 @@ describe('UploadsService', () => {
             bytes: 1234,
           },
         ],
-      } as never);
+      } as unknown as Awaited<
+        ReturnType<typeof cloudinary.api.resources_by_tag>
+      >);
 
       const first = await service.listStickers();
       const second = await service.listStickers();

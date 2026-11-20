@@ -26,11 +26,11 @@ describe('ChatService attachment messages (integration)', () => {
   let conversationId: string;
 
   const socket = {
-    emit: jest.fn(),
-    to: jest.fn().mockReturnValue({ emit: jest.fn() }),
-    broadcast: { to: jest.fn().mockReturnValue({ emit: jest.fn() }) },
-    join: jest.fn(),
-  } as never;
+    emit: vi.fn(),
+    to: vi.fn().mockReturnValue({ emit: vi.fn() }),
+    broadcast: { to: vi.fn().mockReturnValue({ emit: vi.fn() }) },
+    join: vi.fn(),
+  }  ;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

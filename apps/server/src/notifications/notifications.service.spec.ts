@@ -1,9 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { NotificationsService } from './notifications.service.js';
+import { describe, vi, beforeEach, it, expect } from 'vitest';
 
 describe('NotificationsService ownership', () => {
-  const updateMany = jest.fn();
+  const updateMany = vi.fn();
 
   const prisma = {
     notification: {
@@ -14,7 +15,7 @@ describe('NotificationsService ownership', () => {
   const service = new NotificationsService(prisma);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('marks a notification read only when it belongs to the user', async () => {
@@ -24,7 +25,7 @@ describe('NotificationsService ownership', () => {
 
     expect(updateMany).toHaveBeenCalledWith({
       where: { id: 'n1', userId: 'u1' },
-      data: { readAt: expect.any(Date) as unknown as Date },
+      data: { readAt: expect.any(Date) as unknown },
     });
   });
 

@@ -4,59 +4,60 @@ import type { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import type { NotificationsService } from '../notifications/notifications.service.js';
 import { ChatService } from './chat.service.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('ChatService conversation access control', () => {
-  const conversationFindFirst = jest.fn();
-  const messageCreate = jest.fn();
-  const messageFindFirst = jest.fn();
-  const messageFindMany = jest.fn();
-  const messageUpdate = jest.fn();
-  const messageDelete = jest.fn();
+  const conversationFindFirst = vi.fn();
+  const messageCreate = vi.fn();
+  const messageFindFirst = vi.fn();
+  const messageFindMany = vi.fn();
+  const messageUpdate = vi.fn();
+  const messageDelete = vi.fn();
 
   const prisma = {
     conversation: {
       findFirst: conversationFindFirst,
-      findUnique: jest.fn(),
-      findMany: jest.fn(),
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
     },
     message: {
       create: messageCreate,
       findFirst: messageFindFirst,
       findMany: messageFindMany,
       update: messageUpdate,
-      updateMany: jest.fn(),
+      updateMany: vi.fn(),
       delete: messageDelete,
     },
     messageReceipt: {
-      createMany: jest.fn(),
+      createMany: vi.fn(),
     },
     user: {
-      update: jest.fn(),
+      update: vi.fn(),
     },
   } as unknown as PrismaService;
 
   const notifications = {
-    create: jest.fn(),
+    create: vi.fn(),
   } as unknown as NotificationsService;
 
   const service = new ChatService(prisma, notifications);
 
   const socket = {
-    emit: jest.fn(),
-    to: jest.fn().mockReturnThis(),
-    broadcast: { to: jest.fn().mockReturnThis() },
-    join: jest.fn(),
-  } as never;
+    emit: vi.fn(),
+    to: vi.fn().mockReturnThis(),
+    broadcast: { to: vi.fn().mockReturnThis() },
+    join: vi.fn(),
+  };
 
   const server = {
-    to: jest.fn().mockReturnThis(),
-    emit: jest.fn(),
-  } as never;
+    to: vi.fn().mockReturnThis(),
+    emit: vi.fn(),
+  };
 
   const user = { id: 'u1', name: 'Alice' } as User;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('does not create a message when the sender is not a member', async () => {
@@ -86,7 +87,7 @@ describe('ChatService conversation access control', () => {
   });
 
   it('does not react to a message outside the conversation', async () => {
-    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' });
     messageFindFirst.mockResolvedValue(null);
 
     await expect(
@@ -107,8 +108,8 @@ describe('ChatService conversation access control', () => {
   });
 
   it('does not delete a message authored by another user', async () => {
-    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
-    messageFindFirst.mockResolvedValue({ authorId: 'u2' } as never);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' });
+    messageFindFirst.mockResolvedValue({ authorId: 'u2' });
 
     await expect(
       service.handleMessageDelete('c1', 'm1', user, server),
@@ -118,9 +119,9 @@ describe('ChatService conversation access control', () => {
   });
 
   it('deletes an own message and notifies the conversation', async () => {
-    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
-    messageFindFirst.mockResolvedValue({ authorId: 'u1' } as never);
-    messageDelete.mockResolvedValue({} as never);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' });
+    messageFindFirst.mockResolvedValue({ authorId: 'u1' });
+    messageDelete.mockResolvedValue({});
 
     await service.handleMessageDelete('c1', 'm1', user, server);
 
@@ -140,12 +141,12 @@ describe('ChatService conversation access control', () => {
   });
 
   it('bookmarks a message for the user and notifies their sockets', async () => {
-    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' });
     messageFindFirst.mockResolvedValue({
       id: 'm1',
       bookmarkedBy: [],
-    } as never);
-    messageUpdate.mockResolvedValue({} as never);
+    });
+    messageUpdate.mockResolvedValue({});
 
     await service.handleMessageBookmark('c1', 'm1', user, server);
 
@@ -163,12 +164,12 @@ describe('ChatService conversation access control', () => {
   });
 
   it('removes an existing bookmark for the user', async () => {
-    conversationFindFirst.mockResolvedValue({ id: 'c1' } as never);
+    conversationFindFirst.mockResolvedValue({ id: 'c1' });
     messageFindFirst.mockResolvedValue({
       id: 'm1',
       bookmarkedBy: [{ id: 'u1' }],
-    } as never);
-    messageUpdate.mockResolvedValue({} as never);
+    });
+    messageUpdate.mockResolvedValue({});
 
     await service.handleMessageBookmark('c1', 'm1', user, server);
 

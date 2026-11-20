@@ -1,9 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import { UsersService } from './users.service.js';
+import { describe, vi, beforeEach, it, expect } from 'vitest';
 
 describe('UsersService profile boundaries', () => {
-  const findFirst = jest.fn();
+  const findFirst = vi.fn();
 
   const prisma = {
     user: {
@@ -14,7 +15,7 @@ describe('UsersService profile boundaries', () => {
   const service = new UsersService(prisma);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('returns only public fields for another user profile', async () => {
@@ -26,7 +27,7 @@ describe('UsersService profile boundaries', () => {
       lastSeen: null,
     };
 
-    findFirst.mockResolvedValue(publicUser as never);
+    findFirst.mockResolvedValue(publicUser);
 
     await expect(service.publicUser('u1')).resolves.toEqual(publicUser);
     expect(findFirst).toHaveBeenCalledWith({
@@ -71,7 +72,7 @@ describe('UsersService profile boundaries', () => {
           },
         },
       ],
-    } as never);
+    });
 
     const bookmarks = await service.getBookmarks('u1');
 
