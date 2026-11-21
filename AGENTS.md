@@ -5,7 +5,7 @@ Real-time chat app — NestJS backend + React frontend + Prisma/PostgreSQL, in a
 ## Project Overview
 
 - **Monorepo**: pnpm workspace with `apps/` (server, client) and `packages/` (db, shared)
-- **Server**: NestJS 11, Express, Socket.io, Passport/JWT, bcryptjs
+- **Server**: NestJS 12 (ESM), Express, Socket.io, Passport/JWT, bcryptjs
 - **Client**: React 19, Vite 7, Tanstack Router/Query, Tailwind v4, Shadcn UI
 - **Database**: PostgreSQL 18, Prisma 7, Zod (via prisma-zod-generator)
 - **CI/CD**: GitHub Actions — client deploys to VPS via SSH, server image published to GHCR
@@ -38,20 +38,22 @@ pnpm dev
 
 ## Global Scripts
 
-| Command                    | Action                                                           |
-| -------------------------- | ---------------------------------------------------------------- |
-| `pnpm dev`                 | Start all apps + packages in parallel                            |
-| `pnpm build`               | Build all apps + packages                                        |
-| `pnpm dev:server`          | Server in watch mode                                             |
-| `pnpm dev:client`          | Client dev server                                                |
-| `pnpm db:migrate`          | Apply Prisma migrations                                          |
-| `pnpm db:generate`         | Regenerate Prisma client                                         |
-| `pnpm db:reset`            | Drop + re-migrate database                                       |
-| `pnpm db:studio`           | Open Prisma Studio                                               |
-| `pnpm load-test:auth`      | Run k6 auth load test on the test DB (port 5433, server on 3001) |
-| `pnpm load-test:messaging` | Run k6 WebSocket messaging load test on the test DB              |
-| `pnpm load-test:setup`     | Start test DB + server for manual testing (no k6 run)            |
-| `pnpm load-test:all`       | Run auth + messaging load tests sequentially                     |
+| Command                                | Action                                                           |
+| -------------------------------------- | ---------------------------------------------------------------- |
+| `pnpm dev`                             | Start all apps + packages in parallel                            |
+| `pnpm build`                           | Build all apps + packages                                        |
+| `pnpm dev:server`                      | Server in watch mode                                             |
+| `pnpm dev:client`                      | Client dev server                                                |
+| `pnpm db:migrate`                      | Apply Prisma migrations                                          |
+| `pnpm db:generate`                     | Regenerate Prisma client                                         |
+| `pnpm db:reset`                        | Drop + re-migrate database                                       |
+| `pnpm db:studio`                       | Open Prisma Studio                                               |
+| `pnpm --filter ./apps/server test`     | Run server unit + DB integration specs (Vitest)                  |
+| `pnpm --filter ./apps/server test:e2e` | Run server e2e specs (Vitest; needs dev DB + `.env`)             |
+| `pnpm load-test:auth`                  | Run k6 auth load test on the test DB (port 5433, server on 3001) |
+| `pnpm load-test:messaging`             | Run k6 WebSocket messaging load test on the test DB              |
+| `pnpm load-test:setup`                 | Start test DB + server for manual testing (no k6 run)            |
+| `pnpm load-test:all`                   | Run auth + messaging load tests sequentially                     |
 
 ## Commit Convention
 

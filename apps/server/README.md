@@ -34,13 +34,13 @@ $ pnpm install
 ## Compile and run the project
 
 ```bash
-# development
-$ pnpm run start
+# development (watch mode)
+$ pnpm run dev
 
-# watch mode
-$ pnpm run start:dev
+# debug + watch
+$ pnpm run start:debug
 
-# production mode
+# production mode (after pnpm run build, emits dist/main.js)
 $ pnpm run start:prod
 ```
 

@@ -1,15 +1,22 @@
 # Server — NestJS Backend
 
 ## Project Overview
-NestJS 11 REST + WebSocket server with JWT auth, Socket.io real-time messaging, and Prisma database access.
+NestJS 12 REST + WebSocket server with JWT auth, Socket.io real-time messaging, and Prisma database access. The package is ESM (`"type": "module"`, NodeNext resolution), so relative imports must carry a `.js` extension.
 
 ## Commands
 | Command | Action |
 |---|---|
-| `pnpm start:dev` | Watch mode |
-| `pnpm build` | `nest build` |
+| `pnpm dev` | Watch mode (`nest start --watch`) |
+| `pnpm start` | Build and run once |
+| `pnpm start:prod` | Run the built `dist/main.js` |
+| `pnpm build` | `nest build` → `dist/main.js` |
 | `pnpm lint` | ESLint with --fix |
 | `pnpm format` | Prettier |
+| `pnpm test` | Vitest unit + DB integration specs |
+| `pnpm test:watch` | Vitest watch mode |
+| `pnpm test:cov` | Vitest with v8 coverage |
+| `pnpm test:e2e` | Vitest e2e specs (`*.e2e-spec.ts`) |
+| `pnpm test:debug` | Vitest with `--inspect-brk`, no file parallelism |
 
 ## Module Structure
 ```
@@ -32,11 +39,16 @@ src/
 - **Auth**: Passport `JwtAuthGuard` on protected routes; cookie-based JWT
 - **DTOs**: Zod schemas define shape; inferred as TS types
 - **Imports**: NestJS common/http, `@chat/db` for Prisma, `@chat/shared` for types/schemas
+- **ESM**: relative imports end in `.js` (`./chat.service.js`), even from `.ts` files
 
 ## Testing
-- **E2E tests**: in `test/` — uses `@nestjs/testing` + supertest
-- Run from apps/server: no script wired yet, but `test/app.e2e-spec.ts` and `test/jest-e2e.json` exist
-- No unit tests currently; add with `@nestjs/testing` if needed
+Vitest with `unplugin-swc` (SWC is needed to emit `design:paramtypes` decorator metadata for Nest DI).
+
+- **Unit + integration specs** — `src/**/*.spec.ts`, run with `pnpm test`. Specs that touch Prisma need the dev DB on `localhost:5432` and the repo `.env`.
+- **E2E specs** — `test/**/*.e2e-spec.ts`, run with `pnpm test:e2e` (separate `vitest.config.e2e.ts`). Also need the dev DB + `.env`.
+- `pnpm test` does **not** pick up `.e2e-spec.ts` files; use `pnpm test:e2e` for those.
+- Vitest globals are enabled, but specs may import `describe/it/expect/vi` explicitly from `vitest`.
+- Typecheck the specs with `pnpm exec tsc -p tsconfig.spec.json --noEmit`.
 
 ## Load Testing
 k6 scenarios in `load-tests/scenarios/`, run via `load-tests/orchestrator.mjs`.
