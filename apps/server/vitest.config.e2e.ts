@@ -7,5 +7,5 @@ export default defineConfig({
     globals: true,
     root: './',
   },
-  plugins: [swc.vite()],
+  plugins: [swc.vite({ module: { type: 'es6' } })],
 });
