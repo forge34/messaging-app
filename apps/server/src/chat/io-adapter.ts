@@ -11,6 +11,18 @@ interface EngineRequest extends IncomingMessage {
   cookies?: Record<string, string | undefined>;
 }
 
+type ConnectMiddleware = (
+  req: IncomingMessage,
+  res: Response,
+  next: NextFunction,
+) => void;
+
+// passport's typings expose authenticate() as `any`; pin the middleware shape.
+const jwtMiddleware = passport.authenticate('jwt', {
+  session: false,
+  failWithError: true,
+}) as unknown as ConnectMiddleware;
+
 export class SocketIoAdapter extends IoAdapter {
   createIOServer(port: number, options?: ServerOptions): Server {
     const serverOptions: ServerOptions = {
@@ -28,11 +40,7 @@ export class SocketIoAdapter extends IoAdapter {
 
         const isHandshake = req._query.sid === undefined;
         if (isHandshake) {
-          passport.authenticate('jwt', { session: false, failWithError: true })(
-            req,
-            res,
-            next,
-          );
+          jwtMiddleware(req, res, next);
         } else {
           next();
         }

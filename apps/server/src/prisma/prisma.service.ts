@@ -1,4 +1,5 @@
 import { createAdapterWithPool, PrismaClient } from '@chat/db/client';
+import type { Prisma } from '@chat/db/client';
 import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 
 const POOL_SIZE = parseInt(process.env.DATABASE_POOL_SIZE || '50', 10);
@@ -36,7 +37,7 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     this.logger.log(`Slow query threshold: ${SLOW_QUERY_THRESHOLD_MS}ms`);
 
     if (isProfiling || isDev) {
-      this.$on('query' as never, (e: any) => {
+      this.$on('query' as never, (e: Prisma.QueryEvent) => {
         const msg = `(${e.duration}ms) ${e.query}`;
 
         if (e.duration > SLOW_QUERY_THRESHOLD_MS) {
@@ -46,11 +47,11 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
         }
       });
 
-      this.$on('warn' as never, (e: any) => {
+      this.$on('warn' as never, (e: Prisma.LogEvent) => {
         this.logger.warn(e.message);
       });
 
-      this.$on('error' as never, (e: any) => {
+      this.$on('error' as never, (e: Prisma.LogEvent) => {
         this.logger.error(e.message);
       });
     }
