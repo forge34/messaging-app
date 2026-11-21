@@ -2,13 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { ChatService } from '../src/chat/chat.service';
-import { NotificationsService } from '../src/notifications/notifications.service';
-import { PrismaService } from '../src/prisma/prisma.service';
+import { ChatService } from '../src/chat/chat.service.js';
+import { NotificationsService } from '../src/notifications/notifications.service.js';
+import { PrismaService } from '../src/prisma/prisma.service.js';
+import type { TypedSocket } from '../src/chat/chat.gateway.js';
 import type { PublicMessageSchema } from '@chat/shared';
 import type { AttachmentType, User } from '@chat/db/client';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
-const envFile = readFileSync(resolve(__dirname, '../../../.env'), 'utf8');
+const envFile = readFileSync(
+  resolve(import.meta.dirname, '../../../.env'),
+  'utf8',
+);
+
 for (const line of envFile.split('\n')) {
   const match = line.match(/^\s*([A-Z_]+)\s*=\s*(.*?)\s*$/);
   if (match && !(match[1] in process.env)) {
@@ -30,7 +36,7 @@ describe('ChatService attachment messages (integration)', () => {
     to: vi.fn().mockReturnValue({ emit: vi.fn() }),
     broadcast: { to: vi.fn().mockReturnValue({ emit: vi.fn() }) },
     join: vi.fn(),
-  }  ;
+  } as unknown as TypedSocket;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

@@ -4,6 +4,7 @@ import type { PublicMessageSchema, PublicUserSchema } from '@chat/shared';
 import type { PrismaService } from '../prisma/prisma.service.js';
 import type { NotificationsService } from '../notifications/notifications.service.js';
 import { ChatService } from './chat.service.js';
+import type { TypedServer, TypedSocket } from './chat.gateway.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('ChatService conversation access control', () => {
@@ -47,12 +48,12 @@ describe('ChatService conversation access control', () => {
     to: vi.fn().mockReturnThis(),
     broadcast: { to: vi.fn().mockReturnThis() },
     join: vi.fn(),
-  };
+  } as unknown as TypedSocket;
 
   const server = {
     to: vi.fn().mockReturnThis(),
     emit: vi.fn(),
-  };
+  } as unknown as TypedServer;
 
   const user = { id: 'u1', name: 'Alice' } as User;
 

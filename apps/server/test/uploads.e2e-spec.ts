@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import type { App } from 'supertest/types';
+import type { App } from 'supertest/types.js';
 import cookieParser from 'cookie-parser';
 import { JwtService } from '@nestjs/jwt';
 import type {
   PublicStickerSchema,
   UploadSignatureResponse,
 } from '@chat/shared';
-import { UploadsService } from '../src/uploads/uploads.service';
-import { AppModule } from '../src/app.module';
-import { PrismaService } from '../src/prisma/prisma.service';
+import { UploadsService } from '../src/uploads/uploads.service.js';
+import { AppModule } from '../src/app.module.js';
+import { PrismaService } from '../src/prisma/prisma.service.js';
 import type { User } from '@chat/db/client';
 
 interface ApiEnvelope {
